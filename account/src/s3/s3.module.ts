@@ -13,13 +13,15 @@ import { Buckets } from './s3.types';
   exports: [S3Service],
 })
 export class S3Module implements OnApplicationBootstrap {
-  constructor(@Inject('S3_STORAGE') private readonly s3: minio.Client) {
-  }
+  constructor(@Inject('S3_STORAGE') private readonly s3: minio.Client) {}
 
   async onApplicationBootstrap() {
-    const pictureBucket = await this.s3.bucketExists(Buckets.Picture);
-    if (!pictureBucket) {
-      await this.s3.makeBucket(Buckets.Picture);
+    const buckets = Object.values(Buckets);
+    for (const bucket of buckets) {
+      const existingBucket = await this.s3.bucketExists(bucket);
+      if (!existingBucket) {
+        await this.s3.makeBucket(bucket);
+      }
     }
   }
 }

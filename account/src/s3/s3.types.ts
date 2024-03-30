@@ -1,3 +1,3 @@
 export enum Buckets {
-	Picture = 'account-picture'
+  Picture = 'account-picture',
 }

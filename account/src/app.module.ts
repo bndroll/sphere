@@ -1,21 +1,24 @@
-import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostgresConfig } from './config/postgres.config';
-import { IamModule } from './iam/iam.module';
-import { CategoryModule } from './category/category.module';
-import { TagModule } from './tag/tag.module';
-import { ProfileModule } from './profile/profile.module';
 import { S3Module } from './s3/s3.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { PostgresConfig } from 'src/config/postgres/postgres.config';
+import { RedisConfig } from 'src/config/redis.config';
+import { ThrottlerConfig } from 'src/config/throttler.config';
+import { RedisModule } from '@nestjs-modules/ioredis';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { RequestLoggingInterceptor } from 'src/interceptors/request-logging.interceptor';
+import { CoreModule } from 'src/core/core.module';
+import { AdapterModule } from 'src/adapter/adapter.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: `.${process.env.NODE_ENV.trim()}.env`,
+      envFilePath: `.env`,
       isGlobal: true,
-      load: [PostgresConfig],
+      load: [PostgresConfig, RedisConfig, ThrottlerConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -24,19 +27,34 @@ import { S3Module } from './s3/s3.module';
       }),
       inject: [ConfigService],
     }),
-    RedisModule.forRoot({
-      config: {
-        host: process.env.REDIS_HOST,
-        port: parseInt(process.env.REDIS_PORT, 10),
-      },
+    RedisModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        ...configService.getOrThrow('redis'),
+      }),
+      inject: [ConfigService],
     }),
-    ScheduleModule.forRoot(),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        ...configService.getOrThrow('throttler'),
+      }),
+      inject: [ConfigService],
+    }),
     S3Module,
-    IamModule,
-    CategoryModule,
-    TagModule,
-    ProfileModule,
+    ScheduleModule.forRoot(),
+    CoreModule,
+    AdapterModule,
+  ],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: RequestLoggingInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
-export class AppModule {
-}
+export class AppModule {}

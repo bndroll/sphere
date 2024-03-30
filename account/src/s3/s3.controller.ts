@@ -4,11 +4,14 @@ import { Response } from 'express';
 
 @Controller('s3')
 export class S3Controller {
-  constructor(private readonly s3Service: S3Service) {
-  }
+  constructor(private readonly s3Service: S3Service) {}
 
-  @Get(':fileName')
-  async getFile(@Param('fileName') fileName: string, @Res() res: Response) {
-    return await this.s3Service.getObject(fileName, res);
+  @Get(':bucket/:file')
+  async getFile(
+    @Param('bucket') bucket: string,
+    @Param('file') file: string,
+    @Res() res: Response,
+  ) {
+    return await this.s3Service.getObject(bucket, file, res);
   }
 }
