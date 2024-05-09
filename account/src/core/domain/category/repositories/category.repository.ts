@@ -10,10 +10,12 @@ export class CategoryRepository extends BaseRepository<Category> {
   }
 
   async findAll() {
-    return await this.find({ order: { title: 'ASC' } });
+    return await this.createQueryBuilder('c').orderBy('title', 'ASC').getMany();
   }
 
   async findByTitle(title: string) {
-    return await this.findOneBy({ title });
+    return await this.createQueryBuilder('c')
+      .where('c.title = :title', { title })
+      .getOne();
   }
 }

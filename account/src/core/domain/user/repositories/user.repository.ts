@@ -1,0 +1,17 @@
+import { Injectable } from '@nestjs/common';
+import { DataSource } from 'typeorm';
+import { BaseRepository } from 'src/core/common/base.repository';
+import { User } from 'src/core/domain/user/entities/user.entity';
+
+@Injectable()
+export class UserRepository extends BaseRepository<User> {
+  constructor(private dataSource: DataSource) {
+    super(User, dataSource.createEntityManager());
+  }
+
+  async findByName(name: string) {
+    return await this.createQueryBuilder('u')
+      .where('u.name = :name', { name })
+      .getOne();
+  }
+}
