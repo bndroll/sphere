@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { BOT_AUTH_API_KEY } from '../../../telegram/telegram.constants';
-import { UserBot } from '../../../telegram/dto/user-bot.dto';
+import { BOT_AUTH_API_KEY } from '../telegram.constants';
+import { UserBot } from 'src/adapter/bot/telegram/dto/user-bot.dto';
 import * as TelegramBot from 'node-telegram-bot-api';
 
 export const UserBotData = createParamDecorator(

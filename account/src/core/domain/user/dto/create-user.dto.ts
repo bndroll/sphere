@@ -1,11 +1,11 @@
 export class CreateUserDto {
-  name: string;
-  telegramId: number | null;
+  username: string;
+  telegramId: string | null;
   password: string | null;
 }
 
 export class CreateUserEntityDto {
-  name: string;
-  telegramId: number | null;
+  username: string;
+  telegramId: string | null;
   password: string | null;
 }

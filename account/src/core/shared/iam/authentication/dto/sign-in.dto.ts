@@ -1,11 +1,16 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString, MinLength } from 'class-validator';
 
 export class SignInDto {
   @IsString()
   @MinLength(3)
-  name: string;
+  username: string;
 
   @IsString()
   @MinLength(5)
-  password: string;
+  @IsOptional()
+  password?: string;
+
+  @IsString()
+  @IsOptional()
+  telegramId?: string;
 }

@@ -11,6 +11,7 @@ import {
 import { Profile } from 'src/core/domain/profile/entities/profile.entity';
 import { CreateUserEntityDto } from 'src/core/domain/user/dto/create-user.dto';
 import { generateString } from '@nestjs/typeorm';
+import { UpdateUserEntityDto } from 'src/core/domain/user/dto/update-user.dto';
 
 export enum UserGender {
   Male = 'Male',
@@ -24,12 +25,13 @@ export class User {
 
   @Index({ unique: true })
   @Column('bigint', { name: 'telegram_id', unique: true, nullable: true })
-  telegramId: number | null;
+  telegramId: string | null;
 
-  @Column('varchar')
-  name: string;
+  @Index({ unique: true })
+  @Column('varchar', { unique: true, nullable: true })
+  username: string;
 
-  @Column({ nullable: true })
+  @Column('varchar', { nullable: true })
   password: string | null;
 
   @Column('varchar', { nullable: true })
@@ -61,9 +63,27 @@ export class User {
   static create(dto: CreateUserEntityDto) {
     const instance = new User();
     instance.id = generateString();
-    instance.name = dto.name;
+    instance.username = dto.username;
     instance.password = dto.password ?? null;
     instance.telegramId = dto.telegramId ?? null;
     return instance;
+  }
+
+  update(dto: UpdateUserEntityDto) {
+    this.phone = dto.phone ?? this.phone;
+    this.birthdayDate = dto.birthdayDate ?? this.birthdayDate;
+    this.gender = dto.gender ?? this.gender;
+  }
+
+  updatePassword(newPassword: string) {
+    this.password = newPassword;
+  }
+
+  updateUsername(username: string) {
+    this.username = username;
+  }
+
+  updateTelegramId(telegramId: string) {
+    this.telegramId = telegramId;
   }
 }

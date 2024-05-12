@@ -17,14 +17,14 @@ export class BaseRepository<
     return await this.createQueryBuilder().insert().values(entity).execute();
   }
 
-  async findByIdBR(id: number | string) {
+  async findByIdBR(id: number | string): Promise<Entity> {
     return await this.createQueryBuilder('e')
       .where('e.id = :id', { id })
       .getOne()
       .catch(() => null);
   }
 
-  async softDeleteByIdBR(id: number | string) {
+  async softDeleteByIdBR(id: number | string): Promise<Entity> {
     return await this.createQueryBuilder('e')
       .softDelete()
       .where('e.id = :id', { id })

@@ -10,7 +10,7 @@ export class RefreshTokenIdsStorage {
   constructor(@InjectRedis() private readonly redis: Redis) {}
 
   async insert(userId: string, tokenId: string): Promise<void> {
-    await this.redis.set(this.getKey(userId), tokenId);
+    await this.redis.set(this.getKey(userId), tokenId, 'EX', 60 * 60 * 24);
   }
 
   async validate(userId: string, tokenId: string): Promise<boolean> {

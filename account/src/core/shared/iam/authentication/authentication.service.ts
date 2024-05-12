@@ -1,19 +1,35 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { HashingService } from '../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigType } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
+import {
+  RefreshTokenDto,
+  RefreshTokenResponseDto,
+} from './dto/refresh-token.dto';
 import {
   InvalidatedRefreshTokenError,
   RefreshTokenIdsStorage,
-} from './refresh-token-ids.storage';
+} from './storages/refresh-token-ids.storage';
 import { randomUUID } from 'crypto';
 import { UserService } from 'src/core/domain/user/user.service';
 import { JwtConfig } from 'src/config/jwt.config';
-import { User } from 'src/core/domain/user/entities/user.entity';
+import { AuthenticationErrorMessages } from 'src/core/shared/iam/iam.constants';
+import { UserErrorMessages } from 'src/core/domain/user/user.constants';
+import { UpdateUserPasswordDto } from 'src/core/domain/user/dto/update-user-password.dto';
+import { MessengerService } from 'src/core/shared/messenger/messenger.service';
+import { generateShortId } from 'src/lang/utils/generate-short-id';
+import { SaveSsoDto } from 'src/core/shared/iam/authentication/dto/save-sso.dto';
+import { SsoTokenStorage } from 'src/core/shared/iam/authentication/storages/sso-token.storage';
+import { ValidateSso } from 'src/core/shared/iam/authentication/dto/validate-sso.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -24,37 +40,66 @@ export class AuthenticationService {
     @Inject(JwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof JwtConfig>,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+    private readonly ssoTokenStorage: SsoTokenStorage,
   ) {}
 
   async signUp(dto: SignUpDto) {
+    if (!dto.password && !dto.telegramId) {
+      throw new BadRequestException(
+        AuthenticationErrorMessages.UnspecifiedProvider,
+      );
+    }
+
     const hashedPassword = dto.password
       ? await this.hashingService.hash(dto.password)
       : null;
     return await this.userService.create({
-      name: dto.name,
+      username: dto.username,
       telegramId: dto.telegramId,
       password: hashedPassword,
     });
   }
 
   async signIn(dto: SignInDto) {
-    const user = await this.userService.findByName(dto.name);
+    if (!dto.password && !dto.telegramId) {
+      throw new BadRequestException(
+        AuthenticationErrorMessages.UnspecifiedProvider,
+      );
+    }
+
+    const user = await this.userService.findByName(dto.username);
     if (!user) {
-      throw new UnauthorizedException('User does not exist');
+      throw new UnauthorizedException(UserErrorMessages.UserNotFound);
     }
 
-    const isEqual = await this.hashingService.compare(
-      dto.password,
-      user.password,
-    );
-    if (!isEqual) {
-      throw new UnauthorizedException('Password doest not match');
+    if (dto.password) {
+      if (!user.password) {
+        throw new UnauthorizedException(
+          AuthenticationErrorMessages.WrongPassword,
+        );
+      }
+
+      const isEqual = await this.hashingService.compare(
+        dto.password,
+        user.password,
+      );
+      if (!isEqual) {
+        throw new UnauthorizedException(
+          AuthenticationErrorMessages.WrongPassword,
+        );
+      }
+    } else if (dto.telegramId) {
+      if (!user.telegramId || user.telegramId !== dto.telegramId) {
+        throw new UnauthorizedException(
+          AuthenticationErrorMessages.WrongTelegramId,
+        );
+      }
     }
 
-    return await this.generateTokens(user);
+    return await this.generateTokens(user.id);
   }
 
-  async refreshToken(dto: RefreshTokenDto) {
+  async refreshToken(dto: RefreshTokenDto): Promise<RefreshTokenResponseDto> {
     try {
       const { id, refreshTokenId } = await this.jwtService.verifyAsync<
         ActiveUserData & { refreshTokenId: string }
@@ -75,29 +120,91 @@ export class AuthenticationService {
         throw new Error('Refresh token is invalid');
       }
 
-      return await this.generateTokens(user);
+      return await this.generateTokens(user.id);
     } catch (err) {
       if (err instanceof InvalidatedRefreshTokenError) {
-        throw new UnauthorizedException('Access denied');
+        throw new UnauthorizedException(
+          AuthenticationErrorMessages.AccessDenied,
+        );
       }
 
       throw new UnauthorizedException();
     }
   }
 
-  async generateTokens(user: User) {
+  async updatePassword(
+    id: string,
+    dto: UpdateUserPasswordDto,
+  ): Promise<RefreshTokenResponseDto> {
+    const user = await this.userService.findById(id);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.UserNotFound);
+    }
+    if (user.password) {
+      const isEqual = await this.hashingService.compare(
+        dto.password,
+        user.password,
+      );
+      if (!isEqual) {
+        throw new UnauthorizedException(
+          AuthenticationErrorMessages.WrongPassword,
+        );
+      }
+
+      const isEqualNewPassword = await this.hashingService.compare(
+        dto.newPassword,
+        user.password,
+      );
+      if (isEqualNewPassword) {
+        throw new BadRequestException(
+          AuthenticationErrorMessages.NewPasswordIsEqual,
+        );
+      }
+    }
+
+    const newPassword = await this.hashingService.hash(dto.newPassword);
+    await this.userService.updatePassword(id, {
+      password: dto.password,
+      newPassword: newPassword,
+    });
+
+    await this.refreshTokenIdsStorage.invalidate(user.id);
+    return await this.generateTokens(user.id);
+  }
+
+  async generateSso(): Promise<string> {
+    return generateShortId();
+  }
+
+  async saveSso(dto: SaveSsoDto) {
+    const verifyCode = generateShortId();
+    await this.ssoTokenStorage.insert(verifyCode, dto);
+    return verifyCode;
+  }
+
+  async validateSso(dto: ValidateSso) {
+    const data = await this.ssoTokenStorage.get(dto.verifyCode);
+    if (!data || data.code !== dto.code) {
+      throw new UnauthorizedException();
+    }
+    await this.refreshTokenIdsStorage.invalidate(data.userId);
+    await this.ssoTokenStorage.invalidate(dto.verifyCode);
+    return await this.generateTokens(data.userId);
+  }
+
+  async generateTokens(userId: string): Promise<RefreshTokenResponseDto> {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<Partial<ActiveUserData>>(
-        user.id,
+        userId,
         this.jwtConfiguration.accessTokenTtl,
       ),
-      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl, {
+      this.signToken(userId, this.jwtConfiguration.refreshTokenTtl, {
         refreshTokenId,
       }),
     ]);
 
-    await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
+    await this.refreshTokenIdsStorage.insert(userId, refreshTokenId);
 
     return { accessToken, refreshToken };
   }
@@ -105,7 +212,7 @@ export class AuthenticationService {
   private async signToken<T>(userId: string, expiresIn: number, payload?: T) {
     return await this.jwtService.signAsync(
       {
-        sub: userId,
+        id: userId,
         ...payload,
       },
       {

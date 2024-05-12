@@ -1,16 +1,12 @@
 import { IsOptional, IsString, MinLength } from 'class-validator';
 
-export class SignUpDto {
+export class UpdateUserPasswordDto {
   @IsString()
-  @MinLength(3)
-  username: string;
-
-  @IsString()
-  @MinLength(5)
   @IsOptional()
+  @MinLength(5)
   password?: string;
 
   @IsString()
-  @IsOptional()
-  telegramId?: string;
+  @MinLength(5)
+  newPassword: string;
 }

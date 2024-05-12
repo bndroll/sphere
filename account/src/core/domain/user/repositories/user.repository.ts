@@ -9,9 +9,15 @@ export class UserRepository extends BaseRepository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async findByName(name: string) {
+  async findByName(username: string) {
     return await this.createQueryBuilder('u')
-      .where('u.name = :name', { name })
+      .where('u.username = :username', { username })
+      .getOne();
+  }
+
+  async findByTelegramId(telegramId: string) {
+    return await this.createQueryBuilder('u')
+      .where('u.telegram_id = :telegramId', { telegramId })
       .getOne();
   }
 }
