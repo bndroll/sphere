@@ -9,7 +9,7 @@ import { HashingService } from '../hashing/hashing.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService, ConfigType } from '@nestjs/config';
+import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from '../interfaces/active-user-data.interface';
 import {
   RefreshTokenDto,
@@ -25,11 +25,12 @@ import { JwtConfig } from 'src/config/jwt.config';
 import { AuthenticationErrorMessages } from 'src/core/shared/iam/iam.constants';
 import { UserErrorMessages } from 'src/core/domain/user/user.constants';
 import { UpdateUserPasswordDto } from 'src/core/domain/user/dto/update-user-password.dto';
-import { MessengerService } from 'src/core/shared/messenger/messenger.service';
 import { generateShortId } from 'src/lang/utils/generate-short-id';
 import { SaveSsoDto } from 'src/core/shared/iam/authentication/dto/save-sso.dto';
 import { SsoTokenStorage } from 'src/core/shared/iam/authentication/storages/sso-token.storage';
 import { ValidateSso } from 'src/core/shared/iam/authentication/dto/validate-sso.dto';
+import { User } from 'src/core/domain/user/entities/user.entity';
+import { VerifySsoDto } from 'src/core/shared/iam/authentication/dto/verify-sso.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -190,6 +191,20 @@ export class AuthenticationService {
     await this.refreshTokenIdsStorage.invalidate(data.userId);
     await this.ssoTokenStorage.invalidate(dto.verifyCode);
     return await this.generateTokens(data.userId);
+  }
+
+  async bindSso(userId: string) {
+    const verifyCode = generateShortId();
+    await this.ssoTokenStorage.insert(verifyCode, { userId: userId });
+    return verifyCode;
+  }
+
+  async verifyUserSso(dto: VerifySsoDto): Promise<User> {
+    const data = await this.ssoTokenStorage.get(dto.code);
+    if (!data) {
+      throw new UnauthorizedException();
+    }
+    return await this.userService.updateTelegramId(data.userId, dto.telegramId);
   }
 
   async generateTokens(userId: string): Promise<RefreshTokenResponseDto> {

@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/core/domain/user/repositories/user.repository';
 import { CreateUserDto } from 'src/core/domain/user/dto/create-user.dto';
 import { User } from 'src/core/domain/user/entities/user.entity';
@@ -13,8 +9,7 @@ import { UsernameAlreadyExistException } from 'src/core/domain/user/exceptions/u
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {
-  }
+  constructor(private readonly userRepository: UserRepository) {}
 
   async create(dto: CreateUserDto) {
     const oldUser = await this.userRepository.findByName(dto.username);
@@ -71,6 +66,15 @@ export class UserService {
       throw new NotFoundException(UserErrorMessages.UserNotFound);
     }
     user.updatePassword(dto.newPassword);
+    return await this.userRepository.save(user);
+  }
+
+  async updateTelegramId(id: string, telegramId: string) {
+    const user = await this.userRepository.findByIdBR(id);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.UserNotFound);
+    }
+    user.updateTelegramId(telegramId);
     return await this.userRepository.save(user);
   }
 }

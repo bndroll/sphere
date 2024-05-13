@@ -1,4 +1,4 @@
 export class ValidateSso {
-  code: string;
+  code?: string;
   verifyCode: string;
 }

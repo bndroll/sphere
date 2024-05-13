@@ -5,6 +5,7 @@ import { AuthType } from 'src/core/shared/iam/enums/auth-type.enum';
 import { GenerateSsoResponseDto } from 'src/core/shared/iam/authentication/dto/generate-sso.dto';
 import { ConfigService } from '@nestjs/config';
 import { ValidateSso } from 'src/core/shared/iam/authentication/dto/validate-sso.dto';
+import { ActiveUser } from 'src/core/shared/iam/decorators/active-user.decorator';
 
 @Auth(AuthType.None)
 @Controller('sso')
@@ -18,7 +19,7 @@ export class SsoController {
   @Post('generate')
   async generate(): Promise<GenerateSsoResponseDto> {
     return {
-      link: `${this.configService.get('TELEGRAM_BOT_LINK')}?start=${await this.authenticationService.generateSso()}`,
+      link: `${this.configService.get('TELEGRAM_BOT_LINK')}?start=s${await this.authenticationService.generateSso()}`,
     };
   }
 
@@ -26,5 +27,16 @@ export class SsoController {
   @Post('validate')
   async validate(@Body() dto: ValidateSso) {
     return await this.authenticationService.validateSso(dto);
+  }
+
+  @Auth(AuthType.Bearer)
+  @HttpCode(HttpStatus.OK)
+  @Post('bind')
+  async bind(
+    @ActiveUser('id') userId: string,
+  ): Promise<GenerateSsoResponseDto> {
+    return {
+      link: `${this.configService.get('TELEGRAM_BOT_LINK')}?start=b${await this.authenticationService.bindSso(userId)}`,
+    };
   }
 }
