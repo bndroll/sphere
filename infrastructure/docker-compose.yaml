@@ -75,6 +75,26 @@ services:
     networks:
       - common
 
+  click_server:
+    image: yandex/clickhouse-server
+    container_name: dictionary-service-click-server
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./data/clickhouse:/var/lib/clickhouse
+    networks:
+      - common
+
+  click_client:
+    image: yandex/clickhouse-client
+    container_name: dictionary-service-click-client
+    entrypoint:
+      - /bin/sleep
+    command:
+      - infinity
+    networks:
+      - common
+
 #  account:
 #    build:
 #      context: .

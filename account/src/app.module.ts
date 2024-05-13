@@ -12,13 +12,14 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RequestLoggingInterceptor } from 'src/interceptors/request-logging.interceptor';
 import { CoreModule } from 'src/core/core.module';
 import { AdapterModule } from 'src/adapter/adapter.module';
+import { JwtConfig } from 'src/config/jwt.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env`,
       isGlobal: true,
-      load: [PostgresConfig, RedisConfig, ThrottlerConfig],
+      load: [PostgresConfig, RedisConfig, ThrottlerConfig, JwtConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

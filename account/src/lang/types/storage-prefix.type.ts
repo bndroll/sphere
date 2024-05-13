@@ -1,3 +1,4 @@
 export enum StoragePrefixType {
-  ProductView = 'product-view',
+  RefreshToken = 'refresh-token',
+  SsoToken = 'sso-token',
 }

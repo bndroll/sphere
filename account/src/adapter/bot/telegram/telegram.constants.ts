@@ -1,1 +1,1 @@
-export const BOT_AUTH_API_KEY = 'maison-bot-api-key';
+export const BOT_AUTH_API_KEY = 'bot-api-key';

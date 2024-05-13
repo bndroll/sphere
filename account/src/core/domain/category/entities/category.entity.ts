@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryColumn,
-  UpdateDateColumn,
+  Relation,
 } from 'typeorm';
 import { generateString } from '@nestjs/typeorm';
 import { CreateCategoryEntityDto } from 'src/core/domain/category/dto/create-category.dto';
 import { UpdateCategoryTitleEntityDto } from 'src/core/domain/category/dto/update-category.dto';
+import { Tag } from 'src/core/domain/tag/entities/tag.entity';
 
 @Entity({ name: 'category' })
 export class Category {
@@ -17,14 +19,8 @@ export class Category {
   @Column('varchar', { unique: true })
   title: string;
 
-  // TODO one to many to tag
-
-  @UpdateDateColumn({
-    type: 'timestamp',
-    name: 'updated_date',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  updatedDate: Date;
+  @OneToMany(() => Tag, (tag) => tag.category)
+  tags: Relation<Tag[]>;
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -21,7 +21,7 @@ export class TelegramDataGuard implements CanActivate {
       return false;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request: Request = context.switchToHttp().getRequest();
     const data = this.extractDataFromHeader(request);
 
     if (!data) {

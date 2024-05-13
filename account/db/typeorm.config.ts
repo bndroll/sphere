@@ -1,15 +1,17 @@
 import { DataSource } from 'typeorm';
+import { config } from 'dotenv';
+
+config();
 
 export default new DataSource({
   type: 'postgres',
-  host: '127.0.0.1',
-  port: 5432,
-  username: 'secret_user',
-  password: 'secret_pass',
-  database: 'account',
+  host: process.env.POSTGRES_HOST,
+  port: parseInt(process.env.POSTGRES_PORT, 10),
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE,
   entities: [`${__dirname}/../src/**/*.entity{.ts,.js}`],
   synchronize: false,
   migrations: [`${__dirname}/migrations/*{.ts,.js}`],
   migrationsTableName: 'migrations',
 });
-

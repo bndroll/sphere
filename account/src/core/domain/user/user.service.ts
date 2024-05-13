@@ -1,26 +1,80 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserRepository } from 'src/core/domain/user/repositories/user.repository';
+import { CreateUserDto } from 'src/core/domain/user/dto/create-user.dto';
+import { User } from 'src/core/domain/user/entities/user.entity';
+import { UpdateUserPasswordDto } from 'src/core/domain/user/dto/update-user-password.dto';
+import { UpdateUserDto } from 'src/core/domain/user/dto/update-user.dto';
+import { UserErrorMessages } from 'src/core/domain/user/user.constants';
+import { UsernameAlreadyExistException } from 'src/core/domain/user/exceptions/username-already-exist';
 
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly userRepository: UserRepository) {}
+
+  async create(dto: CreateUserDto) {
+    const oldUser = await this.userRepository.findByName(dto.username);
+    if (oldUser) {
+      throw new UsernameAlreadyExistException();
+    }
+
+    const user = User.create({
+      username: dto.username,
+      password: dto.password,
+      telegramId: dto.telegramId,
+    });
+    return await this.userRepository.save(user);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findById(id: string) {
+    return await this.userRepository.findByIdBR(id);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findByName(username: string) {
+    return await this.userRepository.findByName(username);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findByTelegramId(telegramId: string) {
+    return await this.userRepository.findByTelegramId(telegramId);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(id: string, dto: UpdateUserDto) {
+    const user = await this.userRepository.findByIdBR(id);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.UserNotFound);
+    }
+
+    if (dto.username && dto.username !== user.username) {
+      const oldUser = await this.userRepository.findByName(dto.username);
+      if (oldUser) {
+        throw new UsernameAlreadyExistException();
+      }
+      user.updateUsername(dto.username);
+    }
+
+    user.update({
+      phone: dto.phone,
+      birthdayDate: dto.birthdayDate,
+      gender: dto.gender,
+    });
+
+    return await this.userRepository.save(user);
+  }
+
+  async updatePassword(id: string, dto: UpdateUserPasswordDto) {
+    const user = await this.userRepository.findByIdBR(id);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.UserNotFound);
+    }
+    user.updatePassword(dto.newPassword);
+    return await this.userRepository.save(user);
+  }
+
+  async updateTelegramId(id: string, telegramId: string) {
+    const user = await this.userRepository.findByIdBR(id);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.UserNotFound);
+    }
+    user.updateTelegramId(telegramId);
+    return await this.userRepository.save(user);
   }
 }

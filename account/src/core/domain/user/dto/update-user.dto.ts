@@ -1,4 +1,14 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateUserDto } from './create-user.dto';
+import { UserGender } from 'src/core/domain/user/entities/user.entity';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {}
+export class UpdateUserDto {
+  username?: string;
+  phone?: string;
+  birthdayDate?: Date;
+  gender?: UserGender;
+}
+
+export class UpdateUserEntityDto {
+  phone?: string;
+  birthdayDate?: Date;
+  gender?: UserGender;
+}
