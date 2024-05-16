@@ -10,6 +10,7 @@ import { generateString } from '@nestjs/typeorm';
 import { CreateCategoryEntityDto } from 'src/core/domain/category/dto/create-category.dto';
 import { UpdateCategoryTitleEntityDto } from 'src/core/domain/category/dto/update-category.dto';
 import { Tag } from 'src/core/domain/tag/entities/tag.entity';
+import { Profile } from 'src/core/domain/profile/entities/profile.entity';
 
 @Entity({ name: 'category' })
 export class Category {
@@ -21,6 +22,9 @@ export class Category {
 
   @OneToMany(() => Tag, (tag) => tag.category)
   tags: Relation<Tag[]>;
+
+  @OneToMany(() => Profile, (profile) => profile.category)
+  profiles: Relation<Profile[]>;
 
   @CreateDateColumn({
     type: 'timestamp',
