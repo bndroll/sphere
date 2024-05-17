@@ -5,7 +5,8 @@ import { SignInDto } from 'src/core/shared/iam/authentication/dto/sign-in.dto';
 import { RefreshTokenDto } from 'src/core/shared/iam/authentication/dto/refresh-token.dto';
 import { Auth } from 'src/core/shared/iam/decorators/auth.decorator';
 import { AuthType } from 'src/core/shared/iam/enums/auth-type.enum';
-import { UserMapper } from 'src/adapter/mappers/user.mapper';
+import { UserMapper } from 'src/adapter/controllers/user/mappers/user.mapper';
+import { ActiveUser } from 'src/core/shared/iam/decorators/active-user.decorator';
 
 @Auth(AuthType.None)
 @Controller('auth')
@@ -30,5 +31,12 @@ export class AuthController {
   @Post('refresh-token')
   async refreshToken(@Body() dto: RefreshTokenDto) {
     return await this.authenticationService.refreshToken(dto);
+  }
+
+  @Auth(AuthType.Bearer)
+  @HttpCode(HttpStatus.OK)
+  @Post('verify-token')
+  async verifyToken() {
+    return true;
   }
 }

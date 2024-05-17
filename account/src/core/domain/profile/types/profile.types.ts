@@ -40,8 +40,7 @@ export class ProfileInfoHobby {
 export class ProfileInfo {
   name: string;
   about?: string;
-  mainPicture?: string;
-  pictures: string[];
+  picture?: string;
   city?: string;
   education?: string;
   languages?: string[];

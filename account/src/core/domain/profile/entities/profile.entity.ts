@@ -17,6 +17,8 @@ import {
   ProfileType,
   ProfileVisible,
 } from 'src/core/domain/profile/types/profile.types';
+import { CreateProfileEntityDto } from 'src/core/domain/profile/dto/create-profile.dto';
+import { generateString } from '@nestjs/typeorm';
 
 @Entity({ name: 'profile' })
 export class Profile {
@@ -55,4 +57,16 @@ export class Profile {
     default: () => 'CURRENT_TIMESTAMP',
   })
   createDate: Date;
+
+  static create(dto: CreateProfileEntityDto) {
+    const instance = new Profile();
+    instance.id = generateString();
+    instance.user = dto.user;
+    instance.category = dto.category;
+    instance.tags = dto.tags;
+    instance.type = dto.type;
+    instance.info = dto.info;
+    instance.visible = dto.visible;
+    return instance;
+  }
 }

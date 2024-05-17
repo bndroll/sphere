@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/core/domain/user/entities/user.entity';
-import { FindUserDto } from 'src/adapter/mappers/dto/find-user.dto';
+import { FindUserDto } from 'src/adapter/controllers/user/mappers/find-user.dto';
 
 @Injectable()
 export class UserMapper {
