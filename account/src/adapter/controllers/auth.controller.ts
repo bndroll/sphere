@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { AuthenticationService } from 'src/core/shared/iam/authentication/authentication.service';
 import { SignUpDto } from 'src/core/shared/iam/authentication/dto/sign-up.dto';
 import { SignInDto } from 'src/core/shared/iam/authentication/dto/sign-in.dto';
@@ -6,7 +13,6 @@ import { RefreshTokenDto } from 'src/core/shared/iam/authentication/dto/refresh-
 import { Auth } from 'src/core/shared/iam/decorators/auth.decorator';
 import { AuthType } from 'src/core/shared/iam/enums/auth-type.enum';
 import { UserMapper } from 'src/adapter/controllers/user/mappers/user.mapper';
-import { ActiveUser } from 'src/core/shared/iam/decorators/active-user.decorator';
 
 @Auth(AuthType.None)
 @Controller('auth')
@@ -35,7 +41,7 @@ export class AuthController {
 
   @Auth(AuthType.Bearer)
   @HttpCode(HttpStatus.OK)
-  @Post('verify-token')
+  @Get('verify-token')
   async verifyToken() {
     return true;
   }
