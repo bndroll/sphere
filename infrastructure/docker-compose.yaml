@@ -97,22 +97,22 @@ services:
     restart: unless-stopped
     depends_on: [postgres, redis, broker, minio]
     ports:
-      - "8080:8000"
+      - "8000:8000"
     env_file: ../gateway/.env
     networks:
        - common
-#  account:
-#    build:
-#      context: .
-#      dockerfile: ./../account/Dockerfile
-#    container_name: account
-#    restart: unless-stopped
-#    depends_on: [postgres, redis, broker, minio]
-#    ports:
-#      - "8010:8010"
-#    env_file: ./../account/.env
-#    networks:
-#      - common
+
+  account:
+    build:
+      context: ../account
+      dockerfile: ./Dockerfile
+    container_name: account
+    depends_on: [postgres, redis, broker, minio]
+    ports:
+      - "8010:8010"
+    env_file: ../account/.env
+    networks:
+      - common
 
 networks:
   common:
