@@ -28,6 +28,7 @@
     "migration:show": "npm run typeorm -- migration:show -d ./db/typeorm.config.ts"
   },
   "dependencies": {
+    "@nestjs/cli": "^10.0.0",
     "@nestjs-modules/ioredis": "^2.0.1",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^10.0.0",
@@ -62,7 +63,6 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
     "@swc/cli": "^0.1.65",

@@ -88,18 +88,18 @@ services:
     networks:
       - common
 
-#  account:
-#    build:
-#      context: .
-#      dockerfile: ./../account/Dockerfile
-#    container_name: account
-#    restart: unless-stopped
-#    depends_on: [postgres, redis, broker, minio]
-#    ports:
-#      - "8010:8010"
-#    env_file: ./../account/.env
-#    networks:
-#      - common
+  account:
+    build:
+      context: ./../account
+      dockerfile: ./../account/Dockerfile
+    container_name: account
+    restart: unless-stopped
+    depends_on: [postgres, redis, broker, minio]
+    ports:
+      - "8010:8010"
+    env_file: ./../account/.env
+    networks:
+      - common
 
 networks:
   common:

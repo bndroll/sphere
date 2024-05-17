@@ -11,7 +11,10 @@ import { CategoryService } from 'src/core/domain/category/category.service';
 import { CategoryErrorMessages } from 'src/core/domain/category/category.constants';
 import { ProfileErrorMessages } from 'src/core/domain/profile/profile.constants';
 import { ProfileRepository } from 'src/core/domain/profile/repositories/profile.repository';
-import { ProfileType } from 'src/core/domain/profile/types/profile.types';
+import {
+  ProfileType,
+  ProfileVisible,
+} from 'src/core/domain/profile/types/profile.types';
 import { TagService } from 'src/core/domain/tag/tag.service';
 
 @Injectable()
@@ -58,7 +61,7 @@ export class ProfileService {
       tags: tags,
       info: dto.info,
       type: dto.type,
-      visible: dto.visible,
+      visible: ProfileVisible.Close,
     });
     return await this.profileRepository.save(profile);
   }
