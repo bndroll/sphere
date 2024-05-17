@@ -4,7 +4,7 @@ import { UpdateUserPasswordDto } from 'src/core/domain/user/dto/update-user-pass
 import { UpdateUserDto } from 'src/core/domain/user/dto/update-user.dto';
 import { AuthenticationService } from 'src/core/shared/iam/authentication/authentication.service';
 import { ActiveUser } from 'src/core/shared/iam/decorators/active-user.decorator';
-import { UserMapper } from 'src/adapter/mappers/user.mapper';
+import { UserMapper } from 'src/adapter/controllers/user/mappers/user.mapper';
 
 @Controller('user')
 export class UserController {

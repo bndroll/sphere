@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TagRepository } from 'src/core/domain/tag/repositories/tag.repository';
+import { In } from 'typeorm';
 
 @Injectable()
 export class TagService {
@@ -7,5 +8,9 @@ export class TagService {
 
   async findByCategoryId(id: string) {
     return await this.tagRepository.findByCategoryId(id);
+  }
+
+  async findByIds(ids: string[]) {
+    return await this.tagRepository.find({ where: { id: In(ids) } });
   }
 }
