@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 import tensorflow_hub as hub
 import tensorflow_text
 import uuid
+import numpy as np
 
 embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3")
 
@@ -13,15 +14,13 @@ def get_embeddings():
 
     results = []
 
-    print(sentences_data)
-
     for data in sentences_data:
         sentence = data["sentence"]
         embedding = embed([sentence])[0].numpy().tolist()
-        result = {"id": data["id"], "embedding": embedding}
+        vector = np.linalg.norm(np.array(embedding))
+        result = {"id": data["id"], "embedding": vector}
         results.append(result)
 
     return jsonify(results)
 
-print("Hello World")
 app.run(debug=True, host='0.0.0.0', port=8333)
