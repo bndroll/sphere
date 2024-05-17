@@ -24,4 +24,4 @@ def get_embeddings():
     return jsonify(results)
 
 print("Hello World")
-app.run(debug=True, host='0.0.0.0', port=8000)
+app.run(debug=True, host='0.0.0.0', port=8333)
