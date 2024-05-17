@@ -52,9 +52,6 @@ export class ProfileService {
       throw new BadRequestException(ProfileErrorMessages.CannotBeVisible);
     }
 
-    if (dto.info.picture) {
-    }
-
     const profile = Profile.create({
       user: user,
       category: category,

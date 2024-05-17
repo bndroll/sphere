@@ -1,4 +1,4 @@
-import { Body, Controller } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateProfileControllerDto } from 'src/core/domain/profile/dto/create-profile.dto';
 import { ProfileService } from 'src/core/domain/profile/profile.service';
 import { ProfileMapper } from 'src/adapter/controllers/profile/mappers/profile.mapper';
@@ -11,6 +11,7 @@ export class ProfileController {
     private readonly profileMapper: ProfileMapper,
   ) {}
 
+  @Post()
   async create(
     @ActiveUser('id') userId: string,
     @Body() dto: CreateProfileControllerDto,

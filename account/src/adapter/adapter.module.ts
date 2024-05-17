@@ -9,9 +9,10 @@ import { SsoController } from 'src/adapter/controllers/sso.controller';
 import { ProfileController } from 'src/adapter/controllers/profile/profile.controller';
 import { ProfileMapper } from 'src/adapter/controllers/profile/mappers/profile.mapper';
 import { ProfileModule } from 'src/core/domain/profile/profile.module';
+import { S3Module } from 'src/s3/s3.module';
 
 @Module({
-  imports: [IamModule, UserModule, ProfileModule, BotModule],
+  imports: [IamModule, UserModule, ProfileModule, BotModule, S3Module],
   providers: [UserMapper, ProfileMapper],
   controllers: [
     AuthController,

@@ -1,6 +1,5 @@
 import { Inject, Module, OnApplicationBootstrap } from '@nestjs/common';
 import { S3Service } from './s3.service';
-import { S3Controller } from './s3.controller';
 import { ConfigModule } from '@nestjs/config';
 import { s3Provider } from './s3.provider';
 import * as minio from 'minio';
@@ -8,7 +7,6 @@ import { Buckets } from './s3.types';
 
 @Module({
   imports: [ConfigModule],
-  controllers: [S3Controller],
   providers: [S3Service, s3Provider],
   exports: [S3Service],
 })
