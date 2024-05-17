@@ -75,7 +75,7 @@ services:
     env_file: ../notifications/.env
     networks:
       - common
-      -
+
   clickhouse:
     image: clickhouse/clickhouse-server
     container_name: infrastructure-clickhouse
@@ -98,7 +98,6 @@ services:
     env_file: ../gateway/.env
     networks:
        - common
-       -
 #  account:
 #    build:
 #      context: .
