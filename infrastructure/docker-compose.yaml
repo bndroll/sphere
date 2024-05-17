@@ -42,6 +42,7 @@ services:
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:?}
       - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR:?}
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR:?}
+      - KAFKA_CREATE_TOPICS=${KAFKA_CREATE_TOPICS:?}
     networks:
       - common
 
@@ -53,7 +54,7 @@ services:
       - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-    env_file: .env
+    env_file: ../notifications/.env
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME:?}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?}
@@ -71,10 +72,10 @@ services:
     volumes:
       - ./data/redis/dаta:/root/redis
       - ./data/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
-    env_file: .env
+    env_file: ../notifications/.env
     networks:
       - common
-
+      -
   clickhouse:
     image: clickhouse/clickhouse-server
     container_name: infrastructure-clickhouse
@@ -85,6 +86,19 @@ services:
     networks:
       - common
 
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: ./Dockerfile
+    container_name: gateway
+    restart: unless-stopped
+    depends_on: [postgres, redis, broker, minio]
+    ports:
+      - "8080:8000"
+    env_file: ../gateway/.env
+    networks:
+       - common
+       -
 #  account:
 #    build:
 #      context: .
