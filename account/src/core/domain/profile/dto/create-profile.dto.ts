@@ -6,12 +6,22 @@ import {
   ProfileType,
   ProfileVisible,
 } from 'src/core/domain/profile/types/profile.types';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateProfileDto {
+  @IsString()
+  @IsNotEmpty()
   categoryId: string;
+
+  @IsString({ each: true })
   tagsId: string[];
+
+  @IsEnum(ProfileType)
   type: ProfileType;
+
   info: ProfileInfo;
+
+  @IsEnum(ProfileVisible)
   visible: ProfileVisible;
 }
 
