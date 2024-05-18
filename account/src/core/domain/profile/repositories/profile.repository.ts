@@ -14,6 +14,7 @@ export class ProfileRepository extends BaseRepository<Profile> {
 
   async findLastUserProfileByUserId(dto: FindUserProfileByUserIdDto) {
     return await this.createQueryBuilder('p')
+      .leftJoinAndSelect('p.category', 'category')
       .where('p.userId = :userId', { userId: dto.userId })
       .andWhere('p.type = :type', { type: ProfileType.User })
       .getOne();
@@ -21,8 +22,20 @@ export class ProfileRepository extends BaseRepository<Profile> {
 
   async findByUserId(userId: string): Promise<Profile[]> {
     return await this.createQueryBuilder('p')
+      .innerJoinAndSelect('p.user', 'user')
+      .innerJoinAndSelect('p.category', 'category')
+      .innerJoinAndSelect('p.tags', 'tags')
       .where('p.userId = :userId', { userId })
       .getMany();
+  }
+
+  async findFullById(id: string): Promise<Profile> {
+    return await this.createQueryBuilder('p')
+      .innerJoinAndSelect('p.user', 'user')
+      .innerJoinAndSelect('p.category', 'category')
+      .innerJoinAndSelect('p.tags', 'tags')
+      .where('p.id = :id', { id })
+      .getOne();
   }
 
   async userEventsCountByCategory(dto: FindUserEventsByCategory) {
