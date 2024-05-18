@@ -88,31 +88,31 @@ services:
     networks:
       - common
 
-#  gateway:
-#    build:
-#      context: ../gateway
-#      dockerfile: ./Dockerfile
-#    container_name: gateway
-#    restart: unless-stopped
-#    depends_on: [postgres, redis, broker, minio]
-#    ports:
-#      - "8000:8000"
-#    env_file: ../gateway/.env
-#    networks:
-#       - common
-#
-#  account:
-#    build:
-#      context: ./../account
-#      dockerfile: ./../account/Dockerfile
-#    container_name: account
-#    restart: unless-stopped
-#    depends_on: [postgres, redis, broker, minio, clickhouse]
-#    ports:
-#      - "8010:8010"
-#    env_file: ./../account/.env
-#    networks:
-#      - common
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: ./Dockerfile
+    container_name: gateway
+    restart: unless-stopped
+    depends_on: [postgres, redis, broker, minio]
+    ports:
+      - "8000:8000"
+    env_file: ../gateway/.env
+    networks:
+       - common
+
+  account:
+    build:
+      context: ./../account
+      dockerfile: ./../account/Dockerfile
+    container_name: account
+    restart: unless-stopped
+    depends_on: [postgres, redis, broker, minio, clickhouse]
+    ports:
+      - "8010:8010"
+    env_file: ./../account/.env
+    networks:
+      - common
 
 networks:
   common:
