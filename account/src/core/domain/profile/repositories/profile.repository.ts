@@ -4,6 +4,7 @@ import { BaseRepository } from 'src/core/common/base.repository';
 import { Profile } from 'src/core/domain/profile/entities/profile.entity';
 import { FindUserProfileByUserIdDto } from 'src/core/domain/profile/dto/find-user-profile-by-user-id.dto';
 import { ProfileType } from 'src/core/domain/profile/types/profile.types';
+import { FindUserEventsByCategory } from 'src/core/domain/profile/dto/find-user-events-by-category';
 
 @Injectable()
 export class ProfileRepository extends BaseRepository<Profile> {
@@ -19,8 +20,15 @@ export class ProfileRepository extends BaseRepository<Profile> {
   }
 
   async findByUserId(userId: string): Promise<Profile[]> {
-    return await this.createQueryBuilder('u')
+    return await this.createQueryBuilder('p')
       .where('p.userId = :userId', { userId })
       .getMany();
+  }
+
+  async userEventsCountByCategory(dto: FindUserEventsByCategory) {
+    return await this.createQueryBuilder('p')
+      .where('p.userId = :userId', { userId: dto.userId })
+      .andWhere('p.categoryId = :categoryId', { categoryId: dto.categoryId })
+      .getCount();
   }
 }

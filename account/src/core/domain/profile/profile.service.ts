@@ -17,6 +17,7 @@ import {
 } from 'src/core/domain/profile/types/profile.types';
 import { TagService } from 'src/core/domain/tag/tag.service';
 import { UpdateProfileDto } from 'src/core/domain/profile/dto/update-profile.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProfileService {
@@ -25,6 +26,7 @@ export class ProfileService {
     private readonly userService: UserService,
     private readonly categoryService: CategoryService,
     private readonly tagService: TagService,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(userId: string, dto: CreateProfileDto): Promise<Profile> {
@@ -52,6 +54,18 @@ export class ProfileService {
 
       if (lastUserProfile.category.id === category.id) {
         throw new BadRequestException(ProfileErrorMessages.AlreadyExist);
+      }
+    } else {
+      const eventsCount =
+        await this.profileRepository.userEventsCountByCategory({
+          categoryId: category.id,
+          userId: user.id,
+        });
+      if (
+        eventsCount >
+        this.configService.get('MAX_USER_EVENTS_BY_CATEGORY_COUNT')
+      ) {
+        throw new BadRequestException(ProfileErrorMessages.MaxEventsCount);
       }
     }
 
