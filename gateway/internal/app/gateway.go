@@ -35,7 +35,7 @@ func (a *App) Run() error {
 		TLSConfig: &config,
 	}
 
-	if err := a.httpServer.ListenAndServe(); err != nil {
+	if err := a.httpServer.ListenAndServeTLS("", ""); err != nil {
 		return err
 	}
 
