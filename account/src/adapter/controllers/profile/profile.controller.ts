@@ -12,6 +12,9 @@ import { ProfileMapper } from 'src/adapter/controllers/profile/mappers/profile.m
 import { ActiveUser } from 'src/core/shared/iam/decorators/active-user.decorator';
 import { CreateProfileDto } from 'src/core/domain/profile/dto/create-profile.dto';
 import { UpdateProfileDto } from 'src/core/domain/profile/dto/update-profile.dto';
+import { FindByIdsDto } from 'src/core/domain/profile/dto/find-by-ids.dto';
+import { Auth } from 'src/core/shared/iam/decorators/auth.decorator';
+import { AuthType } from 'src/core/shared/iam/enums/auth-type.enum';
 
 @Controller('profile')
 export class ProfileController {
@@ -33,6 +36,12 @@ export class ProfileController {
   async findUserProfiles(@ActiveUser('id') userId: string) {
     const profiles = await this.profileService.findByUser(userId);
     return profiles.map((profile) => this.profileMapper.map(profile));
+  }
+
+  @Auth(AuthType.None)
+  @Post('find-by-ids')
+  async findByIds(@Body() dto: FindByIdsDto) {
+    return await this.profileService.findByIds(dto);
   }
 
   @Patch(':id')
