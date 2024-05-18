@@ -1,9 +1,15 @@
-FROM node:18-alpine
+FROM node:20-alpine as build
 WORKDIR /app
-ENV NODE_ENV=production
 COPY ./package*.json ./
 RUN npm install
 COPY . .
-EXPOSE 8010
 RUN npm run build
-CMD ["node", "dist/src/main.js"]
+
+FROM node:20-alpine
+WORKDIR /app
+COPY ./package*.json ./
+RUN npm install
+COPY --from=build /app/dist ./dist
+EXPOSE 8010
+CMD ["node", "dist/main.js"]
+

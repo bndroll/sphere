@@ -40,7 +40,7 @@ export class UserService {
   async update(id: string, dto: UpdateUserDto) {
     const user = await this.userRepository.findByIdBR(id);
     if (!user) {
-      throw new NotFoundException(UserErrorMessages.UserNotFound);
+      throw new NotFoundException(UserErrorMessages.NotFound);
     }
 
     if (dto.username && dto.username !== user.username) {
@@ -63,7 +63,7 @@ export class UserService {
   async updatePassword(id: string, dto: UpdateUserPasswordDto) {
     const user = await this.userRepository.findByIdBR(id);
     if (!user) {
-      throw new NotFoundException(UserErrorMessages.UserNotFound);
+      throw new NotFoundException(UserErrorMessages.NotFound);
     }
     user.updatePassword(dto.newPassword);
     return await this.userRepository.save(user);
@@ -72,7 +72,7 @@ export class UserService {
   async updateTelegramId(id: string, telegramId: string) {
     const user = await this.userRepository.findByIdBR(id);
     if (!user) {
-      throw new NotFoundException(UserErrorMessages.UserNotFound);
+      throw new NotFoundException(UserErrorMessages.NotFound);
     }
     user.updateTelegramId(telegramId);
     return await this.userRepository.save(user);

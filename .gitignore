@@ -2,6 +2,7 @@
 */**/.env
 */**/.nestjs_repl_history
 .DS_Store
-
+*.idea
+/data
 infrastructure/data
 

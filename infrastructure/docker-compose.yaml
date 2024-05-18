@@ -20,6 +20,7 @@ services:
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     container_name: infrastructure-zookeeper
+    restart: unless-stopped
     env_file: .env
     environment:
       - ZOOKEEPER_CLIENT_PORT=${ZOOKEEPER_CLIENT_PORT:?}
@@ -30,6 +31,7 @@ services:
   broker:
     image: confluentinc/cp-kafka:latest
     container_name: infrastructure-kafka
+    restart: unless-stopped
     ports:
       - "9092:9092"
     depends_on: [zookeeper]
@@ -78,6 +80,7 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server
     container_name: infrastructure-clickhouse
+    restart: unless-stopped
     volumes:
       - ./data/clickhouse:/var/lib/clickhouse
     ports:
@@ -85,18 +88,31 @@ services:
     networks:
       - common
 
-#  account:
-#    build:
-#      context: .
-#      dockerfile: ./../account/Dockerfile
-#    container_name: account
-#    restart: unless-stopped
-#    depends_on: [postgres, redis, broker, minio]
-#    ports:
-#      - "8010:8010"
-#    env_file: ./../account/.env
-#    networks:
-#      - common
+  gateway:
+    build:
+      context: ../gateway
+      dockerfile: ./Dockerfile
+    container_name: gateway
+    restart: unless-stopped
+    depends_on: [postgres, redis, broker, minio]
+    ports:
+      - "8000:8000"
+    env_file: ../gateway/.env
+    networks:
+       - common
+
+  account:
+    build:
+      context: ./../account
+      dockerfile: ./../account/Dockerfile
+    container_name: account
+    restart: unless-stopped
+    depends_on: [postgres, redis, broker, minio, clickhouse]
+    ports:
+      - "8010:8010"
+    env_file: ./../account/.env
+    networks:
+      - common
 
 networks:
   common:

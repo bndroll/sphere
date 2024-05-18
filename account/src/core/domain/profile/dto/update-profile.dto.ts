@@ -1,4 +1,17 @@
-import { PartialType } from '@nestjs/swagger';
-import { CreateProfileDto } from './create-profile.dto';
+import {
+  ProfileInfo,
+  ProfileVisible,
+} from 'src/core/domain/profile/types/profile.types';
+import { Tag } from 'src/core/domain/tag/entities/tag.entity';
 
-export class UpdateProfileDto extends PartialType(CreateProfileDto) {}
+export class UpdateProfileDto {
+  tagsId: string[];
+  info?: Partial<ProfileInfo>;
+  visible?: ProfileVisible;
+}
+
+export class UpdateProfileEntityDto {
+  tags: Tag[];
+  info?: Partial<ProfileInfo>;
+  visible?: ProfileVisible;
+}
