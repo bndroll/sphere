@@ -6,6 +6,7 @@ import {
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import fmp from '@fastify/multipart';
+import { MicroserviceOptions } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -15,8 +16,11 @@ async function bootstrap() {
       cors: true,
     },
   );
+  app.connectMicroservice<MicroserviceOptions>({});
   app.useGlobalPipes(new ValidationPipe());
+
   await app.register(fmp);
+  await app.startAllMicroservices();
   await app.listen(process.env.PORT, '0.0.0.0');
 }
 

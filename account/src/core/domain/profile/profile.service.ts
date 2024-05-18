@@ -65,4 +65,34 @@ export class ProfileService {
     });
     return await this.profileRepository.save(profile);
   }
+
+  async findByUser(userId: string) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.NotFound);
+    }
+    return await this.profileRepository.findByUserId(user.id);
+  }
+
+  async remove(userId: string, id: string) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.NotFound);
+    }
+    const profile = await this.profileRepository.findByIdBR(id);
+    if (!profile) {
+      throw new NotFoundException(ProfileErrorMessages.NotFound);
+    }
+
+    if (profile.user.id !== user.id) {
+      throw new BadRequestException(ProfileErrorMessages.AccessDenied);
+    }
+
+    return await this.profileRepository.remove(profile);
+  }
+
+  /* todo:
+   * update (visible, other fields)
+   * remove
+   *  */
 }
