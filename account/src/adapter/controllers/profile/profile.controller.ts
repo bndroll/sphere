@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ProfileService } from 'src/core/domain/profile/profile.service';
 import { ProfileMapper } from 'src/adapter/controllers/profile/mappers/profile.mapper';
 import { ActiveUser } from 'src/core/shared/iam/decorators/active-user.decorator';
@@ -27,7 +35,7 @@ export class ProfileController {
     return profiles.map((profile) => this.profileMapper.map(profile));
   }
 
-  @Get(':id')
+  @Patch(':id')
   async update(
     @ActiveUser('id') userId: string,
     @Param('id') id: string,
@@ -38,7 +46,7 @@ export class ProfileController {
   }
 
   @Delete(':id')
-  async delete(@ActiveUser('id') userId: string, @Param('id') id: string) {
+  async remove(@ActiveUser('id') userId: string, @Param('id') id: string) {
     const profile = await this.profileService.remove(id, userId);
     return this.profileMapper.map(profile);
   }

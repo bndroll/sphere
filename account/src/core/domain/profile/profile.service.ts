@@ -17,6 +17,7 @@ import {
 } from 'src/core/domain/profile/types/profile.types';
 import { TagService } from 'src/core/domain/tag/tag.service';
 import { UpdateProfileDto } from 'src/core/domain/profile/dto/update-profile.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ProfileService {
@@ -25,6 +26,7 @@ export class ProfileService {
     private readonly userService: UserService,
     private readonly categoryService: CategoryService,
     private readonly tagService: TagService,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(userId: string, dto: CreateProfileDto): Promise<Profile> {
@@ -38,11 +40,11 @@ export class ProfileService {
       throw new NotFoundException(CategoryErrorMessages.NotFound);
     }
 
-    const tags = await this.tagService.findByIds(dto.tagsId);
-
-    if ((tags.length === 0 || !dto.info.picture) && dto.visible) {
-      throw new BadRequestException(ProfileErrorMessages.CannotBeVisible);
+    if (!dto.info.name) {
+      throw new BadRequestException();
     }
+
+    const tags = await this.tagService.findByIds(dto.tagsId);
 
     if (dto.type === ProfileType.User) {
       const lastUserProfile =
@@ -50,8 +52,20 @@ export class ProfileService {
           userId: user.id,
         });
 
-      if (lastUserProfile.category.id === category.id) {
+      if (lastUserProfile && lastUserProfile.category.id === category.id) {
         throw new BadRequestException(ProfileErrorMessages.AlreadyExist);
+      }
+    } else {
+      const eventsCount =
+        await this.profileRepository.userEventsCountByCategory({
+          categoryId: category.id,
+          userId: user.id,
+        });
+      if (
+        eventsCount >
+        this.configService.get('MAX_USER_EVENTS_BY_CATEGORY_COUNT')
+      ) {
+        throw new BadRequestException(ProfileErrorMessages.MaxEventsCount);
       }
     }
 
@@ -61,7 +75,12 @@ export class ProfileService {
       tags: tags,
       info: dto.info,
       type: dto.type,
-      visible: ProfileVisible.Close,
+      visible:
+        tags.length > 0 &&
+        dto.info.picture &&
+        dto.visible === ProfileVisible.Open
+          ? ProfileVisible.Open
+          : ProfileVisible.Close,
     });
     return await this.profileRepository.save(profile);
   }
@@ -79,7 +98,7 @@ export class ProfileService {
     if (!user) {
       throw new NotFoundException(UserErrorMessages.NotFound);
     }
-    const profile = await this.profileRepository.findByIdBR(id);
+    const profile = await this.profileRepository.findFullById(id);
     if (!profile) {
       throw new NotFoundException(ProfileErrorMessages.NotFound);
     }
@@ -90,7 +109,10 @@ export class ProfileService {
 
     const tags = await this.tagService.findByIds(dto.tagsId);
 
-    if ((tags.length === 0 || !dto.info.picture) && dto.visible) {
+    if (
+      (tags.length === 0 || !dto.info.picture) &&
+      dto.visible === ProfileVisible.Open
+    ) {
       throw new BadRequestException(ProfileErrorMessages.CannotBeVisible);
     }
 
@@ -103,7 +125,7 @@ export class ProfileService {
     if (!user) {
       throw new NotFoundException(UserErrorMessages.NotFound);
     }
-    const profile = await this.profileRepository.findByIdBR(id);
+    const profile = await this.profileRepository.findFullById(id);
     if (!profile) {
       throw new NotFoundException(ProfileErrorMessages.NotFound);
     }
