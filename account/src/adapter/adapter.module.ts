@@ -11,9 +11,18 @@ import { ProfileMapper } from 'src/adapter/controllers/profile/mappers/profile.m
 import { ProfileModule } from 'src/core/domain/profile/profile.module';
 import { S3Module } from 'src/s3/s3.module';
 import { S3Controller } from 'src/adapter/controllers/s3.controller';
+import { CategoryModule } from 'src/core/domain/category/category.module';
+import { CategoryController } from 'src/adapter/controllers/category.controller';
 
 @Module({
-  imports: [IamModule, UserModule, ProfileModule, BotModule, S3Module],
+  imports: [
+    BotModule,
+    S3Module,
+    IamModule,
+    UserModule,
+    ProfileModule,
+    CategoryModule,
+  ],
   providers: [UserMapper, ProfileMapper],
   controllers: [
     AuthController,
@@ -21,6 +30,7 @@ import { S3Controller } from 'src/adapter/controllers/s3.controller';
     SsoController,
     ProfileController,
     S3Controller,
+    CategoryController,
   ],
 })
 export class AdapterModule {}

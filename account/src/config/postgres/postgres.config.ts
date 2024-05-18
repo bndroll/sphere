@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { PostgresLogger } from './postgres.logger';
+import * as process from 'node:process';
 
 export const PostgresConfig = registerAs(
   'postgres',
@@ -15,7 +16,7 @@ export const PostgresConfig = registerAs(
     synchronize: false,
     migrations: [`${__dirname}/../../db/migrations/*{.ts,.js}`],
     migrationsTableName: 'migrations',
-    logging: true,
+    logging: process.env.MODE === 'DEVELOPMENT',
     logger: new PostgresLogger(),
   }),
 );

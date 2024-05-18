@@ -16,6 +16,7 @@ import {
   ProfileVisible,
 } from 'src/core/domain/profile/types/profile.types';
 import { TagService } from 'src/core/domain/tag/tag.service';
+import { UpdateProfileDto } from 'src/core/domain/profile/dto/update-profile.dto';
 
 @Injectable()
 export class ProfileService {
@@ -26,8 +27,8 @@ export class ProfileService {
     private readonly tagService: TagService,
   ) {}
 
-  async create(dto: CreateProfileDto): Promise<Profile> {
-    const user = await this.userService.findById(dto.userId);
+  async create(userId: string, dto: CreateProfileDto): Promise<Profile> {
+    const user = await this.userService.findById(userId);
     if (!user) {
       throw new NotFoundException(UserErrorMessages.NotFound);
     }
@@ -37,22 +38,21 @@ export class ProfileService {
       throw new NotFoundException(CategoryErrorMessages.NotFound);
     }
 
-    if (dto.type === ProfileType.User) {
-      const existingProfile =
-        await this.profileRepository.findUserProfileByCategory({
-          userId: dto.userId,
-          categoryId: dto.categoryId,
-        });
-
-      if (!existingProfile) {
-        throw new BadRequestException(ProfileErrorMessages.AlreadyExist);
-      }
-    }
-
     const tags = await this.tagService.findByIds(dto.tagsId);
 
     if ((tags.length === 0 || !dto.info.picture) && dto.visible) {
       throw new BadRequestException(ProfileErrorMessages.CannotBeVisible);
+    }
+
+    if (dto.type === ProfileType.User) {
+      const lastUserProfile =
+        await this.profileRepository.findLastUserProfileByUserId({
+          userId: user.id,
+        });
+
+      if (lastUserProfile.category.id === category.id) {
+        throw new BadRequestException(ProfileErrorMessages.AlreadyExist);
+      }
     }
 
     const profile = Profile.create({
@@ -74,7 +74,31 @@ export class ProfileService {
     return await this.profileRepository.findByUserId(user.id);
   }
 
-  async remove(userId: string, id: string) {
+  async update(id: string, userId: string, dto: UpdateProfileDto) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.NotFound);
+    }
+    const profile = await this.profileRepository.findByIdBR(id);
+    if (!profile) {
+      throw new NotFoundException(ProfileErrorMessages.NotFound);
+    }
+
+    if (profile.user.id !== user.id) {
+      throw new BadRequestException(ProfileErrorMessages.AccessDenied);
+    }
+
+    const tags = await this.tagService.findByIds(dto.tagsId);
+
+    if ((tags.length === 0 || !dto.info.picture) && dto.visible) {
+      throw new BadRequestException(ProfileErrorMessages.CannotBeVisible);
+    }
+
+    profile.update({ tags: tags, info: dto.info, visible: dto.visible });
+    return await this.profileRepository.save(profile);
+  }
+
+  async remove(id: string, userId: string) {
     const user = await this.userService.findById(userId);
     if (!user) {
       throw new NotFoundException(UserErrorMessages.NotFound);
@@ -90,9 +114,4 @@ export class ProfileService {
 
     return await this.profileRepository.remove(profile);
   }
-
-  /* todo:
-   * update (visible, other fields)
-   * remove
-   *  */
 }
