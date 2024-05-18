@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/core/domain/user/entities/user.entity';
-import { FindUserDto } from 'src/adapter/controllers/user/mappers/find-user.dto';
+import { FindUserResponse } from 'src/adapter/controllers/user/mappers/find-user.response';
 
 @Injectable()
 export class UserMapper {
-  map(user: User): FindUserDto {
+  map(user: User): FindUserResponse {
     return {
       id: user.id,
       telegramId: user.telegramId,

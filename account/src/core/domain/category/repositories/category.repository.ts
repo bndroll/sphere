@@ -13,6 +13,12 @@ export class CategoryRepository extends BaseRepository<Category> {
     return await this.createQueryBuilder('c').orderBy('title', 'ASC').getMany();
   }
 
+  async findAllWithTags() {
+    return await this.createQueryBuilder('c')
+      .leftJoinAndSelect('c.tags', 'tag')
+      .getMany();
+  }
+
   async findByTitle(title: string) {
     return await this.createQueryBuilder('c')
       .where('c.title = :title', { title })

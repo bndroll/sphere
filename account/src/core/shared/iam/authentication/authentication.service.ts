@@ -105,8 +105,6 @@ export class AuthenticationService {
       const { id, refreshTokenId } = await this.jwtService.verifyAsync<
         ActiveUserData & { refreshTokenId: string }
       >(dto.refreshToken, {
-        audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
       });
 
@@ -231,8 +229,6 @@ export class AuthenticationService {
         ...payload,
       },
       {
-        audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
         expiresIn: expiresIn,
       },

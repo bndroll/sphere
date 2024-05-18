@@ -19,6 +19,7 @@ import {
 } from 'src/core/domain/profile/types/profile.types';
 import { CreateProfileEntityDto } from 'src/core/domain/profile/dto/create-profile.dto';
 import { generateString } from '@nestjs/typeorm';
+import { UpdateProfileEntityDto } from 'src/core/domain/profile/dto/update-profile.dto';
 
 @Entity({ name: 'profile' })
 export class Profile {
@@ -68,5 +69,11 @@ export class Profile {
     instance.info = dto.info;
     instance.visible = dto.visible;
     return instance;
+  }
+
+  update(dto: UpdateProfileEntityDto) {
+    this.visible = dto.visible ?? this.visible;
+    this.tags = dto.tags.length > 0 ? dto.tags : this.tags;
+    this.info = { ...this.info, ...dto.info };
   }
 }
