@@ -44,7 +44,6 @@ services:
       - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=${KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR:?}
       - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=${KAFKA_TRANSACTION_STATE_LOG_MIN_ISR:?}
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=${KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR:?}
-      - KAFKA_CREATE_TOPICS=${KAFKA_CREATE_TOPICS:?}
     networks:
       - common
 
@@ -114,6 +113,21 @@ services:
     env_file: ./../account/.env
     networks:
       - common
+
+
+  nginx:
+    image: nginx
+    container_name: shpere-nginx
+    restart: unless-stopped
+    build:
+      context: ../nginx/.
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/ssl/:/etc/nginx/ssl:ro
 
 networks:
   common:
