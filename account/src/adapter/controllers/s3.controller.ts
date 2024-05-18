@@ -2,17 +2,21 @@ import {
   Body,
   Controller,
   Get,
-  Param, Post,
+  Param,
+  Post,
   Res,
-  UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { Express, Response } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Auth } from 'src/core/shared/iam/decorators/auth.decorator';
 import { AuthType } from 'src/core/shared/iam/enums/auth-type.enum';
 import { S3Service } from 'src/s3/s3.service';
+import {
+  FileInterceptor,
+  UploadedFile,
+  MemoryStorageFile,
+} from '@blazity/nest-file-fastify';
 import { UploadControllerDto } from 'src/s3/dto/upload-file.dto';
+import { FastifyReply } from 'fastify';
 
 @Controller('s3')
 export class S3Controller {
@@ -23,7 +27,7 @@ export class S3Controller {
   async getFile(
     @Param('bucket') bucket: string,
     @Param('file') file: string,
-    @Res() res: Response,
+    @Res() res: FastifyReply,
   ) {
     return await this.s3Service.getObject(bucket, file, res);
   }
@@ -31,7 +35,7 @@ export class S3Controller {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file'))
   async upload(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file: MemoryStorageFile,
     @Body() dto: UploadControllerDto,
   ) {
     return await this.s3Service.upload({

@@ -5,6 +5,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import fmp from '@fastify/multipart';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -15,7 +16,8 @@ async function bootstrap() {
     },
   );
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(process.env.PORT);
+  await app.register(fmp);
+  await app.listen(process.env.PORT, '0.0.0.0');
 }
 
 bootstrap();
