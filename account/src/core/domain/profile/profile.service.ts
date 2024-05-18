@@ -11,7 +11,10 @@ import { CategoryService } from 'src/core/domain/category/category.service';
 import { CategoryErrorMessages } from 'src/core/domain/category/category.constants';
 import { ProfileErrorMessages } from 'src/core/domain/profile/profile.constants';
 import { ProfileRepository } from 'src/core/domain/profile/repositories/profile.repository';
-import { ProfileType } from 'src/core/domain/profile/types/profile.types';
+import {
+  ProfileType,
+  ProfileVisible,
+} from 'src/core/domain/profile/types/profile.types';
 import { TagService } from 'src/core/domain/tag/tag.service';
 
 @Injectable()
@@ -58,8 +61,38 @@ export class ProfileService {
       tags: tags,
       info: dto.info,
       type: dto.type,
-      visible: dto.visible,
+      visible: ProfileVisible.Close,
     });
     return await this.profileRepository.save(profile);
   }
+
+  async findByUser(userId: string) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.NotFound);
+    }
+    return await this.profileRepository.findByUserId(user.id);
+  }
+
+  async remove(userId: string, id: string) {
+    const user = await this.userService.findById(userId);
+    if (!user) {
+      throw new NotFoundException(UserErrorMessages.NotFound);
+    }
+    const profile = await this.profileRepository.findByIdBR(id);
+    if (!profile) {
+      throw new NotFoundException(ProfileErrorMessages.NotFound);
+    }
+
+    if (profile.user.id !== user.id) {
+      throw new BadRequestException(ProfileErrorMessages.AccessDenied);
+    }
+
+    return await this.profileRepository.remove(profile);
+  }
+
+  /* todo:
+   * update (visible, other fields)
+   * remove
+   *  */
 }

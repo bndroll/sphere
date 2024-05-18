@@ -10,6 +10,7 @@ import { ProfileController } from 'src/adapter/controllers/profile/profile.contr
 import { ProfileMapper } from 'src/adapter/controllers/profile/mappers/profile.mapper';
 import { ProfileModule } from 'src/core/domain/profile/profile.module';
 import { S3Module } from 'src/s3/s3.module';
+import { S3Controller } from 'src/adapter/controllers/s3.controller';
 
 @Module({
   imports: [IamModule, UserModule, ProfileModule, BotModule, S3Module],
@@ -19,6 +20,7 @@ import { S3Module } from 'src/s3/s3.module';
     UserController,
     SsoController,
     ProfileController,
+    S3Controller,
   ],
 })
 export class AdapterModule {}

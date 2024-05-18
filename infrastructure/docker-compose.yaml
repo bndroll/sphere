@@ -56,7 +56,7 @@ services:
       - "5432:5432"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
-    env_file: ../notifications/.env
+    env_file: .env
     environment:
       - POSTGRES_USER=${POSTGRES_USERNAME:?}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:?}
@@ -74,7 +74,7 @@ services:
     volumes:
       - ./data/redis/dаta:/root/redis
       - ./data/redis/conf/redis.conf:/usr/local/etc/redis/redis.conf
-    env_file: ../notifications/.env
+    env_file: .env
     networks:
       - common
 
@@ -104,13 +104,14 @@ services:
 
   account:
     build:
-      context: ../account
-      dockerfile: ./Dockerfile
+      context: ./../account
+      dockerfile: ./../account/Dockerfile
     container_name: account
-    depends_on: [postgres, redis, broker, minio]
+    restart: unless-stopped
+    depends_on: [postgres, redis, broker, minio, clickhouse]
     ports:
       - "8010:8010"
-    env_file: ../account/.env
+    env_file: ./../account/.env
     networks:
       - common
 

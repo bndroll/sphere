@@ -13,13 +13,19 @@ import { RequestLoggingInterceptor } from 'src/interceptors/request-logging.inte
 import { CoreModule } from 'src/core/core.module';
 import { AdapterModule } from 'src/adapter/adapter.module';
 import { JwtConfig } from 'src/config/jwt.config';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: `.env`,
       isGlobal: true,
-      load: [PostgresConfig, RedisConfig, ThrottlerConfig, JwtConfig],
+      load: [
+        PostgresConfig,
+        RedisConfig,
+        ThrottlerConfig,
+        JwtConfig,
+      ],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -46,6 +52,18 @@ import { JwtConfig } from 'src/config/jwt.config';
     ScheduleModule.forRoot(),
     CoreModule,
     AdapterModule,
+    ClientsModule.register([
+      {
+        name: 'ACCOUNT_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: process.env.KAFKA_CLIENT_ID,
+            brokers: [process.env.KAFKA_BROKER_URL],
+          },
+        },
+      },
+    ]),
   ],
   providers: [
     {

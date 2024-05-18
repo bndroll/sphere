@@ -49,6 +49,7 @@ export class ProfileInfo {
   work?: ProfileInfoWork;
   hobby?: ProfileInfoHobby;
 
+  open?: boolean;
   startDate?: Date;
   endDate?: Date;
 }
