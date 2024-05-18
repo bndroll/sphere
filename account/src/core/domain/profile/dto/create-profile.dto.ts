@@ -7,10 +7,7 @@ import {
   ProfileVisible,
 } from 'src/core/domain/profile/types/profile.types';
 
-export type CreateProfileControllerDto = Omit<CreateProfileDto, 'userId'>;
-
 export class CreateProfileDto {
-  userId: string;
   categoryId: string;
   tagsId: string[];
   type: ProfileType;
