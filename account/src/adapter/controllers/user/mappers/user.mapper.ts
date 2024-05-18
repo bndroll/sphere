@@ -12,7 +12,6 @@ export class UserMapper {
       phone: user.phone,
       birthdayDate: user.birthdayDate,
       gender: user.gender,
-      profiles: [],
       createDate: user.createDate,
     };
   }
