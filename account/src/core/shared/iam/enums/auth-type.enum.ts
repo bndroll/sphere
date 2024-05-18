@@ -1,4 +1,5 @@
 export enum AuthType {
-	Bearer,
-	None
+  Bearer,
+  ApiKey,
+  None,
 }

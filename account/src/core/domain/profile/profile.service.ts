@@ -18,6 +18,7 @@ import {
 import { TagService } from 'src/core/domain/tag/tag.service';
 import { UpdateProfileDto } from 'src/core/domain/profile/dto/update-profile.dto';
 import { ConfigService } from '@nestjs/config';
+import { FindByIdsDto } from 'src/core/domain/profile/dto/find-by-ids.dto';
 
 @Injectable()
 export class ProfileService {
@@ -91,6 +92,10 @@ export class ProfileService {
       throw new NotFoundException(UserErrorMessages.NotFound);
     }
     return await this.profileRepository.findByUserId(user.id);
+  }
+
+  async findByIds(dto: FindByIdsDto) {
+    return await this.profileRepository.findProfilesByIds(dto);
   }
 
   async update(id: string, userId: string, dto: UpdateProfileDto) {
