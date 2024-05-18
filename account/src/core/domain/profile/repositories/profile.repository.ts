@@ -41,8 +41,10 @@ export class ProfileRepository extends BaseRepository<Profile> {
 
   async findProfilesByIds(dto: FindByIdsDto) {
     return await this.createQueryBuilder('p')
+      .innerJoinAndSelect('p.user', 'user')
+      .innerJoinAndSelect('p.category', 'category')
+      .innerJoinAndSelect('p.tags', 'tags')
       .where('p.id IN (:...ids)', { ids: dto.ids })
-      .loadAllRelationIds()
       .getMany();
   }
 
