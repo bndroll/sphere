@@ -11,6 +11,7 @@ import { AuthenticationGuard } from 'src/core/shared/iam/authentication/guards/a
 import { AccessTokenGuard } from 'src/core/shared/iam/authentication/guards/access-token.guard';
 import { MessengerModule } from 'src/core/shared/messenger/messenger.module';
 import { SsoTokenStorage } from 'src/core/shared/iam/authentication/storages/sso-token.storage';
+import { ApiKeyGuard } from 'src/core/shared/iam/authentication/guards/api-key.guard';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { SsoTokenStorage } from 'src/core/shared/iam/authentication/storages/sso
     RefreshTokenIdsStorage,
     SsoTokenStorage,
     AccessTokenGuard,
+    ApiKeyGuard,
   ],
   exports: [AuthenticationService],
 })

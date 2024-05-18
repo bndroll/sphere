@@ -4,7 +4,8 @@ import { BaseRepository } from 'src/core/common/base.repository';
 import { Profile } from 'src/core/domain/profile/entities/profile.entity';
 import { FindUserProfileByUserIdDto } from 'src/core/domain/profile/dto/find-user-profile-by-user-id.dto';
 import { ProfileType } from 'src/core/domain/profile/types/profile.types';
-import { FindUserEventsByCategory } from 'src/core/domain/profile/dto/find-user-events-by-category';
+import { FindUserEventsByCategoryDto } from 'src/core/domain/profile/dto/find-user-events-by-category.dto';
+import { FindByIdsDto } from 'src/core/domain/profile/dto/find-by-ids.dto';
 
 @Injectable()
 export class ProfileRepository extends BaseRepository<Profile> {
@@ -38,7 +39,14 @@ export class ProfileRepository extends BaseRepository<Profile> {
       .getOne();
   }
 
-  async userEventsCountByCategory(dto: FindUserEventsByCategory) {
+  async findProfilesByIds(dto: FindByIdsDto) {
+    return await this.createQueryBuilder('p')
+      .where('p.id IN (:...ids)', { ids: dto.ids })
+      .loadAllRelationIds()
+      .getMany();
+  }
+
+  async userEventsCountByCategory(dto: FindUserEventsByCategoryDto) {
     return await this.createQueryBuilder('p')
       .where('p.userId = :userId', { userId: dto.userId })
       .andWhere('p.categoryId = :categoryId', { categoryId: dto.categoryId })
