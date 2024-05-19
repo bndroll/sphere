@@ -15,12 +15,14 @@ import { UpdateProfileDto } from 'src/core/domain/profile/dto/update-profile.dto
 import { FindByIdsDto } from 'src/core/domain/profile/dto/find-by-ids.dto';
 import { Auth } from 'src/core/shared/iam/decorators/auth.decorator';
 import { AuthType } from 'src/core/shared/iam/enums/auth-type.enum';
+import { ProfileJoinedMapper } from 'src/adapter/controllers/profile/mappers/profile-joined.mapper';
 
 @Controller('profile')
 export class ProfileController {
   constructor(
     private readonly profileService: ProfileService,
     private readonly profileMapper: ProfileMapper,
+    private readonly profileJoinedMapper: ProfileJoinedMapper,
   ) {}
 
   @Post()
@@ -41,7 +43,8 @@ export class ProfileController {
   @Auth(AuthType.None)
   @Post('find-by-ids')
   async findByIds(@Body() dto: FindByIdsDto) {
-    return await this.profileService.findByIds(dto);
+    const profiles = await this.profileService.findByIds(dto);
+    return profiles.map((profile) => this.profileJoinedMapper.map(profile));
   }
 
   @Patch(':id')

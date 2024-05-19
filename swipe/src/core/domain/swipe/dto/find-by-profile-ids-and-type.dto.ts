@@ -5,3 +5,8 @@ export class FindByProfileIdsAndTypeDto {
   profileRecId: string;
   type: SwipeType;
 }
+
+export class FindByProfileIdsDto {
+  profileId: string;
+  profileRecId: string;
+}
