@@ -70,7 +70,7 @@ export class AuthenticationService {
 
     const user = await this.userService.findByName(dto.username);
     if (!user) {
-      throw new UnauthorizedException(UserErrorMessages.UserNotFound);
+      throw new UnauthorizedException(UserErrorMessages.NotFound);
     }
 
     if (dto.password) {
@@ -105,8 +105,6 @@ export class AuthenticationService {
       const { id, refreshTokenId } = await this.jwtService.verifyAsync<
         ActiveUserData & { refreshTokenId: string }
       >(dto.refreshToken, {
-        audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
       });
 
@@ -139,7 +137,7 @@ export class AuthenticationService {
   ): Promise<RefreshTokenResponseDto> {
     const user = await this.userService.findById(id);
     if (!user) {
-      throw new NotFoundException(UserErrorMessages.UserNotFound);
+      throw new NotFoundException(UserErrorMessages.NotFound);
     }
     if (user.password) {
       const isEqual = await this.hashingService.compare(
@@ -231,8 +229,6 @@ export class AuthenticationService {
         ...payload,
       },
       {
-        audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
         expiresIn: expiresIn,
       },

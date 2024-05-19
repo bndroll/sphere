@@ -1,4 +1,4 @@
 export enum UserErrorMessages {
-  UserNotFound = 'User does not exist',
-  UserAlreadyExists = 'User with same name already exists',
+  NotFound = 'User does not exist',
+  AlreadyExists = 'User with same name already exists',
 }

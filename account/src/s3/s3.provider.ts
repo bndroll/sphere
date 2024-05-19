@@ -10,7 +10,7 @@ export const s3Provider = {
       port: Number(configService.getOrThrow('MINIO_PORT')),
       accessKey: configService.getOrThrow('MINIO_ACCESS_KEY'),
       secretKey: configService.getOrThrow('MINIO_SECRET_KEY'),
-      useSSL: false
+      useSSL: false,
     });
-  }
+  },
 };

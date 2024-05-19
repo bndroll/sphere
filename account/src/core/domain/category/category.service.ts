@@ -33,6 +33,10 @@ export class CategoryService {
     return await this.categoryRepository.findAll();
   }
 
+  async findAllWithTags() {
+    return await this.categoryRepository.findAllWithTags();
+  }
+
   async findById(id: string) {
     const category = await this.categoryRepository.findByIdBR(id);
     if (!category) {

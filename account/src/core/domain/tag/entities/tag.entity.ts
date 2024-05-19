@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   PrimaryColumn,
   Relation,
@@ -10,6 +11,7 @@ import { Category } from 'src/core/domain/category/entities/category.entity';
 import { generateString } from '@nestjs/typeorm';
 import { CreateTagEntityDto } from 'src/core/domain/tag/dto/create-tag.dto';
 import { UpdateTagEntityDto } from 'src/core/domain/tag/dto/update-tag.dto';
+import { Profile } from 'src/core/domain/profile/entities/profile.entity';
 
 @Entity({ name: 'tag' })
 export class Tag {
@@ -21,6 +23,9 @@ export class Tag {
 
   @ManyToOne(() => Category, (category) => category.tags, { eager: true })
   category: Relation<Category>;
+
+  @ManyToMany(() => Profile, (profile) => profile.tags)
+  profiles: Relation<Profile[]>;
 
   @CreateDateColumn({
     type: 'timestamp',

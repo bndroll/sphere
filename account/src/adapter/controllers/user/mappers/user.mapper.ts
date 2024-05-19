@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { User } from 'src/core/domain/user/entities/user.entity';
-import { FindUserDto } from 'src/adapter/mappers/dto/find-user.dto';
+import { FindUserResponse } from 'src/adapter/controllers/user/mappers/find-user.response';
 
 @Injectable()
 export class UserMapper {
-  map(user: User): FindUserDto {
+  map(user: User): FindUserResponse {
     return {
       id: user.id,
       telegramId: user.telegramId,
@@ -12,7 +12,6 @@ export class UserMapper {
       phone: user.phone,
       birthdayDate: user.birthdayDate,
       gender: user.gender,
-      profiles: [],
       createDate: user.createDate,
     };
   }
