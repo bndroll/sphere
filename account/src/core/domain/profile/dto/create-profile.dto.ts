@@ -6,7 +6,7 @@ import {
   ProfileType,
   ProfileVisible,
 } from 'src/core/domain/profile/types/profile.types';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateProfileDto {
   @IsString()
@@ -14,6 +14,7 @@ export class CreateProfileDto {
   categoryId: string;
 
   @IsString({ each: true })
+  @IsOptional()
   tagsId: string[];
 
   @IsEnum(ProfileType)

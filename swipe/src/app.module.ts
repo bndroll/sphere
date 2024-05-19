@@ -7,6 +7,7 @@ import { RedisModule } from '@nestjs-modules/ioredis';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CoreModule } from './core/core.module';
 import { AdapterModule } from './adapter/adapter.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AdapterModule } from './adapter/adapter.module';
       inject: [ConfigService],
     }),
     ScheduleModule.forRoot(),
+    HttpModule,
     CoreModule,
     AdapterModule,
   ],
