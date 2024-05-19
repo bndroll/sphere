@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'src/core/domain/user/repositories/user.repository';
 import { CreateUserDto } from 'src/core/domain/user/dto/create-user.dto';
 import { User } from 'src/core/domain/user/entities/user.entity';
@@ -6,10 +6,15 @@ import { UpdateUserPasswordDto } from 'src/core/domain/user/dto/update-user-pass
 import { UpdateUserDto } from 'src/core/domain/user/dto/update-user.dto';
 import { UserErrorMessages } from 'src/core/domain/user/user.constants';
 import { UsernameAlreadyExistException } from 'src/core/domain/user/exceptions/username-already-exist';
+import { Producer } from 'kafkajs';
+import { SetUserContract } from 'src/core/domain/user/contracts/set-user.contract';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    @Inject('KAFKA_USER_PRODUCER') private readonly producer: Producer,
+    private readonly userRepository: UserRepository,
+  ) {}
 
   async create(dto: CreateUserDto) {
     const oldUser = await this.userRepository.findByName(dto.username);
@@ -22,7 +27,12 @@ export class UserService {
       password: dto.password,
       telegramId: dto.telegramId,
     });
-    return await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    await this.producer.send({
+      topic: SetUserContract.topic,
+      messages: [{ value: JSON.stringify(savedUser) }],
+    });
+    return savedUser;
   }
 
   async findById(id: string) {
@@ -56,8 +66,12 @@ export class UserService {
       birthdayDate: dto.birthdayDate,
       gender: dto.gender,
     });
-
-    return await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    await this.producer.send({
+      topic: SetUserContract.topic,
+      messages: [{ value: JSON.stringify(savedUser) }],
+    });
+    return savedUser;
   }
 
   async updatePassword(id: string, dto: UpdateUserPasswordDto) {
@@ -66,7 +80,12 @@ export class UserService {
       throw new NotFoundException(UserErrorMessages.NotFound);
     }
     user.updatePassword(dto.newPassword);
-    return await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    await this.producer.send({
+      topic: SetUserContract.topic,
+      messages: [{ value: JSON.stringify(savedUser) }],
+    });
+    return savedUser;
   }
 
   async updateTelegramId(id: string, telegramId: string) {
@@ -75,6 +94,11 @@ export class UserService {
       throw new NotFoundException(UserErrorMessages.NotFound);
     }
     user.updateTelegramId(telegramId);
-    return await this.userRepository.save(user);
+    const savedUser = await this.userRepository.save(user);
+    await this.producer.send({
+      topic: SetUserContract.topic,
+      messages: [{ value: JSON.stringify(savedUser) }],
+    });
+    return savedUser;
   }
 }

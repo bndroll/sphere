@@ -13,6 +13,7 @@ import { S3Module } from 'src/s3/s3.module';
 import { S3Controller } from 'src/adapter/controllers/s3.controller';
 import { CategoryModule } from 'src/core/domain/category/category.module';
 import { CategoryController } from 'src/adapter/controllers/category.controller';
+import { ProfileJoinedMapper } from 'src/adapter/controllers/profile/mappers/profile-joined.mapper';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { CategoryController } from 'src/adapter/controllers/category.controller'
     ProfileModule,
     CategoryModule,
   ],
-  providers: [UserMapper, ProfileMapper],
+  providers: [UserMapper, ProfileMapper, ProfileJoinedMapper],
   controllers: [
     AuthController,
     UserController,

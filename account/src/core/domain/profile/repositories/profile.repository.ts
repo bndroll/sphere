@@ -43,7 +43,7 @@ export class ProfileRepository extends BaseRepository<Profile> {
     return await this.createQueryBuilder('p')
       .innerJoinAndSelect('p.user', 'user')
       .innerJoinAndSelect('p.category', 'category')
-      .innerJoinAndSelect('p.tags', 'tags')
+      .leftJoinAndSelect('p.tags', 'tags')
       .where('p.id IN (:...ids)', { ids: dto.ids })
       .getMany();
   }

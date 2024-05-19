@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -19,10 +20,14 @@ import { TagService } from 'src/core/domain/tag/tag.service';
 import { UpdateProfileDto } from 'src/core/domain/profile/dto/update-profile.dto';
 import { ConfigService } from '@nestjs/config';
 import { FindByIdsDto } from 'src/core/domain/profile/dto/find-by-ids.dto';
+import { Producer } from 'kafkajs';
+import { SetProfileContract } from 'src/core/domain/profile/contracts/set-profile.contract';
+import { DeleteProfileContract } from 'src/core/domain/profile/contracts/delete-profile.contract';
 
 @Injectable()
 export class ProfileService {
   constructor(
+    @Inject('KAFKA_PROFILE_PRODUCER') private readonly producer: Producer,
     private readonly profileRepository: ProfileRepository,
     private readonly userService: UserService,
     private readonly categoryService: CategoryService,
@@ -45,7 +50,7 @@ export class ProfileService {
       throw new BadRequestException();
     }
 
-    const tags = await this.tagService.findByIds(dto.tagsId);
+    const tags = dto.tagsId ? await this.tagService.findByIds(dto.tagsId) : [];
 
     if (dto.type === ProfileType.User) {
       const lastUserProfile =
@@ -83,7 +88,12 @@ export class ProfileService {
           ? ProfileVisible.Open
           : ProfileVisible.Close,
     });
-    return await this.profileRepository.save(profile);
+    const savedProfile = await this.profileRepository.save(profile);
+    await this.producer.send({
+      topic: SetProfileContract.topic,
+      messages: [{ value: JSON.stringify(savedProfile) }],
+    });
+    return savedProfile;
   }
 
   async findByUser(userId: string) {
@@ -122,7 +132,12 @@ export class ProfileService {
     }
 
     profile.update({ tags: tags, info: dto.info, visible: dto.visible });
-    return await this.profileRepository.save(profile);
+    const savedProfile = await this.profileRepository.save(profile);
+    await this.producer.send({
+      topic: SetProfileContract.topic,
+      messages: [{ value: JSON.stringify(savedProfile) }],
+    });
+    return savedProfile;
   }
 
   async remove(id: string, userId: string) {
@@ -139,6 +154,11 @@ export class ProfileService {
       throw new BadRequestException(ProfileErrorMessages.AccessDenied);
     }
 
-    return await this.profileRepository.remove(profile);
+    const removedProfile = await this.profileRepository.remove(profile);
+    await this.producer.send({
+      topic: DeleteProfileContract.topic,
+      messages: [{ value: JSON.stringify({ id: removedProfile.id }) }],
+    });
+    return removedProfile;
   }
 }
