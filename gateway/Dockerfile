@@ -24,4 +24,8 @@ ENV TZ Asia/Shanghai
 WORKDIR /app
 COPY --from=builder /app/main /app/main
 
+COPY server.crt /app/server.crt
+COPY server.key /app/server.key
+
 CMD ["./main"]
+

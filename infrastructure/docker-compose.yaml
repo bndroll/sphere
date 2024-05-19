@@ -127,6 +127,20 @@ services:
     networks:
       - common
 
+  nginx:
+    image: nginx
+    container_name: shpere-nginx
+    restart: unless-stopped
+    build:
+      context: ../nginx/.
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../nginx/ssl/:/etc/nginx/ssl:ro
+
 networks:
   common:
     driver: bridge
