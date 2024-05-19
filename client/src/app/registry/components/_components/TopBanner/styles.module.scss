@@ -1,0 +1,24 @@
+.main {
+  background: linear-gradient(210deg, #4d1d79 0%, #390764 31.72%, #160029 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 150px;
+  border-radius: 10px;
+  padding: 8px;
+
+  .label {
+    background: #BE84FC;
+    color: #000000;
+    border-radius: 15px;
+    font-size: 14px;
+    padding: 4px 8px;
+    width: fit-content;
+  }
+
+  .title {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+}

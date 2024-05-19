@@ -1,0 +1,42 @@
+.bannerTitle {
+  font-size: 52px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.form_block {
+  display: flex;
+  background: #1C1C1E;
+  border-radius: 10px;
+  width: 100%;
+  padding: 11px 0 11px 16px;
+  flex-direction: column;
+
+
+  .switch {
+    padding: 7px 7px 7px 0;
+  }
+
+  > * {
+    border-top: 1px solid #3C3C3C;
+    padding: 11px 11px 11px 0;
+
+    &:first-child {
+      padding-bottom: 11px;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    &:last-child {
+      padding-top: 11px;
+      padding-bottom: 0;
+    }
+  }
+
+
+}

@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+import WP from './config/webpack.js'
+
+const nextConfig = {
+    webpack: (config, {webpack}) => WP(config, webpack),
+};
 
 export default nextConfig;

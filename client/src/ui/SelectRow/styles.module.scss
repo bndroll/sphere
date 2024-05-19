@@ -1,0 +1,33 @@
+.wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 17px;
+
+
+  .value_wrapper {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: rgba(235, 235, 245, 0.6);
+    font-size: 17px;
+    padding: 7px 0;
+  }
+}
+
+.select {
+  position: absolute;
+  width: 0;
+  height: 4000px;
+  background: black;
+  top: 0;
+  right: 0;
+  transition: all .2s;
+  z-index: 100;
+}
+
+.select[data-isopen="true"] {
+  overflow: hidden;
+  width: 100%;
+}

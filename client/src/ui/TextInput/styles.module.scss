@@ -1,0 +1,27 @@
+.wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.input {
+  background: #1C1C1E;
+  padding: 10px 40px 10px 16px;
+  border-radius: 10px;
+  caret-color: #0A84FF;
+  position: relative;
+  width: 100%;
+  color: white;
+
+  &::placeholder {
+    color: rgba(235, 235, 245, 0.25);
+  }
+}
+
+.closeTag {
+  position: absolute;
+  top: 65%;
+  transform: translateY(-65%);
+  right: 10px;
+  padding: 5px;
+}
