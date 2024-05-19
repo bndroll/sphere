@@ -1,17 +1,14 @@
 import { Controller } from '@nestjs/common';
 import { SwipeService } from 'src/core/domain/swipe/swipe.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import {
-  CreateSwipeDto,
-  CreateSwipeTopic,
-} from 'src/core/domain/swipe/dto/create-swipe.dto';
+import { SwipeContract } from 'src/core/domain/swipe/contract/swipe.contract';
 
 @Controller()
 export class SwipeBrokerController {
   constructor(private readonly swipeService: SwipeService) {}
 
-  @MessagePattern(CreateSwipeTopic)
-  async create(@Payload() message: CreateSwipeDto) {
+  @MessagePattern(SwipeContract.topic)
+  async create(@Payload() message: SwipeContract.Message) {
     await this.swipeService.create(message);
   }
 }

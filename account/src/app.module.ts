@@ -9,7 +9,6 @@ import { RedisModule } from '@nestjs-modules/ioredis';
 import { CoreModule } from 'src/core/core.module';
 import { AdapterModule } from 'src/adapter/adapter.module';
 import { JwtConfig } from 'src/config/jwt.config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -36,18 +35,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ScheduleModule.forRoot(),
     CoreModule,
     AdapterModule,
-    ClientsModule.register([
-      {
-        name: 'ACCOUNT_SERVICE',
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            clientId: process.env.KAFKA_CLIENT_ID,
-            brokers: [process.env.KAFKA_BROKER_URL],
-          },
-        },
-      },
-    ]),
   ],
 })
 export class AppModule {}
