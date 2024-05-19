@@ -129,10 +129,10 @@ services:
 
   nginx:
     image: nginx
-    container_name: shpere-nginx
+    container_name: nginx
     restart: unless-stopped
     build:
-      context: ../nginx/.
+      context: ./../nginx
       dockerfile: Dockerfile
     ports:
       - "80:80"
@@ -140,6 +140,8 @@ services:
     volumes:
       - ../nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../nginx/ssl/:/etc/nginx/ssl:ro
+    networks:
+      - common
 
 networks:
   common:
