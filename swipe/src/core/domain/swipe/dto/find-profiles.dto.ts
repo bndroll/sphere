@@ -1,5 +1,3 @@
-import { UserGender } from 'src/core/domain/user/entities/user.entity';
-
 export enum ProfileType {
   User = 'User',
   Event = 'Event',
@@ -8,6 +6,11 @@ export enum ProfileType {
 export enum ProfileVisible {
   Open = 'Open',
   Close = 'Close',
+}
+
+export enum UserGender {
+  Male = 'Male',
+  Female = 'Female',
 }
 
 export class ProfileInfoContacts {
@@ -40,7 +43,6 @@ export class ProfileInfoHobby {
 export class ProfileInfo {
   name: string;
   about?: string;
-  age?: string;
   picture?: string;
   city?: string;
   education?: string;
@@ -53,4 +55,43 @@ export class ProfileInfo {
   open?: boolean;
   startDate?: Date;
   endDate?: Date;
+}
+
+export class Category {
+  id: string;
+  title: string;
+  createDate: Date;
+}
+
+export class Tag {
+  id: string;
+  title: string;
+  categoryId: string;
+  createDate: Date;
+}
+
+export class FindUserResponse {
+  id: string;
+  telegramId: string | null;
+  username: string;
+  phone: string | null;
+  birthdayDate: Date | null;
+  gender: UserGender | null;
+  createDate: Date;
+}
+
+export class FindProfileRequest {
+  id: string;
+  type: ProfileType;
+  info: ProfileInfo;
+  visible: ProfileVisible;
+  user: FindUserResponse;
+  category: Category;
+  tags: Tag[];
+  createDate: Date;
+  updatedDate: Date;
+}
+
+export class FindProfileDto {
+  profileId: string;
 }
