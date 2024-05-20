@@ -18,8 +18,6 @@ type Recommendations struct {
 	logger     *slog.Logger
 	client     *http.Client
 	accountURL *url.URL
-	bodyBuffer *bytes.Buffer
-	swipeTopic string
 }
 
 type Storage interface {
@@ -29,13 +27,11 @@ type Storage interface {
 	CreateReaction(ctx context.Context, reaction entity.Reaction) error
 }
 
-func NewRecommendations(storage Storage, accountUrl *url.URL, swipeTopic string, logger *slog.Logger) *Recommendations {
+func NewRecommendations(storage Storage, accountUrl *url.URL, logger *slog.Logger) *Recommendations {
 	return &Recommendations{
 		storage:    storage,
 		client:     &http.Client{},
 		accountURL: accountUrl,
-		bodyBuffer: bytes.NewBuffer([]byte{}),
-		swipeTopic: swipeTopic,
 		logger:     logger,
 	}
 }
@@ -55,7 +51,7 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 		Limit:     req.Limit,
 	}
 	if req.Category == "Романтическая" {
-		switch target.Male {
+		switch target.Gender {
 		case "male":
 			filter.Male = "female"
 		case "female":
@@ -87,10 +83,10 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 		log.Error("Error marshalling request", err)
 		return nil, err
 	}
-	r.bodyBuffer.Write(data)
-	defer r.bodyBuffer.Reset()
 
-	req, err := http.NewRequestWithContext(ctx, "POST", r.accountURL.String()+"/profile/find-by-ids", r.bodyBuffer)
+	buff := bytes.NewBuffer(data)
+
+	req, err := http.NewRequestWithContext(ctx, "POST", r.accountURL.String()+"/profile/find-by-ids", buff)
 	if err != nil {
 		log.Error("Error creating new HTTP request", err)
 		return nil, err
@@ -124,9 +120,9 @@ func (r *Recommendations) CreateRecommendation(ctx context.Context, action Creat
 	return r.storage.CreateRecommendation(ctx, entity.Recommendation{
 		ID:        uuid.New(),
 		Category:  action.Category,
-		Male:      action.Male,
-		ProfileID: action.ProfileID,
-		Vector:    action.Vector,
+		Gender:    action.Gender,
+		ProfileID: uuid.MustParse(action.ID),
+		Vector:    action.Embedding,
 	})
 }
 

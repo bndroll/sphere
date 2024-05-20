@@ -156,6 +156,28 @@ services:
     networks:
       - common
 
+  recsys:
+    build:
+      context: ../recsys
+      dockerfile: ./Dockerfile
+    container_name: recsys
+    depends_on:
+      - gateway
+    ports:
+      - "8070:8070"
+    networks:
+      - common
+
+  worker:
+    build:
+      context: ../worker
+      dockerfile: ./Dockerfile
+    container_name: worker
+    depends_on:
+      - gateway
+    ports:
+      - "8030:8030"
+
 networks:
   common:
     driver: bridge
