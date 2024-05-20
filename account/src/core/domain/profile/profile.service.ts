@@ -89,8 +89,8 @@ export class ProfileService {
       type: dto.type,
       visible:
         tags.length > 0 &&
-        dto.info.picture &&
-        dto.visible === ProfileVisible.Open
+        dto?.info?.picture &&
+        dto?.visible === ProfileVisible.Open
           ? ProfileVisible.Open
           : ProfileVisible.Close,
     });
@@ -155,8 +155,8 @@ export class ProfileService {
     const tags = await this.tagService.findByIds(dto.tagsId);
 
     if (
-      (tags.length === 0 || !dto.info.picture) &&
-      dto.visible === ProfileVisible.Open
+      (tags.length === 0 || !dto?.info?.picture) &&
+      dto?.visible === ProfileVisible.Open
     ) {
       throw new BadRequestException(ProfileErrorMessages.CannotBeVisible);
     }
