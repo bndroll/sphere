@@ -8,12 +8,14 @@ import { CategoryRepository } from './repositories/category.repository';
 import { CategoryErrorMessages } from './category.constants';
 import { Category } from './entities/category.entity';
 import { TagService } from 'src/core/domain/tag/tag.service';
+import { CategoryStorage } from 'src/core/domain/category/storages/category.storage';
 
 @Injectable()
 export class CategoryService {
   constructor(
     private readonly categoryRepository: CategoryRepository,
     private readonly tagService: TagService,
+    private readonly categoryStorage: CategoryStorage,
   ) {}
 
   async create(dto: CreateCategoryDto) {
@@ -26,7 +28,9 @@ export class CategoryService {
       title: dto.title,
     });
 
-    return await this.categoryRepository.save(category);
+    const savedCategory = await this.categoryRepository.save(category);
+    await this.categoryStorage.invalidate();
+    return savedCategory;
   }
 
   async findAll() {
@@ -34,7 +38,14 @@ export class CategoryService {
   }
 
   async findAllWithTags() {
-    return await this.categoryRepository.findAllWithTags();
+    const cachedCategories = await this.categoryStorage.get();
+    if (!cachedCategories || cachedCategories.length === 0) {
+      const categories = await this.categoryRepository.findAllWithTags();
+      await this.categoryStorage.insert(categories);
+      return categories;
+    }
+
+    return cachedCategories;
   }
 
   async findById(id: string) {
