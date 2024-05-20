@@ -3,13 +3,15 @@
   border: none;
   font: inherit;
   color: inherit;
-  background-color: transparent;
+  //background-color: transparent;
+  background: #1C1C1E;
   cursor: pointer;
   width: 100%;
   display: flex;
   align-items: center;
   border-radius: 10px;
   transition: all .4s;
+  gap: 8px;
 
   &:active {
     scale: 1.008;
@@ -17,6 +19,16 @@
 }
 
 .primary {
+  background: #B46EFF;
+  color: #FFFFFF;
+}
+
+.default {
+  color:#000000;
+  padding: 6px 10px;
+  width: fit-content;
+  background: #FFFFFFE5;
+  font-size: 14px;
   background: #902EEF;
   color: #FFFFFF;
 }

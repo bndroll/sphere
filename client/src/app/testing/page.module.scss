@@ -1,0 +1,10 @@
+.container {
+  overflow: hidden;
+
+  .swiper {
+    min-width: 100%;
+    display: flex;
+    flex-direction: row;
+  }
+
+}
