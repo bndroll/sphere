@@ -177,6 +177,9 @@ services:
       - gateway
     ports:
       - "8030:8030"
+    env_file: ../worker/.env
+    networks:
+      - common
 
 networks:
   common:
