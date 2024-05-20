@@ -20,6 +20,14 @@ export const KafkaProfileProducerProvider = {
   inject: ['ACCOUNT_PROFILE_SERVICE'],
 };
 
+export const KafkaChatProducerProvider = {
+  provide: 'KAFKA_CHAT_PRODUCER',
+  useFactory: async (client: ClientKafka) => {
+    return client.connect();
+  },
+  inject: ['ACCOUNT_CHAT_SERVICE'],
+};
+
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -58,9 +66,34 @@ export const KafkaProfileProducerProvider = {
           },
         },
       },
+      {
+        name: 'ACCOUNT_CHAT_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: process.env.KAFKA_CLIENT_ID,
+            brokers: [process.env.KAFKA_BROKER_URL],
+            logLevel:
+              process.env.MODE === 'development'
+                ? logLevel.INFO
+                : logLevel.ERROR,
+          },
+          consumer: {
+            groupId: process.env.KAFKA_CHAT_GROUP_ID,
+          },
+        },
+      },
     ]),
   ],
-  providers: [KafkaUserProducerProvider, KafkaProfileProducerProvider],
-  exports: [KafkaUserProducerProvider, KafkaProfileProducerProvider],
+  providers: [
+    KafkaUserProducerProvider,
+    KafkaProfileProducerProvider,
+    KafkaChatProducerProvider,
+  ],
+  exports: [
+    KafkaUserProducerProvider,
+    KafkaProfileProducerProvider,
+    KafkaChatProducerProvider,
+  ],
 })
 export class CommonModule {}

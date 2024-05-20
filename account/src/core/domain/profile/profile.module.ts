@@ -6,10 +6,11 @@ import { ProfileRepository } from 'src/core/domain/profile/repositories/profile.
 import { TagModule } from 'src/core/domain/tag/tag.module';
 import { S3Module } from 'src/s3/s3.module';
 import { CommonModule } from 'src/core/common/common.module';
+import { ProfileStorage } from 'src/core/domain/profile/storages/profile.storage';
 
 @Module({
   imports: [UserModule, CategoryModule, TagModule, S3Module, CommonModule],
-  providers: [ProfileService, ProfileRepository],
+  providers: [ProfileService, ProfileRepository, ProfileStorage],
   exports: [ProfileService],
 })
 export class ProfileModule {}

@@ -23,16 +23,22 @@ import { FindByIdsDto } from 'src/core/domain/profile/dto/find-by-ids.dto';
 import { Producer } from 'kafkajs';
 import { SetProfileContract } from 'src/core/domain/profile/contracts/set-profile.contract';
 import { DeleteProfileContract } from 'src/core/domain/profile/contracts/delete-profile.contract';
+import { ProfileStorage } from 'src/core/domain/profile/storages/profile.storage';
+import { findLeftElements } from 'src/lang/utils/find-left-elements';
+import { CreateChatContract } from 'src/core/domain/profile/contracts/chat.contract';
 
 @Injectable()
 export class ProfileService {
   constructor(
-    @Inject('KAFKA_PROFILE_PRODUCER') private readonly producer: Producer,
+    @Inject('KAFKA_PROFILE_PRODUCER')
+    private readonly profileProducer: Producer,
+    @Inject('KAFKA_CHAT_PRODUCER') private readonly chatProducer: Producer,
     private readonly profileRepository: ProfileRepository,
     private readonly userService: UserService,
     private readonly categoryService: CategoryService,
     private readonly tagService: TagService,
     private readonly configService: ConfigService,
+    private readonly profileStorage: ProfileStorage,
   ) {}
 
   async create(userId: string, dto: CreateProfileDto): Promise<Profile> {
@@ -89,10 +95,21 @@ export class ProfileService {
           : ProfileVisible.Close,
     });
     const savedProfile = await this.profileRepository.save(profile);
-    await this.producer.send({
+    await this.profileStorage.insert(savedProfile);
+    await this.profileProducer.send({
       topic: SetProfileContract.topic,
       messages: [{ value: JSON.stringify(savedProfile) }],
     });
+    if (savedProfile.type === ProfileType.Event) {
+      const createChatMessage: CreateChatContract.Message = {
+        profileId: savedProfile.id,
+        type: ProfileType.Event,
+      };
+      await this.chatProducer.send({
+        topic: CreateChatContract.topic,
+        messages: [{ value: JSON.stringify(createChatMessage) }],
+      });
+    }
     return savedProfile;
   }
 
@@ -105,7 +122,20 @@ export class ProfileService {
   }
 
   async findByIds(dto: FindByIdsDto) {
-    return await this.profileRepository.findProfilesByIds(dto);
+    const cachedProfiles = await this.profileStorage.getMany(...dto.ids);
+    const cachedIds = cachedProfiles.map((profile) => profile.id);
+    const leftIds = findLeftElements(dto.ids, cachedIds);
+    if (leftIds.length === 0) {
+      return cachedProfiles;
+    }
+    const profiles = await this.profileRepository.findProfilesByIds({
+      ids: leftIds,
+    });
+    await this.profileStorage.insert(...profiles);
+    if (cachedProfiles.length > 0) {
+      return [...cachedProfiles, ...profiles];
+    }
+    return profiles;
   }
 
   async update(id: string, userId: string, dto: UpdateProfileDto) {
@@ -133,7 +163,8 @@ export class ProfileService {
 
     profile.update({ tags: tags, info: dto.info, visible: dto.visible });
     const savedProfile = await this.profileRepository.save(profile);
-    await this.producer.send({
+    await this.profileStorage.insert(savedProfile);
+    await this.profileProducer.send({
       topic: SetProfileContract.topic,
       messages: [{ value: JSON.stringify(savedProfile) }],
     });
@@ -154,8 +185,9 @@ export class ProfileService {
       throw new BadRequestException(ProfileErrorMessages.AccessDenied);
     }
 
+    await this.profileStorage.invalidate(id);
     const removedProfile = await this.profileRepository.remove(profile);
-    await this.producer.send({
+    await this.profileProducer.send({
       topic: DeleteProfileContract.topic,
       messages: [{ value: JSON.stringify({ id: removedProfile.id }) }],
     });
