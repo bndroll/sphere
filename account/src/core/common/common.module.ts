@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ClientKafka, ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
 import process from 'node:process';
-import { logLevel } from 'kafkajs';
 
 export const KafkaUserProducerProvider = {
   provide: 'KAFKA_USER_PRODUCER',
@@ -39,10 +38,6 @@ export const KafkaChatProducerProvider = {
           client: {
             clientId: process.env.KAFKA_CLIENT_ID,
             brokers: [process.env.KAFKA_BROKER_URL],
-            logLevel:
-              process.env.MODE === 'development'
-                ? logLevel.INFO
-                : logLevel.ERROR,
           },
           consumer: {
             groupId: process.env.KAFKA_USER_GROUP_ID,
@@ -56,10 +51,6 @@ export const KafkaChatProducerProvider = {
           client: {
             clientId: process.env.KAFKA_CLIENT_ID,
             brokers: [process.env.KAFKA_BROKER_URL],
-            logLevel:
-              process.env.MODE === 'development'
-                ? logLevel.INFO
-                : logLevel.ERROR,
           },
           consumer: {
             groupId: process.env.KAFKA_PROFILE_GROUP_ID,
@@ -73,10 +64,6 @@ export const KafkaChatProducerProvider = {
           client: {
             clientId: process.env.KAFKA_CLIENT_ID,
             brokers: [process.env.KAFKA_BROKER_URL],
-            logLevel:
-              process.env.MODE === 'development'
-                ? logLevel.INFO
-                : logLevel.ERROR,
           },
           consumer: {
             groupId: process.env.KAFKA_CHAT_GROUP_ID,
