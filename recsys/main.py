@@ -10,17 +10,13 @@ app = Flask(__name__)
 
 @app.route('/embeddings', methods=['POST'])
 def get_embeddings():
-    sentences_data = request.json
+    data = request.json
 
-    results = []
+    data["sentence"]
+    embedding = embed([sentence])[0].numpy().tolist()
+    vector = np.linalg.norm(np.array(embedding))
+    result = {"id": data["id"], "embedding": vector}
 
-    for data in sentences_data:
-        sentence = data["sentence"]
-        embedding = embed([sentence])[0].numpy().tolist()
-        vector = np.linalg.norm(np.array(embedding))
-        result = {"id": data["id"], "embedding": vector}
-        results.append(result)
+    return jsonify(result)
 
-    return jsonify(results)
-
-app.run(debug=True, host='0.0.0.0', port=8333)
+app.run(debug=True, host='0.0.0.0', port=8070)
