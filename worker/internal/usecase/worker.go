@@ -56,7 +56,7 @@ func (w *Worker) embedding(ctx context.Context, dto *ProfileDTO) (*ResponseRecom
 	buff := &bytes.Buffer{}
 	buff.WriteString(fmt.Sprintf("{\"id\":%s, \"sentence\":%s", dto.ID, sentence))
 
-	req, err := http.NewRequestWithContext(ctx, "POST", w.recSysURL.String(), buff)
+	req, err := http.NewRequestWithContext(ctx, "POST", w.recSysURL.String()+"/embeddings", buff)
 
 	resp, err := client.Do(req)
 	if err != nil {
