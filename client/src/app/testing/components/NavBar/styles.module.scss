@@ -1,0 +1,37 @@
+.container {
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  width: 100%;
+
+  .nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    .item {
+      position: relative;
+      color: #FFFFFF80;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 12px;
+      letter-spacing: -0.5px;
+      list-style: none;
+    }
+
+    .selected {
+      color: #FFFFFF;
+    }
+
+    .underline {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #FFFFFF;
+    }
+  }
+
+
+}

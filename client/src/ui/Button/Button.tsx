@@ -3,7 +3,7 @@ import styles from "./styles.module.scss";
 import cn from "classnames";
 
 type Props = {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "default";
   text: string;
   IconLeft?: () => ReactNode;
   IconRight?: () => ReactNode;
@@ -23,7 +23,7 @@ export const Button: FC<Props> = ({
   return (
     <button
       className={cn(styles.button, styles[variant])}
-      style={{ justifyContent: "space-between" }}
+      style={{ justifyContent: justify }}
       onClick={onClick}
     >
       {!!IconLeft && <IconLeft />}
