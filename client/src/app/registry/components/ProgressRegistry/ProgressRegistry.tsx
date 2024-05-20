@@ -6,12 +6,18 @@ import React, { FC, useCallback } from "react";
 type Props = {
   step: number;
   onNextClick: () => void;
+  isDisabled: boolean;
 };
-export const ProgressRegistry: FC<Props> = ({ onNextClick, step }) => {
+export const ProgressRegistry: FC<Props> = ({
+  onNextClick,
+  step,
+  isDisabled = false,
+}) => {
   const procentBar = useCallback(() => {
     const width = [0, 22, 80, 90];
     return width[step];
   }, [step]);
+
   return (
     <div className={styles.main}>
       <div className={styles.title_wrapper}>
@@ -31,6 +37,7 @@ export const ProgressRegistry: FC<Props> = ({ onNextClick, step }) => {
         text="Следующий этап"
         IconRight={ArrowSVG}
         justify="space-between"
+        disabled={isDisabled}
         onClick={onNextClick}
       />
     </div>

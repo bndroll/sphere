@@ -35,7 +35,7 @@ export const FirstProfile = () => {
         <InputTextRow label="VK" placeholder="@example" />
         <InputTextRow label="Сайт" placeholder="www.example.com" />
       </div>
-      <div className={styles.form_block}>
+      <div className={styles.form_block} style={{ marginBottom: "11px" }}>
         <InputTextRow label="Должность" placeholder="Например, руководитель" />
         <InputTextRow label="Опыт" placeholder="Укажите опыт в годах" />
         <InputTextRow label="Статус" placeholder="Статус" />

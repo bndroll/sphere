@@ -22,9 +22,12 @@ export const Button: FC<Props> = ({
 }) => {
   return (
     <button
-      className={cn(styles.button, styles[variant])}
+      className={cn(styles.button, styles[variant], {
+        [styles.disabled]: disabled,
+      })}
       style={{ justifyContent: "space-between" }}
-      onClick={onClick}
+      onClick={!disabled ? onClick : () => {}}
+      disabled={disabled}
     >
       {!!IconLeft && <IconLeft />}
       {text}

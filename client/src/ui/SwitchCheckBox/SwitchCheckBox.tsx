@@ -1,11 +1,18 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { FC, useState } from "react";
 import styles from "./styles.module.scss";
 
-export const SwitchCheckBox = () => {
-  const [isOn, setIsOn] = useState(false);
+type Props = {
+  value?: boolean;
+  onChange?: (val: boolean) => void;
+};
+export const SwitchCheckBox: FC<Props> = ({ value = false, onChange }) => {
+  const [isOn, setIsOn] = useState(value);
 
-  const toggleSwitch = () => setIsOn(!isOn);
+  const toggleSwitch = () => {
+    setIsOn((prevState) => !prevState);
+    onChange?.(!isOn);
+  };
 
   const spring = {
     type: "spring",

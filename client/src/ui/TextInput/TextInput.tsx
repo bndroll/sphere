@@ -4,24 +4,30 @@ import ClearSVG from "@/assets/icons/clear.svg";
 
 type Props = {
   placeholder?: string;
+  value?: string | number;
+  onChange?: (val: string | number) => void;
 };
-export const TextInput: FC<Props> = ({ placeholder }) => {
-  const [value, setValue] = useState("");
+export const TextInput: FC<Props> = ({ placeholder, value = "", onChange }) => {
+  const [inputValue, setValue] = useState(value);
   const ref = useRef<HTMLInputElement | null>(null);
   const [isFocused, setIsFocused] = useState(false);
 
   const handleFocus = () => {
-    setIsFocused(true);
+    setTimeout(() => setIsFocused(true));
   };
 
   const handleBlur = () => {
-    setIsFocused(false);
+    setTimeout(() => setIsFocused(false));
   };
 
-  const onInput = useCallback((event: FormEvent<HTMLInputElement>) => {
-    const val = event.currentTarget.value;
-    setValue(val);
-  }, []);
+  const onInput = useCallback(
+    (event: FormEvent<HTMLInputElement>) => {
+      const val = event.currentTarget.value;
+      setValue(val);
+      onChange?.(val);
+    },
+    [onChange],
+  );
 
   const handleKeyDown = useCallback((event: any) => {
     if (event.key === "Enter") {
@@ -29,10 +35,11 @@ export const TextInput: FC<Props> = ({ placeholder }) => {
     }
   }, []);
 
-  const onClickClose = useCallback(() => {
+  const onClickClose = () => {
     setValue("");
+    onChange?.("");
     ref.current?.focus();
-  }, [ref]);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -40,13 +47,13 @@ export const TextInput: FC<Props> = ({ placeholder }) => {
         ref={ref}
         className={styles.input}
         placeholder={placeholder}
-        value={value}
+        value={inputValue}
         onInput={onInput}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onKeyDown={handleKeyDown}
       />
-      {value && isFocused && (
+      {inputValue && isFocused && (
         <span className={styles.closeTag} onClick={onClickClose}>
           <ClearSVG />
         </span>
