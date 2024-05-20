@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
-import tensorflow_hub as hub
-import tensorflow_text
+#import tensorflow_hub as hub
+#import tensorflow_text
 import uuid
 import numpy as np
 
