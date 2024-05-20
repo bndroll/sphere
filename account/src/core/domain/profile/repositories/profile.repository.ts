@@ -32,9 +32,9 @@ export class ProfileRepository extends BaseRepository<Profile> {
 
   async findFullById(id: string): Promise<Profile> {
     return await this.createQueryBuilder('p')
-      .innerJoinAndSelect('p.user', 'user')
-      .innerJoinAndSelect('p.category', 'category')
-      .innerJoinAndSelect('p.tags', 'tags')
+      .leftJoinAndSelect('p.user', 'user')
+      .leftJoinAndSelect('p.category', 'category')
+      .leftJoinAndSelect('p.tags', 'tags')
       .where('p.id = :id', { id })
       .getOne();
   }

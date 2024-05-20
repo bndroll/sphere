@@ -51,6 +51,7 @@ export class ProfileInfo {
   hobby?: ProfileInfoHobby;
 
   open?: boolean;
+  avatarPicture?: string;
   startDate?: Date;
   endDate?: Date;
 }
