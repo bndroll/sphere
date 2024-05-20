@@ -9,7 +9,8 @@ type Recommendation struct {
 	ID        uuid.UUID `gorm:"primaryKey"`
 	ProfileID uuid.UUID `gorm:"not null"`
 	Category  string
-	Male      string
+	Gender    string
+	Type      string
 	Vector    float64 `gorm:"not null"`
 }
 

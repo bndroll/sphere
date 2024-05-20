@@ -36,7 +36,7 @@ func (a *App) Run() error {
 	db := DB(env.DataSourceName)
 	st := storage.New(db)
 
-	uc := usecase.NewRecommendations(st, env.AccountURL, env.KafkaSwipeTopic, a.logger)
+	uc := usecase.NewRecommendations(st, env.AccountURL, a.logger)
 	go a.runRecommendationConsumer(uc)
 	go a.runSwipeConsumer(uc)
 
@@ -85,7 +85,7 @@ func DB(dsn string) *gorm.DB {
 func (a *App) runRecommendationConsumer(uc *usecase.Recommendations) {
 	handler := consumers.NewRecommendationHandler(uc, a.logger)
 	consumer := kafkalib.NewKafkaConsumer(handler, a.logger)
-	consumer.StartConsumer(env.KafkaRecommendationTopic)
+	consumer.StartConsumer(env.KafkaRecommendationsTopic)
 }
 
 func (a *App) Shutdown(ctx context.Context) error {
