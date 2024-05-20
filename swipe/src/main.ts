@@ -7,7 +7,6 @@ import {
 } from '@nestjs/platform-fastify';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import * as process from 'node:process';
-import { logLevel } from '@nestjs/microservices/external/kafka.interface';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -23,8 +22,6 @@ async function bootstrap() {
     options: {
       client: {
         brokers: [process.env.KAFKA_BROKER_URL],
-        logLevel:
-          process.env.MODE === 'development' ? logLevel.INFO : logLevel.ERROR,
       },
       consumer: {
         groupId: process.env.KAFKA_GROUP_ID,
