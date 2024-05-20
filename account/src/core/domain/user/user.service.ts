@@ -8,12 +8,14 @@ import { UserErrorMessages } from 'src/core/domain/user/user.constants';
 import { UsernameAlreadyExistException } from 'src/core/domain/user/exceptions/username-already-exist';
 import { Producer } from 'kafkajs';
 import { SetUserContract } from 'src/core/domain/user/contracts/set-user.contract';
+import { UserStorage } from 'src/core/domain/user/storages/user.storage';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('KAFKA_USER_PRODUCER') private readonly producer: Producer,
     private readonly userRepository: UserRepository,
+    private readonly userStorage: UserStorage,
   ) {}
 
   async create(dto: CreateUserDto) {
@@ -28,6 +30,7 @@ export class UserService {
       telegramId: dto.telegramId,
     });
     const savedUser = await this.userRepository.save(user);
+    await this.userStorage.insert(user);
     await this.producer.send({
       topic: SetUserContract.topic,
       messages: [{ value: JSON.stringify(savedUser) }],
@@ -36,7 +39,16 @@ export class UserService {
   }
 
   async findById(id: string) {
-    return await this.userRepository.findByIdBR(id);
+    const cachedUser = await this.userStorage.get(id);
+    if (!cachedUser) {
+      const user = await this.userRepository.findByIdBR(id);
+      if (!user) {
+        return null;
+      }
+      await this.userStorage.insert(user);
+      return user;
+    }
+    return cachedUser;
   }
 
   async findByName(username: string) {
@@ -67,6 +79,7 @@ export class UserService {
       gender: dto.gender,
     });
     const savedUser = await this.userRepository.save(user);
+    await this.userStorage.insert(savedUser);
     await this.producer.send({
       topic: SetUserContract.topic,
       messages: [{ value: JSON.stringify(savedUser) }],
@@ -81,6 +94,7 @@ export class UserService {
     }
     user.updatePassword(dto.newPassword);
     const savedUser = await this.userRepository.save(user);
+    await this.userStorage.insert(savedUser);
     await this.producer.send({
       topic: SetUserContract.topic,
       messages: [{ value: JSON.stringify(savedUser) }],
@@ -95,6 +109,7 @@ export class UserService {
     }
     user.updateTelegramId(telegramId);
     const savedUser = await this.userRepository.save(user);
+    await this.userStorage.insert(savedUser);
     await this.producer.send({
       topic: SetUserContract.topic,
       messages: [{ value: JSON.stringify(savedUser) }],
