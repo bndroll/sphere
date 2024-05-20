@@ -1,17 +1,14 @@
 package env
 
 import (
-	"fmt"
 	"net/url"
 	"os"
 )
 
 var (
-	HttpPort                  = fmt.Sprintf(":%s", Getter("HTTP_PORT", "8080"))
+	RecSysURL                 = GetterURL("REC_SYS_URL")
 	KafkaRecommendationsTopic = Getter("KAFKA_RECOMMENDATIONS_TOPIC", "")
-	KafkaSwipeTopic           = Getter("KAFKA_SWIPE_TOPIC", "")
-	AccountURL                = GetterURL("ACCOUNT_URL")
-	DataSourceName            = Getter("DATA_SOURCE_NAME", "")
+	KafkaProfileTopic         = Getter("KAFKA_PROFILE_TOPIC", "")
 )
 
 func Getter(key, defaultValue string) string {

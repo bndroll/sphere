@@ -27,10 +27,11 @@ type ProfilesRequest struct {
 }
 
 type CreateRecommendation struct {
-	ProfileID uuid.UUID `json:"profileId"`
-	Vector    float64   `json:"vector"`
-	Category  string    `json:"category"`
-	Male      string    `json:"male"`
+	ID        string  `json:"id"`
+	Embedding float64 `json:"embedding"`
+	Gender    string  `json:"gender,omitempty"`
+	Category  string  `json:"category"`
+	Type      string  `json:"type"`
 }
 
 type CreateReactionRequest struct {
