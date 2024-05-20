@@ -127,6 +127,19 @@ services:
     networks:
       - common
 
+  recommendations:
+    build:
+      context: ../recommendations
+      dockerfile: ./Dockerfile
+    container_name: recommendations
+    depends_on:
+      - gateway
+    ports:
+      - "8020:8020"
+    env_file: ../recommendations/.env
+    networks:
+      - common
+
   nginx:
     image: nginx
     container_name: nginx
