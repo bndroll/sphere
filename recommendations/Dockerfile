@@ -16,4 +16,5 @@ FROM golang:alpine
 COPY --from=build /app/main /
 
 WORKDIR /
-ENTRYPOINT ["/main", "start"]
+
+CMD ["/main"]
