@@ -20,11 +20,13 @@ func (s *SwipeHandler) Handle(msg kafka.Message) {
 	err := json.Unmarshal(msg.Value, &msgValue)
 	if err != nil {
 		log.Error("Error unmarshalling message")
+		return
 	}
 
 	err = s.uc.CreateReaction(context.Background(), msgValue)
 	if err != nil {
 		log.Error("Error creating recommendation", "error", err)
+		return
 	}
 }
 

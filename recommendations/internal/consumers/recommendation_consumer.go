@@ -20,11 +20,13 @@ func (r *RecommendationHandler) Handle(msg kafka.Message) {
 	err := json.Unmarshal(msg.Value, &msgValue)
 	if err != nil {
 		log.Error("Error unmarshalling message")
+		return
 	}
 
 	err = r.uc.CreateRecommendation(context.Background(), msgValue)
 	if err != nil {
 		log.Error("Error creating recommendation", "error", err)
+		return
 	}
 }
 
