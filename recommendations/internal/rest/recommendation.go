@@ -8,15 +8,13 @@ import (
 	"strconv"
 )
 
-const UserIDHeader = "X-User-Id"
-
 func (h *Handler) ListRecommendations(c *gin.Context) {
-	userIdStr := c.GetHeader(UserIDHeader)
-	if userIdStr == "" {
+	profileIDStr := c.Query("profileId")
+	if profileIDStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "missing user id"})
 		return
 	}
-	userId, err := uuid.Parse(userIdStr)
+	profileID, err := uuid.Parse(profileIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error parsing user id to uuid"})
 		return
@@ -41,7 +39,7 @@ func (h *Handler) ListRecommendations(c *gin.Context) {
 
 	list, err := h.uc.GetRecommendations(c, usecase.GetRecommendationsRequest{
 		Category:  category,
-		ProfileID: userId,
+		ProfileID: profileID,
 		Limit:     limit,
 	})
 
