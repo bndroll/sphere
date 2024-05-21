@@ -14,6 +14,8 @@ RUN ls -a
 
 FROM golang:alpine
 COPY --from=build /app/main /
+COPY server.crt /app/server.crt
+COPY server.key /app/server.key
 
 WORKDIR /
 
