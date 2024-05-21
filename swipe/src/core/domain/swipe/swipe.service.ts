@@ -30,14 +30,8 @@ export class SwipeService {
   ) {}
 
   async create(dto: SwipeContract.Message) {
-    const existingSwipe = await this.swipeRepository.findByProfileIds({
-      profileId: dto.profileId,
-      profileRecId: dto.profileRecId,
-    });
-    if (existingSwipe && dto.type === existingSwipe.type) {
+    if (dto.profileId === dto.profileRecId) {
       return null;
-    } else if (existingSwipe && dto.type !== existingSwipe.type) {
-      await this.swipeRepository.remove(existingSwipe);
     }
 
     const profiles = await this.httpService.axiosRef
@@ -62,30 +56,51 @@ export class SwipeService {
       profileId: dto.profileRecId,
       profileRecId: dto.profileId,
     });
-    if (
-      !lastSwipe &&
-      profile.type === ProfileType.User &&
-      profileRec.type === ProfileType.Event &&
-      profileRec?.info?.open
-    ) {
-      await this.sendAddChatMember({
-        profileId: profileRec.id,
-        profileSecondId: profile.id,
-      });
+
+    const existingSwipe = await this.swipeRepository.findByProfileIds({
+      profileId: dto.profileId,
+      profileRecId: dto.profileRecId,
+    });
+    if (existingSwipe && dto.type === existingSwipe.type) {
+      lastSwipe.reaction = true;
+      await this.swipeRepository.save(lastSwipe);
+      return null;
+    } else if (existingSwipe && dto.type !== existingSwipe.type) {
+      await this.swipeRepository.remove(existingSwipe);
+    }
+
+    if (!lastSwipe) {
+      if (
+        profile.type === ProfileType.User &&
+        profileRec.type === ProfileType.Event &&
+        profileRec?.info?.open
+      ) {
+        await this.sendAddChatMember({
+          profileId: profileRec.id,
+          profileSecondId: profile.id,
+        });
+      }
     } else {
+      if (dto.type !== SwipeType.Skip) {
+        lastSwipe.reaction = true;
+        await this.swipeRepository.save(lastSwipe);
+      }
+
       if (profile.type === ProfileType.User) {
         if (profileRec.type === ProfileType.Event) {
-          if (profileRec?.info?.open) {
-            await this.sendAddChatMember({
-              profileId: profileRec.id,
-              profileSecondId: profile.id,
-            });
-          } else {
-            if (lastSwipe.type === SwipeType.Like) {
+          if (dto.type === SwipeType.Like) {
+            if (profileRec?.info?.open) {
               await this.sendAddChatMember({
                 profileId: profileRec.id,
                 profileSecondId: profile.id,
               });
+            } else {
+              if (lastSwipe.type === SwipeType.Like) {
+                await this.sendAddChatMember({
+                  profileId: profileRec.id,
+                  profileSecondId: profile.id,
+                });
+              }
             }
           }
         } else if (
@@ -100,13 +115,14 @@ export class SwipeService {
         }
       } else if (
         profile.type === ProfileType.Event &&
-        profileRec.type === ProfileType.User &&
-        lastSwipe.type === SwipeType.Like
+        profileRec.type === ProfileType.User
       ) {
-        await this.sendAddChatMember({
-          profileId: profile.id,
-          profileSecondId: profileRec.id,
-        });
+        if (lastSwipe.type === SwipeType.Like) {
+          await this.sendAddChatMember({
+            profileId: profile.id,
+            profileSecondId: profileRec.id,
+          });
+        }
       }
     }
 
@@ -128,7 +144,20 @@ export class SwipeService {
     });
   }
 
-  async findProfiles(dto: FindProfileDto) {}
+  async findProfiles(dto: FindProfileDto) {
+    const notReactedSwipes = await this.swipeRepository
+      .findNotReactedSwipes(dto.profileId)
+      .then((r) => r.map((item) => item.profileId));
+    return await this.httpService.axiosRef
+      .post<
+        FindProfileRequest[],
+        AxiosResponse<FindProfileRequest[]>,
+        { ids: string[] }
+      >(`${process.env.ACCOUNT_SERVICE_URL}/profile/find-by-ids`, {
+        ids: notReactedSwipes,
+      })
+      .then((r) => r.data);
+  }
 
   async sendAddChatMember(dto: ChatContract.Message) {
     await this.producerChat.send({
@@ -142,5 +171,10 @@ export class SwipeService {
       topic: CreateChatContract.topic,
       messages: [{ value: JSON.stringify(dto) }],
     });
+  }
+
+  async clearSwipe() {
+    const oldSwipes = await this.swipeRepository.findOld();
+    await this.swipeRepository.remove(oldSwipes);
   }
 }
