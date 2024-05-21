@@ -43,7 +43,7 @@ func (h Handler) Router() *gin.Engine {
 
 	//ACCOUNT
 	account := service.Group("/account")
-	account.Any("/*path", h.Redirect("/auth", env.AccountURL))
+	account.Any("/*path", h.Redirect("", env.AccountURL))
 
 	//RECOMMENDATIONS
 	recommendations := service.Group("/recommendations")
