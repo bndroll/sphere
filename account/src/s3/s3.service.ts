@@ -11,8 +11,7 @@ export class S3Service {
 
   async upload(dto: UploadDto): Promise<string> {
     const fileName = `${generateString()}.webp`;
-    const webpData = await this.convertToWebP(dto.data);
-    await this.s3.putObject(dto.bucket, fileName, webpData);
+    await this.s3.putObject(dto.bucket, fileName, dto.data);
     return `/s3/${dto.bucket}/${fileName}`;
   }
 
