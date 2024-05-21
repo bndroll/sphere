@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { BaseRepository } from 'src/core/common/base.repository';
-import { Swipe } from 'src/core/domain/swipe/entities/swipe.entity';
+import { Swipe, SwipeType } from 'src/core/domain/swipe/entities/swipe.entity';
 import {
   FindByProfileIdsAndTypeDto,
   FindByProfileIdsDto,
@@ -30,5 +30,20 @@ export class SwipeRepository extends BaseRepository<Swipe> {
         profileRecId: dto.profileRecId,
       })
       .getOne();
+  }
+
+  async findOld() {
+    const weekAgo = new Date(new Date().getTime() - 1000 * 60 * 60 * 24 * 7);
+    return await this.createQueryBuilder('s')
+      .where('s.createDate < :weekAgo', { weekAgo })
+      .getMany();
+  }
+
+  async findNotReactedSwipes(profileId: string) {
+    return await this.createQueryBuilder('s')
+      .where('s.profileRecId = :profileId', { profileId: profileId })
+      .andWhere('s.reaction = :reaction', { reaction: false })
+      .andWhere('s.type = :type', { type: SwipeType.Like })
+      .getMany();
   }
 }
