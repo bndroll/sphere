@@ -5,8 +5,8 @@ import Questionnaire from '@/app/testing/page';
 export default function Home() {
   return (
     <QueryClientContextProvider>
-      <AuthView />
-      {/*<Questionnaire />*/}
+      {/*<AuthView />*/}
+      <Questionnaire />
     </QueryClientContextProvider>
   );
 }

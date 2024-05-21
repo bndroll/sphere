@@ -3,14 +3,18 @@ import {useState} from 'react';
 import { motion, AnimatePresence } from "framer-motion";
 import cn from 'classnames';
 
-export default function NavBar() {
-    const tabs = ['Романтическая', 'Деловая', 'Досуговая'];
-    const [selectedTab, setSelectedTab] = useState(tabs[0]);
+interface NavBarProps {
+    navItems: string[];
+    selectedTab: string;
+    setSelectedTab: (tab: string) => void;
+}
+
+export default function NavBar({navItems, selectedTab, setSelectedTab}: NavBarProps) {
     return (
         <div className={styles.container}>
             <nav>
                 <ul className={styles.nav}>
-                    {tabs.map((item) => (
+                    {navItems.map((item) => (
                         <li
                             key={item}
                             className={ cn(styles.item, {[styles.selected]: item === selectedTab})}

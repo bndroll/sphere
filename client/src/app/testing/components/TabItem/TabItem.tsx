@@ -14,21 +14,36 @@ interface TabItemProps {
     title: string;
     href: string;
     counter?: number;
+    onClick?: () => void;
 }
 
-export default function TabItem({ icon, title, href, counter }: TabItemProps) {
+export default function TabItem({ icon, title, href, counter, onClick }: TabItemProps) {
     const pathname = usePathname();
     let isActive = useMemo(() => pathname === href, [href, pathname]);
 
     return (
-        <Link className={cn(styles.tab, {[styles.active]: isActive})} href={href}>
-            {
+        <>
+        {
+            isActive ? <button className={cn(styles.tab, {[styles.active]: isActive})}> {
                 counter && <span className={styles.counter}>{counter}</span>
             }
-            {
-                icon
-            }
-            <span className={cn(styles.title, {[styles.active]: isActive})}>{title}</span>
-        </Link>
+                {
+                    icon
+                }
+                <span className={cn(styles.title, {[styles.active]: isActive})}>{title}</span>
+            </button>
+                :
+                <Link className={cn(styles.tab, {[styles.active]: isActive})} href={href}>
+                    {
+                        counter && <span className={styles.counter}>{counter}</span>
+                    }
+                    {
+                        icon
+                    }
+                    <span className={cn(styles.title, {[styles.active]: isActive})}>{title}</span>
+                </Link>
+
+        }
+        </>
     )
 }

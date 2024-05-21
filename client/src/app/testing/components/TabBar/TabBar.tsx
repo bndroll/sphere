@@ -4,7 +4,7 @@ import LovelySvg from "@/assets/icons/lovely.svg";
 import FormSvg from "@/assets/icons/tape.svg";
 import MessSvg from '@/assets/icons/messenger.svg';
 import UserSvg from '@/assets/icons/user.svg';
-import {ReactNode} from 'react';
+import {ReactNode, useState} from 'react';
 
 export default function TabBar() {
     interface Item {
@@ -37,6 +37,9 @@ export default function TabBar() {
             href: '/profile',
         },
     ]
+
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
         <div className={styles.container}>
             {
