@@ -31,6 +31,11 @@ export class Swipe {
   @Column({ type: 'enum', enum: SwipeType })
   type: SwipeType;
 
+  @Index()
+  @Column('boolean', { default: false })
+  reaction: boolean;
+
+  @Index()
   @CreateDateColumn({
     type: 'timestamp',
     name: 'created_date',
@@ -44,6 +49,7 @@ export class Swipe {
     instance.profileId = dto.profileId;
     instance.profileRecId = dto.profileRecId;
     instance.type = dto.type;
+    instance.reaction = false;
     return instance;
   }
 }
