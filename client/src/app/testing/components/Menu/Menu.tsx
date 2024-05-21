@@ -1,54 +1,63 @@
+'use client'
 import styles from './styles.module.scss';
 import MenuSvg from '@/assets/icons/menu.svg';
 import {ReactNode} from 'react';
-import { motion, sync, useCycle } from "framer-motion";
+import {AnimatePresence, motion} from 'framer-motion';
+import cn from 'classnames';
 
-interface MenuProps {
-    isOpen: boolean;
-    items: string[];
+interface MenuItem {
+    text: string;
     icon: ReactNode;
 }
 
-export default function Menu({items, icon, isOpen}: MenuProps) {
-    const sidebar = {
-        open: (height = 100) => ({
-            clipPath: `circle(${height * 2 + 200}px at 40px 40px)`,
-            transition: {
-                type: "spring",
-                stiffness: 20,
-                restDelta: 2
-            }
-        }),
-        closed: {
-            clipPath: "circle(30px at 40px 40px)",
-            transition: {
-                delay: 0.5,
-                type: "spring",
-                stiffness: 400,
-                damping: 40
-            }
-        }
-    };
-    // const [isOpen, toggleOpen] = useCycle(false, true);
+interface MenuProps {
+    isOpen: boolean;
+    items: MenuItem[];
+    tabs: string[];
+    onClick?: (tab: number) => void;
+}
+
+export default function Menu({items, isOpen, tabs, onClick}: MenuProps) {
     return (
-        <motion.div
-            className={styles.menu}
-            animate={isOpen ? "open" : "closed"}
-            variants={sidebar}
-        >
-            <ul>
-                {
-                    items.map((item) => (
-                        <li key={item}>
-                            {item}
-                            {icon}
-                        </li>))
-                }
-            </ul>
-            <div>
-                <button>Настройки ленты</button>
-                <MenuSvg />
-            </div>
-        </motion.div>
+        <AnimatePresence>
+            {isOpen && (
+                <div>
+                    <motion.div className={styles.backdrop}></motion.div>
+                    <motion.div
+                        className={styles.menu}
+                        initial={{y: '-100%', x: '-8%', opacity: 0, width: 200}}
+                        animate={{x: '-8%', y: '-126%', opacity: 1, width: 228}}
+                        exit={{y: '-100%', x: '-8%', opacity: 0, width: 200}}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <ul className={styles.list}>
+                            {
+                                items.map((item, index) => (
+                                    <li
+                                        key={item.text}
+                                        className={cn(styles.item, {[styles.borderNone]: index === items.length-1})}
+                                        onClick={() => {
+                                            if(onClick) {
+                                                onClick(tabs.indexOf(item.text));
+                                            }
+                                        }}
+                                    >
+                                        {item.text}
+                                        {item.icon}
+                                    </li>))
+                            }
+                        </ul>
+                        <div>
+                            <button className={styles.btn}>
+                                Настройки ленты
+                                <MenuSvg/>
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+
+            )}
+        </AnimatePresence>
+
     )
 }

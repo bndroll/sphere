@@ -7,13 +7,15 @@ type Props = {
   text: string;
   IconLeft?: () => ReactNode;
   IconRight?: () => ReactNode;
-  justify?: "center" | "space-between";
+  justify?: "center" | "space-between" | "start";
   onClick: () => void;
   disabled?: boolean;
+  className?: string;
 };
 export const Button: FC<Props> = ({
   variant = "primary",
   justify = "center",
+  className,
   text,
   IconLeft,
   IconRight,
@@ -22,15 +24,17 @@ export const Button: FC<Props> = ({
 }) => {
   return (
     <button
-      className={cn(styles.button, styles[variant], {
+      className={cn(className, styles.button, styles[variant], {
         [styles.disabled]: disabled,
       })}
       style={{ justifyContent: justify }}
       onClick={!disabled ? onClick : () => {}}
       disabled={disabled}
     >
-      {!!IconLeft && <IconLeft />}
-      {text}
+      <div className={styles.content}>
+        {!!IconLeft && <IconLeft />}
+        {text}
+      </div>
       {!!IconRight && <IconRight />}
     </button>
   );

@@ -56,7 +56,7 @@ export default function Registry() {
       <ProgressRegistry
         onNextClick={() => handleNextStep()}
         step={step}
-        isDisabled={isAvailableNextPage}
+        isDisabled={false}
       />
     </div>
   );

@@ -1,12 +1,12 @@
 import QueryClientContextProvider from "@/utils/context/QueryClientContext";
 import { AuthView } from "@/components/AuthView/AuthView";
-import Questionnaire from '@/app/testing/page';
+import Questionnaire from '@/app/feed/page';
 
 export default function Home() {
   return (
     <QueryClientContextProvider>
-      {/*<AuthView />*/}
-      <Questionnaire />
+      <AuthView />
+      {/*<Questionnaire />*/}
     </QueryClientContextProvider>
   );
 }

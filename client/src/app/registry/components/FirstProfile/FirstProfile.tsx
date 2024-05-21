@@ -25,7 +25,7 @@ export const FirstProfile = () => {
         <SelectRow label="Пол" />
         <InputTextRow label="Рост, см" placeholder="180" />
         <InputTextRow label="Email" placeholder="example@example.com" />
-        <SwitchRow label="Куриение" className={styles.switch} />
+        <SwitchRow label="Курение" className={styles.switch} />
         <SwitchRow label="Алкоголь" className={styles.switch} />
       </div>
       <div className={styles.form_block}>

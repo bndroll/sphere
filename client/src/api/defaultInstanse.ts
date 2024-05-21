@@ -8,10 +8,10 @@ export const createDefaultAxios = () => {
 
   axiosInstance.interceptors.request.use(
     (request) => {
-      // const token = request.prosv?.token;
-      // if (token) {
-      //   request.headers.set("Authorization", `Bearer ${token}`);
-      // }
+      const token = localStorage.getItem("tcn");
+      if (token) {
+        request.headers.set("Authorization", `Bearer ${token}`);
+      }
       return request;
     },
     (error) => {

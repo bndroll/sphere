@@ -12,21 +12,32 @@ import { useRouter } from "next/navigation";
 import { QueryClient } from "@tanstack/react-query";
 import { postAuth } from "@/api/services/auth/auth.api";
 import { Preload } from "@/components/Preload/Preload";
+import Questionnaire from "@/app/feed/page";
+import Registry from "@/app/registry/page";
 
 export const AuthView = () => {
   const [isTelegram, setIsTelegram] = useState(false);
+  const [isHasAuth, setIsHasAuth] = useState(false);
+  const [loading, setLoading] = useState(true);
   const queryClient = new QueryClient();
   queryClient.clear();
   const initData = useTelegramInitData();
   useEffect(() => {
     const a = async () => {
+      setLoading(true);
       if (initData?.user) {
         setIsTelegram(true);
-        await postAuth({
+        window.Telegram.WebApp.expand();
+        const { accessToken, refreshToken } = await postAuth({
           telegramId: initData.user.id.toString(),
           username: initData.user.username ?? "",
         });
-      }
+        localStorage.setItem("tcn", accessToken);
+        localStorage.setItem("ref_tcn", refreshToken);
+        setIsHasAuth(true);
+        // const a = await findMe();
+      } else setIsTelegram(false);
+      setTimeout(() => setLoading(false), 2000);
     };
     void a();
   }, [initData]);
@@ -80,12 +91,18 @@ export const AuthView = () => {
   return (
     <>
       <AnimatePresence mode="wait">
-        <motion.div
-          key={isTelegram}
-          initial={{ y: 10, opacity: 1 }}
-          exit={{ y: -10, opacity: 0 }}
-        >
-          {!isTelegram ? <Preload /> : telegramWindow()}
+        <motion.div key={isTelegram}>
+          {loading ? (
+            <Preload />
+          ) : isTelegram ? (
+            isHasAuth ? (
+              <Questionnaire />
+            ) : (
+              telegramWindow()
+            )
+          ) : (
+            <Registry />
+          )}
         </motion.div>
       </AnimatePresence>
     </>

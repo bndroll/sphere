@@ -1,0 +1,41 @@
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: #747474;
+  width: 72px;
+  position: relative;
+
+  .title {
+    font-size: 10px;
+  }
+
+  .counter {
+    position: absolute;
+    top: -2px;
+    right: 2px;
+    background: #902FEF;
+    border-radius: 8px;
+    padding: 1px 4px;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 274;
+    line-height: 12px;
+    letter-spacing: -0.5px;
+    z-index: 1;
+  }
+}
+
+.active path {
+  stroke: #FFFFFF;
+}
+
+.active svg {
+  z-index: 5;
+}
+
+.active {
+  color: #FFFFFF;
+  z-index: 5;
+}
