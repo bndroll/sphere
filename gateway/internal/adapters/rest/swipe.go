@@ -11,7 +11,7 @@ func (h Handler) SwipeReaction(c *gin.Context) {
 	log := h.logger.With("Handler.SwipeReaction")
 
 	var req CreateReactionRequest
-	if err := c.ShouldBindJSON(req); err != nil {
+	if err := c.ShouldBindJSON(&req); err != nil {
 		log.Error("invalid request body", "error", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
