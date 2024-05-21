@@ -2,20 +2,23 @@ package rest
 
 import (
 	"gateway/internal/env"
+	"gateway/internal/kafkalib"
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
 )
 
 type Handler struct {
-	client *http.Client
-	logger *slog.Logger
+	client   *http.Client
+	logger   *slog.Logger
+	producer *kafkalib.Producer
 }
 
-func New(log *slog.Logger) *Handler {
+func New(producer *kafkalib.Producer, log *slog.Logger) *Handler {
 	return &Handler{
-		client: &http.Client{},
-		logger: log,
+		client:   &http.Client{},
+		logger:   log,
+		producer: producer,
 	}
 }
 
@@ -40,7 +43,16 @@ func (h Handler) Router() *gin.Engine {
 
 	//ACCOUNT
 	account := service.Group("/account")
-	account.Any("/auth/*path", h.Redirect("/auth", env.AccountURL))
+	account.Any("/*path", h.Redirect("/auth", env.AccountURL))
+
+	//RECOMMENDATIONS
+	recommendations := service.Group("/recommendations")
+	recommendations.Any("/*path", h.AuthMiddleware(), h.Redirect("/api/v1/recommendations", env.RecommendationsURL))
+
+	//SWIPE
+	swipe := service.Group("/swipe")
+	service.POST("/reaction", h.SwipeReaction)
+	swipe.Any("/*path", h.AuthMiddleware(), h.Redirect("/swipe", env.SwipeURL))
 
 	return r
 }
