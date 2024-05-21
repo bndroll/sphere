@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -38,6 +39,9 @@ export class S3Controller {
     @UploadedFile() file: MemoryStorageFile,
     @Body() dto: UploadControllerDto,
   ) {
+    if (!file) {
+      throw new BadRequestException('No file uploaded');
+    }
     return await this.s3Service.upload({
       data: file.buffer,
       bucket: dto.bucket,
