@@ -181,6 +181,18 @@ services:
     networks:
       - common
 
+  chat:
+    build:
+      context: ../chat
+      dockerfile: ./Dockerfile
+    container_name: chat
+    depends_on: [gateway]
+    ports:
+      - "8060:8060"
+    env_file: ../chat/.env
+    networks:
+      - common
+
 networks:
   common:
     driver: bridge
