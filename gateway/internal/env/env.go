@@ -7,8 +7,11 @@ import (
 )
 
 var (
-	HttpPort   = fmt.Sprintf(":%s", Getter("HTTP_PORT", "8080"))
-	AccountURL = GetterURL("ACCOUNT_URL")
+	HttpPort           = fmt.Sprintf(":%s", Getter("HTTP_PORT", "8080"))
+	AccountURL         = GetterURL("ACCOUNT_URL")
+	RecommendationsURL = GetterURL("RECOMMENDATIONS_URL")
+	SwipeURL           = GetterURL("SWIPE_URL")
+	KafkaSwipeTopic    = Getter("KAFKA_SWIPE_TOPIC", "")
 )
 
 func Getter(key, defaultValue string) string {
