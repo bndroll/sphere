@@ -1,31 +1,22 @@
 FROM golang:alpine AS builder
 
-LABEL stage=gobuilder
+FROM golang:1.21.1-alpine as build
 
-ENV CGO_ENABLED 0
+RUN apk add alpine-sdk
 
-RUN apk update --no-cache && apk add --no-cache tzdata
-
-WORKDIR /build
-
-ADD go.mod .
-ADD go.sum .
-RUN go mod download
-COPY .. .
-RUN go build -ldflags="-s -w" -o /app/main cmd/main.go
-
-
-FROM scratch
-
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
-ENV TZ Asia/Shanghai
-
+RUN mkdir /app
 WORKDIR /app
-COPY --from=builder /app/main /app/main
+COPY ./ .
 
-COPY server.crt /app/server.crt
-COPY server.key /app/server.key
+RUN go clean --modcache
 
-CMD ["./main"]
+RUN GOOS=linux GOARCH=amd64 go build -a -tags musl -a -installsuffix cgo -o main cmd/main.go
+RUN go mod download
+RUN ls -a
 
+FROM golang:alpine
+COPY --from=build /app/main /
+
+WORKDIR /
+
+CMD ["/main"]
