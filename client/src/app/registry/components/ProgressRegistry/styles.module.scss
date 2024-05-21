@@ -3,10 +3,14 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding-top: 8px;
+  position: sticky;
+  bottom: 0;
+  width: 98vw;
+  padding: 16px 8px 8px 8px;
+  background: black;
 
   .value {
-    color: #B46EFF;
+    color: #902EEF;
   }
 
   .title {

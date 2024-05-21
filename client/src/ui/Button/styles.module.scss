@@ -19,8 +19,13 @@
 }
 
 .primary {
-  background: #B46EFF;
+  background: #902EEF;
   color: #FFFFFF;
+}
+
+.disabled {
+  background: #ffffff;
+  color: #8d8d8d;
 }
 
 .default {
@@ -29,4 +34,9 @@
   width: fit-content;
   background: #FFFFFFE5;
   font-size: 14px;
+}
+
+.disabled {
+  background: #ffffff;
+  color: #8d8d8d;
 }
