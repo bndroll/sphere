@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gateway/internal/adapters/rest"
 	"gateway/internal/env"
+	"gateway/internal/kafkalib"
 	"log/slog"
 	"net/http"
 	"os"
@@ -25,8 +26,9 @@ func (a *App) Run() error {
 	}
 
 	log := setupLogger()
+	producer := kafkalib.NewProducer(log)
 
-	h := rest.New(log)
+	h := rest.New(producer, log)
 	router := h.Router()
 
 	a.httpServer = &http.Server{
