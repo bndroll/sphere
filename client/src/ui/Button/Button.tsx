@@ -10,10 +10,12 @@ type Props = {
   justify?: "center" | "space-between";
   onClick: () => void;
   disabled?: boolean;
+  className?: string;
 };
 export const Button: FC<Props> = ({
   variant = "primary",
   justify = "center",
+  className,
   text,
   IconLeft,
   IconRight,
@@ -22,7 +24,7 @@ export const Button: FC<Props> = ({
 }) => {
   return (
     <button
-      className={cn(styles.button, styles[variant], {
+      className={cn(className, styles.button, styles[variant], {
         [styles.disabled]: disabled,
       })}
       style={{ justifyContent: justify }}

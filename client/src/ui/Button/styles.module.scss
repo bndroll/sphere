@@ -3,7 +3,6 @@
   border: none;
   font: inherit;
   color: inherit;
-  //background-color: transparent;
   background: #1C1C1E;
   cursor: pointer;
   width: 100%;
@@ -29,13 +28,11 @@
 }
 
 .default {
-  color:#000000;
+  color: #000000;
   padding: 6px 10px;
   width: fit-content;
   background: #FFFFFFE5;
   font-size: 14px;
-  background: #902EEF;
-  color: #FFFFFF;
 }
 
 .disabled {
