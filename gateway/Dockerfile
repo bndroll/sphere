@@ -1,5 +1,3 @@
-FROM golang:alpine AS builder
-
 FROM golang:1.21.1-alpine as build
 
 RUN apk add alpine-sdk
