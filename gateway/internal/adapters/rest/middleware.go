@@ -101,7 +101,7 @@ func (h Handler) extractUserIDFromToken(tokenString string) (string, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		userID, ok := claims["user_id"].(string)
+		userID, ok := claims["id"].(string)
 		if !ok {
 			return "", fmt.Errorf("user_id not found in token claims")
 		}
