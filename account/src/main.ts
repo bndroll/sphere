@@ -19,7 +19,9 @@ async function bootstrap() {
   app.connectMicroservice<MicroserviceOptions>({});
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.register(fmp);
+  await app.register(fmp, {
+    limits: { fileSize: 1000000000 },
+  });
   await app.startAllMicroservices();
   await app.listen(process.env.PORT, '0.0.0.0');
 }
