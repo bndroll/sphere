@@ -47,12 +47,12 @@ func (h Handler) Router() *gin.Engine {
 
 	//RECOMMENDATIONS
 	recommendations := service.Group("/recommendations")
-	recommendations.Any("/*path", h.AuthMiddleware(), h.Redirect("/api/v1/recommendations", env.RecommendationsURL))
+	recommendations.Any("/*path", h.Redirect("/api/v1/recommendations", env.RecommendationsURL))
 
 	//SWIPE
 	swipe := service.Group("/swipe")
 	service.POST("/reaction", h.SwipeReaction)
-	swipe.Any("/*path", h.AuthMiddleware(), h.Redirect("/swipe", env.SwipeURL))
+	swipe.Any("/*path", h.Redirect("/swipe", env.SwipeURL))
 
 	return r
 }
