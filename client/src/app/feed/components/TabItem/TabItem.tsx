@@ -3,7 +3,7 @@ import styles from "./styles.module.scss";
 import {ReactNode, useMemo, useState} from 'react';
 import Link from "next/link";
 import cn from "classnames";
-import { usePathname } from "next/navigation";
+import {usePathname} from 'next/navigation';
 import Menu from '@/app/testing/components/Menu/Menu';
 import LikeSvg from '@/assets/icons/lovely.svg';
 import BusinessSvg from '@/assets/icons/buisness.svg';
@@ -21,21 +21,28 @@ interface TabItemProps {
 
 export default function TabItem({ icon, title, href, tabs, counter, isMenu, onMenuClick }: TabItemProps) {
   const pathname = usePathname();
-  let isActive = useMemo(() => pathname === href, [href, pathname]);
+
+  let isActive = useMemo(() => {
+      if (href === '/' && pathname !== href) {
+        return false;
+      }
+
+      return pathname.startsWith(href);
+  }, [href, pathname]);
   const [open, setOpen] = useState(false);
 
   const menuItems = [
     {
       text: "Деловая",
-      icon: <BusinessSvg />
+      icon: <BusinessSvg className={styles.menuIcon}/>
     },
     {
       text: "Романтическая",
-      icon: <LikeSvg />
+      icon: <LikeSvg className={styles.menuIcon}/>
     },
     {
       text: "Досуговая",
-      icon: <HobbieSvg />
+      icon: <HobbieSvg className={styles.menuIcon}/>
     },
   ]
 

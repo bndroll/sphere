@@ -15,8 +15,11 @@ import BustSvg from '@/assets/icons/bust.svg';
 import FlashSvg from '@/assets/icons/flash.svg';
 import List, {ListItem} from '@/app/profile/components/List/List';
 import TabBar from '@/app/feed/components/TabBar/TabBar';
+import {useRouter} from 'next/navigation';
 
 export default function Profile() {
+    const router = useRouter();
+
     const formsItems: ListItem[] = [
         {
             icon: <BussinessSvg />,
@@ -60,7 +63,7 @@ export default function Profile() {
             <List items={formsItems} />
             <Button
                 text={'Управление эвентами'}
-                onClick={() => console.log('')}
+                onClick={() => router.push('/profile/events')}
                 variant={'secondary'}
                 IconLeft={EventSvg}
                 justify={'start'}

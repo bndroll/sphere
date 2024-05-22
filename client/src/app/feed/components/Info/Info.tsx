@@ -64,7 +64,7 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick }) => {
             justify="center"
             text="Нравится"
             className={styles.btn}
-            IconLeft={HeartSvg}
+            IconLeft={() => <HeartSvg className={styles.iconBtn}/>}
             onClick={handleLikeClick}
           />
           <Button
@@ -72,7 +72,7 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick }) => {
             justify="center"
             text="Не интересно"
             className={styles.btn}
-            IconLeft={HeartSlashSvg}
+            IconLeft={() => <HeartSlashSvg className={styles.iconBtn} />}
             onClick={handleLikeClick}
           />
         </div>
