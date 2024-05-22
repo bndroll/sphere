@@ -117,11 +117,16 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 }
 
 func (r *Recommendations) CreateRecommendation(ctx context.Context, action CreateRecommendation) error {
+	id, err := uuid.Parse(action.ID)
+	if err != nil {
+		return err
+	}
+
 	return r.storage.CreateRecommendation(ctx, entity.Recommendation{
 		ID:        uuid.New(),
 		Category:  action.Category,
 		Gender:    action.Gender,
-		ProfileID: uuid.MustParse(action.ID),
+		ProfileID: id,
 		Vector:    action.Embedding,
 	})
 }

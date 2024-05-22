@@ -15,7 +15,12 @@ type UserDTO struct {
 }
 
 type InfoDTO struct {
-	City string `json:"city"`
+	City   string     `json:"city"`
+	Dating *DatingDTO `json:"dating,omitempty"`
+}
+
+type DatingDTO struct {
+	Gender string `json:"gender,omitempty"`
 }
 
 type TagDTO struct {
@@ -32,4 +37,14 @@ type ResponseRecommendation struct {
 	Gender    string  `json:"gender,omitempty"`
 	Category  string  `json:"category"`
 	Type      string  `json:"type"`
+}
+
+type EmbeddingRequest struct {
+	ID       string `json:"id"`
+	Sentence string `json:"sentence"`
+}
+
+type EmbeddingResponse struct {
+	ID        string  `json:"id"`
+	Embedding float64 `json:"embedding"`
 }
