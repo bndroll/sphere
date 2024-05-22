@@ -18,7 +18,7 @@ import TabBar from "@/app/feed/components/TabBar/TabBar";
 import { useRouter } from "next/navigation";
 import Transition from "@/components/Transition/Transition";
 
-export default function Profile() {
+export default function Events() {
   const router = useRouter();
 
   const formsItems: ListItem[] = [

@@ -2,28 +2,32 @@
 import styles from "./styles.module.scss";
 import { Button } from "@/ui/Button/Button";
 import ArrowSVG from "@/assets/icons/Arrow.svg";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import useTelegramInitData from "@/utils/hooks/useTelegramInitData";
 import LogoSvg from "@/assets/icons/logo.svg";
 import CircleSvg from "@/assets/icons/circle.svg";
 import { AnimatePresence, motion } from "framer-motion";
 import { container, item } from "@/components/AuthView/AuthView.animation";
 import { useRouter } from "next/navigation";
-import { QueryClient } from "@tanstack/react-query";
 import { postAuth } from "@/api/services/auth/auth.api";
 import { Preload } from "@/components/Preload/Preload";
-import Questionnaire from "@/app/feed/page";
-import { findMe } from "@/api/services/user/find_me/find_me.api";
 import cn from "classnames";
 import { TextInput } from "@/ui/TextInput/TextInput";
+import { findProfiles } from "@/api/services/profile/find-by-user.api";
+import { FeedPage } from "@/app/feed/components/FeedPage/FeedPage";
+import UserStoreContextProvider, {
+  UserStoreContext,
+} from "@/utils/context/UserStoreContext";
+import { getCategories } from "@/api/services/category/category.api";
 
 export const AuthView = () => {
   const [isTelegram, setIsTelegram] = useState(false);
   const [isHasAuth, setIsHasAuth] = useState(false);
   const [loading, setLoading] = useState(true);
-  const queryClient = new QueryClient();
-  queryClient.clear();
   const initData = useTelegramInitData();
+  const { handleSetUserProfilies, setAllCategories } =
+    useContext(UserStoreContext);
+
   useEffect(() => {
     const a = async () => {
       setLoading(true);
@@ -36,15 +40,21 @@ export const AuthView = () => {
         });
         localStorage.setItem("tcn", accessToken);
         localStorage.setItem("ref_tcn", refreshToken);
+
         try {
-          const account = await findMe();
-          setIsHasAuth(true);
-          if (account.gender === null) setIsHasAuth(false);
+          const account = await findProfiles();
+          if (account.length > 0) {
+            setIsHasAuth(true);
+            handleSetUserProfilies(account);
+            const b = await getCategories();
+            setAllCategories(b);
+          }
         } catch (e) {
           setIsHasAuth(false);
         }
       } else setIsTelegram(false);
       setTimeout(() => setLoading(false), 2000);
+      setTimeout(() => (isHasAuth ? router.push("/feed") : null), 3000);
     };
     void a();
   }, [initData]);
@@ -136,21 +146,23 @@ export const AuthView = () => {
 
   return (
     <>
-      <AnimatePresence mode="wait">
-        <motion.div key={isTelegram}>
-          {loading ? (
-            <Preload />
-          ) : isTelegram ? (
-            isHasAuth ? (
-              <Questionnaire />
+      <UserStoreContextProvider>
+        <AnimatePresence mode="wait">
+          <motion.div key={isTelegram}>
+            {loading ? (
+              <Preload />
+            ) : isTelegram ? (
+              isHasAuth ? (
+                <FeedPage />
+              ) : (
+                telegramWindow()
+              )
             ) : (
-              telegramWindow()
-            )
-          ) : (
-            defaultRegistry()
-          )}
-        </motion.div>
-      </AnimatePresence>
+              defaultRegistry()
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </UserStoreContextProvider>
     </>
   );
 };

@@ -119,7 +119,7 @@ const profileMapper = {
   },
 };
 
-const categoryMapper = {
+export const categoryMapper = {
   Романтическая: {
     type: "network",
     icon: <BusinessSVG />,

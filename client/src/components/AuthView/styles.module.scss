@@ -61,6 +61,22 @@
       }
     }
 
+    :nth-child(3) {
+      top: -260px;
+      left: 30px;
+
+      svg {
+        border-radius: 100%;
+        width: 750px;
+        height: 750px;
+
+        path {
+          stroke-width: 20px;
+          box-shadow: inset 18px 18px 24px 0 rgba(41, 22, 61, 0.1);
+        }
+      }
+    }
+
     .circle1 {
       top: -300px;
       left: -0px;

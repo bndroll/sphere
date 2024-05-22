@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import TabItem from "@/app/feed/components/TabItem/TabItem";
 import styles from "./styles.module.scss";
@@ -34,13 +34,13 @@ export default function TabBar({ tabs, className, onMenuClick }: TabBarProps) {
     {
       icon: <FormSvg />,
       title: "Лента",
-      href: "/",
+      href: "/feed",
       isMenu: true,
     },
     {
       icon: <MessSvg />,
       title: "Мессенеджер",
-      href: "/msg",
+      href: "/chat",
       counter: 151,
     },
     {

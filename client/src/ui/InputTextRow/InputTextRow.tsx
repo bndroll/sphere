@@ -6,12 +6,14 @@ type Props = {
   label: string;
   value?: string;
   onChange?: (val: string) => void;
+  type?: "text" | "number" | "password";
 };
 export const InputTextRow: FC<Props> = ({
   placeholder,
   label,
   value = "",
   onChange,
+  type,
 }) => {
   const [selfValue, setValue] = useState(value);
   const ref = useRef<HTMLInputElement | null>(null);
@@ -47,6 +49,7 @@ export const InputTextRow: FC<Props> = ({
       <p className={styles.label}>{label}</p>
       <input
         ref={ref}
+        type={type}
         className={styles.input}
         placeholder={placeholder}
         value={selfValue}

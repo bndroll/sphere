@@ -4,7 +4,7 @@ import { TextArea } from "@/ui/TextArea/TextArea";
 import { InputTextRow } from "@/ui/InputTextRow/InputTextRow";
 import { SwitchRow } from "@/ui/SwitchRow/SwitchRow";
 import { SelectRow } from "@/ui/SelectRow/SelectRow";
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
 import {
   ProfilesT,
   UserProfile,
@@ -35,33 +35,40 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
   const [about, setAbout] = useState("");
   const [pickture, setPickture] = useState("");
   const [city, setCity] = useState("Москва");
-  const [userEducation, setEducation] = useState("");
-  const [userLanguage, setUserLanguage] = useState("");
+  const [userEducation, setEducation] = useState("Основное общее образование");
+  const [userLanguage, setUserLanguage] = useState<string[]>(["Русский"]);
   const [userPhone, setUserPhone] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userTelegram, setUserTelegram] = useState("");
   const [userVk, setUserVk] = useState("");
   const [userSite, setUserSite] = useState("");
-  const [userGender, setUserGender] = useState("Male");
+  const [userGender, setUserGender] = useState("Мужской");
   const [userHeight, setUserHeight] = useState("");
-  const [userAlcohol, setUserAlcohol] = useState("Male");
+  const [userAlcohol, setUserAlcohol] = useState("Мужской");
   const [userSmoking, setUserSmoking] = useState("");
-  const [userPost, setUserPost] = useState("Male");
+  const [userPost, setUserPost] = useState("Мужской");
   const [userExpiriens, setUserExpiriens] = useState("");
-  const [userSkills, setUserSkills] = useState("Male");
+  const [userSkills, setUserSkills] = useState(["Анализ данных"]);
   const [userStatus, setUserStatus] = useState("");
   const [hobbies, setHobbies] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
 
   useEffect(() => {
     setCategory(categories.get(categoryType));
   }, [categories, categoryType]);
+
+  const categoryTags = useCallback(() => {
+    return category?.tags.map((c) => c.title);
+  }, [category]);
 
   const handleCreateProfile = async () => {
     const data: UserProfile = {
       categoryId: category?.id!,
       type: "User",
       visible: "Open",
-      tagsId: category!.tags.map((c) => c.id) ?? [],
+      tagsId:
+        category?.tags.filter((c) => tags.includes(c.title)).map((t) => t.id) ??
+        [],
       info: {
         name: user.username,
         about: about,
@@ -76,7 +83,7 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
           site: userSite,
         },
         dating: {
-          gender: "Male",
+          gender: userGender === "Мужской" ? "Male" : "Female",
           height: userHeight,
           alcohol: userAlcohol,
           smoking: userSmoking,
@@ -84,7 +91,7 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
         work: {
           post: userPost,
           experience: userExpiriens,
-          skills: [userSkills],
+          skills: userSkills,
           status: userStatus,
         },
         hobby: {
@@ -131,7 +138,8 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
           label="Языки"
           options={languages}
           value={userLanguage}
-          onChange={setUserLanguage}
+          multiSelect
+          onMultiChange={setUserLanguage}
         />
       </div>
       <div className={styles.form_block}>
@@ -144,6 +152,7 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
         <InputTextRow
           label="Рост, см"
           placeholder="180"
+          type="number"
           value={userHeight}
           onChange={setUserHeight}
         />
@@ -158,16 +167,40 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
       </div>
       <div className={styles.form_block}>
         <InputTextRow label="Телефон" placeholder="+7(000)000-000-00" />
-        <InputTextRow label="Email" placeholder="example@example.com" />
         <InputTextRow label="Telegram" placeholder="@example" />
         <InputTextRow label="VK" placeholder="@example" />
         <InputTextRow label="Сайт" placeholder="www.example.com" />
       </div>
       <div className={styles.form_block} style={{ marginBottom: "11px" }}>
         <InputTextRow label="Должность" placeholder="Например, руководитель" />
-        <InputTextRow label="Опыт" placeholder="Укажите опыт в годах" />
-        <SelectRow label="Статус" placeholder="Статус" options={workStatus} />
-        <SelectRow label="Навыки" placeholder="Навыки" options={skills} />
+        <InputTextRow
+          label="Опыт"
+          placeholder="Укажите опыт в годах"
+          type="number"
+        />
+        <SelectRow
+          label="Статус"
+          placeholder="Статус"
+          value={userStatus}
+          onChange={setUserStatus}
+          options={workStatus}
+        />
+        <SelectRow
+          label="Навыки"
+          placeholder="Навыки"
+          multiSelect
+          value={userSkills}
+          onMultiChange={setUserSkills}
+          options={skills}
+        />
+        <SelectRow
+          label="Теги"
+          placeholder="Теги"
+          value={tags}
+          multiSelect
+          onMultiChange={setTags}
+          options={categoryTags()}
+        />
       </div>
     </div>
   );
