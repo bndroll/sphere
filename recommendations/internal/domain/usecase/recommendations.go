@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"io"
 	"log/slog"
@@ -43,6 +44,10 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 	if err != nil {
 		log.Error("Error getting vector by profile ID", err)
 		return nil, err
+	}
+	if target != nil {
+		log.Error("Error getting recommendation by profile ID")
+		return nil, fmt.Errorf("error getting recommendation by profile ID")
 	}
 
 	filter := RecommendationFilter{

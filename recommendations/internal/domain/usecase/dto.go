@@ -5,7 +5,7 @@ import "github.com/google/uuid"
 type GetRecommendationsRequest struct {
 	ProfileID uuid.UUID `json:"profileId"`
 	Category  string    `json:"category"`
-	Limit     int
+	Limit     int       `json:"limit"`
 }
 
 type ProfilesResponse struct {
