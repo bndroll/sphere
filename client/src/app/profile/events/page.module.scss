@@ -1,7 +1,6 @@
 .container {
   padding: 8px;
 
-
   .title {
     padding: 16px 8px;
     border-bottom: 1px solid #261E2D;
@@ -15,6 +14,7 @@
     flex-direction: column;
     justify-content: space-between;
     height: calc(100vh - 70px*2);
+
     .events {
       display: flex;
       flex-direction: column;
