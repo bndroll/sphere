@@ -45,7 +45,7 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 		log.Error("Error getting vector by profile ID", err)
 		return nil, err
 	}
-	if target != nil {
+	if target == nil {
 		log.Error("Error getting recommendation by profile ID")
 		return nil, fmt.Errorf("error getting recommendation by profile ID")
 	}
