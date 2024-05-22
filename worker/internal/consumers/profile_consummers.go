@@ -23,7 +23,7 @@ func (h *ProfileHandler) Handle(msg kafka.Message) {
 		return
 	}
 
-	h.uc.ProcessProfile(context.Background(), &dto)
+	h.uc.ProcessProfileIfOpen(context.Background(), &dto)
 }
 
 func NewProfileHandler(uc *usecase.Worker, logger *slog.Logger) *ProfileHandler {
