@@ -3,7 +3,6 @@ package rest
 import (
 	"gateway/internal/env"
 	"gateway/internal/kafkalib"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"log/slog"
 	"net/http"
@@ -26,7 +25,6 @@ func New(producer *kafkalib.Producer, log *slog.Logger) *Handler {
 func (h Handler) Router() *gin.Engine {
 	r := gin.New()
 
-	r.Use(cors.Default())
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 
