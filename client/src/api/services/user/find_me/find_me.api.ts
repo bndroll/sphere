@@ -1,8 +1,8 @@
 import { axiosInstance } from "@/api";
-import { AuthResponse } from "@/api/services/auth/auth.types";
+import { UserAccount } from "@/api/services/user/find_me/find_me.types";
 
 export const findMe = async (axios = axiosInstance) => {
-  const { data } = await axios.get<AuthResponse>("user/find-me");
+  const { data } = await axios.get<UserAccount>("/account/user/find-me");
 
   return data;
 };

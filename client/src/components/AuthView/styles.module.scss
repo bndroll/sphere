@@ -11,12 +11,11 @@
   ))
 }
 
-
 .welcome {
   background: linear-gradient(250deg, #6819bd 0%, #390764 30.72%, #160029 100%);
   border-radius: 10px;
   display: flex;
-  height: 80vh;
+  height: 70vh;
   flex-direction: column;
   justify-content: space-between;
   padding: 8px;
@@ -98,3 +97,9 @@
   position: absolute;
   left: -200px
 }
+
+
+.welcome_default {
+  height: 40vh;
+}
+

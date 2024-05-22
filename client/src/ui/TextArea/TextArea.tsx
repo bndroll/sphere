@@ -4,24 +4,31 @@ import { FC, FormEvent, useCallback, useState } from "react";
 type Props = {
   placeholder?: string;
   rows?: number;
+  value?: string;
+  onChange?: (val: string) => void;
 };
-export const TextArea: FC<Props> = ({ placeholder, rows = 5 }) => {
-  const [value, setValue] = useState("");
+export const TextArea: FC<Props> = ({
+  placeholder,
+  rows = 5,
+  value = "",
+  onChange,
+}) => {
+  const [selfValue, setValue] = useState(value);
 
   const onInput = useCallback((event: FormEvent<HTMLTextAreaElement>) => {
     const val = event.currentTarget.value;
     setValue(val);
+    onChange?.(val);
   }, []);
 
   return (
     <textarea
-      wrap="hard"
-      maxLength={100}
+      maxLength={200}
       cols={30}
-      rows={5}
+      rows={3}
       className={styles.textarea}
       placeholder={placeholder}
-      value={value}
+      value={selfValue}
       onChange={onInput}
     />
   );

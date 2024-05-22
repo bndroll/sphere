@@ -17,17 +17,55 @@
 }
 
 .select {
-  position: absolute;
-  width: 0;
+  position: fixed;
   height: 4000px;
+  width: 0%;
+  min-height: 1000vh;
   background: black;
+  padding-top: 16px;
+  border-top: 1px solid rgba(84, 84, 88, 0.53);
   top: 0;
   right: 0;
   transition: all .2s;
   z-index: 100;
+  flex-direction: column;
+
+  .search {
+    padding: 0 16px;
+  }
+  
+  .list {
+    display: flex;
+    border-radius: 10px;
+    width: 100%;
+    min-height: 100vh;
+    overflow: auto;
+    padding: 10px 0 10px 16px;
+    flex-direction: column;
+    height: 99vh;
+
+    > * {
+      border-top: 1px solid #3C3C3C;
+      padding: 10px 10px 10px 0;
+    }
+
+    .option {
+      width: 100%;
+      color: white;
+      padding: 19px 16px 19px 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .flag {
+        color: #B46EFF;
+      }
+    }
+  }
 }
 
 .select[data-isopen="true"] {
-  overflow: hidden;
+  display: flex;
   width: 100%;
 }

@@ -5,8 +5,15 @@ import BusinessSVG from "@/assets/images/buisness.svg";
 import DateSVG from "@/assets/images/date.svg";
 import HobbiesSVG from "@/assets/images/hobbie.svg";
 import { SwitchCheckBox } from "@/ui/SwitchCheckBox/SwitchCheckBox";
-import { FC, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { TextInput } from "@/ui/TextInput/TextInput";
+import {
+  ProfilesT,
+  UserRegistryContext,
+  UserRegistryContextType,
+} from "@/utils/context/UserRegistryContext";
+import { ChooseFirstRegistry } from "@/app/registry/components/ChooseRegistry/ChooseRegistry";
+import { getCategories } from "@/api/services/category/category.api";
 
 type Props = {
   isAvailableNextPage?: (val: boolean) => void;
@@ -17,14 +24,51 @@ export const UsefulCategory: FC<Props> = ({ isAvailableNextPage }) => {
   const [isDating, setDating] = useState(false);
   const [isHobbies, setHobbies] = useState(false);
 
+  const {
+    setFirstStep,
+    setStepProgress,
+    setProgressOnClick,
+    setPercent,
+    setCountStep,
+    setHideProgress,
+    setAllCategories,
+  } = useContext<UserRegistryContextType>(UserRegistryContext);
+
   useEffect(() => {
     if (
       username.toString().length > 3 &&
       (isNetworking || isHobbies || isDating)
-    )
-      isAvailableNextPage?.(false);
-    else isAvailableNextPage?.(true);
-  }, [isAvailableNextPage, isDating, isHobbies, isNetworking, username]);
+    ) {
+      const profiles: ProfilesT[] = [];
+
+      if (isNetworking) profiles.push("network");
+      if (isDating) profiles.push("dating");
+      if (isHobbies) profiles.push("hobbies");
+      setFirstStep(username.toString(), profiles);
+      setProgressOnClick(() => {
+        setStepProgress(<ChooseFirstRegistry />);
+        setPercent(40);
+        setCountStep(2);
+        setHideProgress(true);
+      });
+    }
+  }, [isDating, isHobbies, isNetworking, username]);
+
+  useEffect(() => {}, [
+    username,
+    isDating,
+    isHobbies,
+    isNetworking,
+    setFirstStep,
+  ]);
+
+  useEffect(() => {
+    const a = async () => {
+      const b = await getCategories();
+      setAllCategories(b);
+    };
+    void a();
+  }, [setAllCategories]);
 
   return (
     <div className={styles.wrapper}>

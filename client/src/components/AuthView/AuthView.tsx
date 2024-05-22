@@ -13,7 +13,9 @@ import { QueryClient } from "@tanstack/react-query";
 import { postAuth } from "@/api/services/auth/auth.api";
 import { Preload } from "@/components/Preload/Preload";
 import Questionnaire from "@/app/feed/page";
-import Registry from "@/app/registry/page";
+import { findMe } from "@/api/services/user/find_me/find_me.api";
+import cn from "classnames";
+import { TextInput } from "@/ui/TextInput/TextInput";
 
 export const AuthView = () => {
   const [isTelegram, setIsTelegram] = useState(false);
@@ -34,8 +36,13 @@ export const AuthView = () => {
         });
         localStorage.setItem("tcn", accessToken);
         localStorage.setItem("ref_tcn", refreshToken);
-        setIsHasAuth(true);
-        // const a = await findMe();
+        try {
+          const account = await findMe();
+          setIsHasAuth(true);
+          if (account.gender === null) setIsHasAuth(false);
+        } catch (e) {
+          setIsHasAuth(false);
+        }
       } else setIsTelegram(false);
       setTimeout(() => setLoading(false), 2000);
     };
@@ -88,6 +95,45 @@ export const AuthView = () => {
     );
   };
 
+  const defaultRegistry = () => {
+    return (
+      <motion.div
+        layout
+        className={styles.main}
+        data-isopen={isOpen}
+        initial={{ y: 10, opacity: 1 }}
+      >
+        <div className={cn(styles.welcome_default, styles.welcome)}>
+          <LogoSvg className={styles.logo} />
+          <aside className={styles.rolers}>
+            <span className={styles.circle}>
+              <CircleSvg />
+            </span>
+            <span className={styles.circle}>
+              <CircleSvg />
+            </span>
+            <span className={styles.circle}>
+              <CircleSvg />
+            </span>
+          </aside>
+          <motion.div variants={container} initial="hidden" animate="visible">
+            <motion.h1 variants={item}>Добро пожаловать</motion.h1>
+          </motion.div>
+        </div>
+        <div className={styles.auth_form}>
+          <TextInput placeholder="Логин" />
+          <TextInput type="password" placeholder="Пароль" />
+        </div>
+        <Button
+          text={textButton()}
+          IconRight={ArrowSVG}
+          justify="space-between"
+          onClick={clickHandler}
+        />
+      </motion.div>
+    );
+  };
+
   return (
     <>
       <AnimatePresence mode="wait">
@@ -101,7 +147,7 @@ export const AuthView = () => {
               telegramWindow()
             )
           ) : (
-            <Registry />
+            defaultRegistry()
           )}
         </motion.div>
       </AnimatePresence>

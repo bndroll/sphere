@@ -1,13 +1,29 @@
 import styles from "./styles.module.scss";
-import { FC, FormEvent, useCallback, useRef, useState } from "react";
+import {
+  FC,
+  FormEvent,
+  HTMLInputTypeAttribute,
+  useCallback,
+  useRef,
+  useState,
+} from "react";
 import ClearSVG from "@/assets/icons/clear.svg";
+import cn from "classnames";
 
 type Props = {
   placeholder?: string;
   value?: string | number;
   onChange?: (val: string | number) => void;
+  type?: HTMLInputTypeAttribute;
+  wrapperClassName?: string;
 };
-export const TextInput: FC<Props> = ({ placeholder, value = "", onChange }) => {
+export const TextInput: FC<Props> = ({
+  placeholder,
+  value = "",
+  onChange,
+  type = "text",
+  wrapperClassName,
+}) => {
   const [inputValue, setValue] = useState(value);
   const ref = useRef<HTMLInputElement | null>(null);
   const [isFocused, setIsFocused] = useState(false);
@@ -42,7 +58,7 @@ export const TextInput: FC<Props> = ({ placeholder, value = "", onChange }) => {
   };
 
   return (
-    <div className={styles.wrapper}>
+    <div className={cn(wrapperClassName, styles.wrapper)}>
       <input
         ref={ref}
         className={styles.input}

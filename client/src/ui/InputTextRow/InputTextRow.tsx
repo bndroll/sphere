@@ -4,9 +4,16 @@ import { FC, FormEvent, useCallback, useRef, useState } from "react";
 type Props = {
   placeholder?: string;
   label: string;
+  value?: string;
+  onChange?: (val: string) => void;
 };
-export const InputTextRow: FC<Props> = ({ placeholder, label }) => {
-  const [value, setValue] = useState("");
+export const InputTextRow: FC<Props> = ({
+  placeholder,
+  label,
+  value = "",
+  onChange,
+}) => {
+  const [selfValue, setValue] = useState(value);
   const ref = useRef<HTMLInputElement | null>(null);
   const [isFocused, setIsFocused] = useState(false);
 
@@ -21,6 +28,7 @@ export const InputTextRow: FC<Props> = ({ placeholder, label }) => {
   const onInput = useCallback((event: FormEvent<HTMLInputElement>) => {
     const val = event.currentTarget.value;
     setValue(val);
+    onChange?.(val);
   }, []);
 
   const handleKeyDown = useCallback((event: any) => {
@@ -41,7 +49,7 @@ export const InputTextRow: FC<Props> = ({ placeholder, label }) => {
         ref={ref}
         className={styles.input}
         placeholder={placeholder}
-        value={value}
+        value={selfValue}
         onInput={onInput}
         onFocus={handleFocus}
         onBlur={handleBlur}

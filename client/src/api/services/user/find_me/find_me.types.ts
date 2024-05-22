@@ -1,14 +1,15 @@
-export type TelegramAuthRequest = {
-  username: string;
-  telegramId: string;
-};
+export enum UserGender {
+  Male = "Male",
+  Female = "Female",
+}
 
-export type ManualAuthRequest = {
+export type UserAccount = {
+  gender: UserGender;
+  id: string;
+  telegramId: string | null;
   username: string;
-  password: string;
-};
-
-export type AuthResponse = {
-  accessToken: string;
-  refreshToken: string;
+  password: string | null;
+  phone: string | null;
+  birthdayDate: Date | null;
+  profiles: [];
 };
