@@ -24,11 +24,7 @@ func New(uc *usecase.Recommendations,
 func (h *Handler) Router() *gin.Engine {
 	r := gin.New()
 
-	r.Use(cors.New(cors.Config{
-		AllowOriginFunc: func(origin string) bool {
-			return true
-		},
-	}))
+	r.Use(cors.Default())
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 
