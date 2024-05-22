@@ -18,6 +18,7 @@ export class ProfileRepository extends BaseRepository<Profile> {
       .leftJoinAndSelect('p.category', 'category')
       .where('p.userId = :userId', { userId: dto.userId })
       .andWhere('p.type = :type', { type: ProfileType.User })
+      .andWhere('p.categoryId = :categoryId', { categoryId: dto.categoryId })
       .getOne();
   }
 
