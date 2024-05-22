@@ -2,26 +2,29 @@
 
 import styles from './page.module.scss';
 import EventItem, {Chip} from '@/app/profile/events/components/EventItem/EventItem';
-import DinnerSvg from '@/assets/icons/dinner.svg';
-import BicycleSvg from '@/assets/icons/bicycle.svg';
-import AiSvg from '@/assets/icons/ai.svg';
-import HackathonSvg from '@/assets/icons/hackathon.svg';
 import PlusSvg from '@/assets/icons/add.svg';
 import {ReactNode} from 'react';
 import {Button} from '@/ui/Button/Button';
 import TabBar from '@/app/feed/components/TabBar/TabBar';
+import {useRouter} from 'next/navigation';
+import {StaticImageData} from 'next/image';
+import hackhaton from '@/assets/images/hackhaton.png';
+import bicycle from '@/assets/images/bicycle.png';
+import dinner from '@/assets/images/dinner.png';
+import ai from '@/assets/images/ai.png';
 
 interface EventItem {
     title: string;
-    iconEvent: ReactNode;
+    iconEvent: StaticImageData;
     chips: Chip[];
 }
 
 export default function Events() {
+    const router = useRouter();
     const events: EventItem[] = [
         {
             title: 'Хакатон AI Tools ‘24',
-            iconEvent: <HackathonSvg />,
+            iconEvent: hackhaton,
             chips: [
                 {
                     text: 'Деловой',
@@ -35,7 +38,7 @@ export default function Events() {
         },
         {
             title: 'Прогулка на велосипедах',
-            iconEvent: <BicycleSvg />,
+            iconEvent: bicycle,
             chips: [
                 {
                     text: 'Досуговый',
@@ -49,7 +52,7 @@ export default function Events() {
         },
         {
             title: 'Ai-Engineering MeetUp',
-            iconEvent: <AiSvg />,
+            iconEvent: ai,
             chips: [
                 {
                     text: 'Деловой',
@@ -63,7 +66,7 @@ export default function Events() {
         },
         {
             title: 'Парный ужин на берегу Волги',
-            iconEvent: <DinnerSvg />,
+            iconEvent: dinner,
             chips: [
                 {
                     text: 'Романтический',
@@ -84,8 +87,13 @@ export default function Events() {
                         ))
                     }
                 </div>
-                <Button text={'Создать эвент'} onClick={() => console.log('1')} IconLeft={() => <PlusSvg/>}
-                        justify={'center'} variant={'primary'}/>
+                <Button
+                    text='Создать эвент'
+                    onClick={() => router.push('/profile/events/createEvent')}
+                    IconLeft={() => <PlusSvg/>}
+                    justify='center'
+                    variant='primary'
+                />
             </div>
             <TabBar tabs={[]} className={styles.tabBar}/>
         </div>

@@ -4,6 +4,12 @@
   padding: 12px 0;
   gap: 8px;
 
+  .img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+  }
+
   .content {
     display: flex;
     justify-content: space-between;

@@ -1,7 +1,7 @@
 import BuisnessSvg from '@/assets/icons/buisness.svg';
 import RomanticSvg from '@/assets/icons/heart.svg';
 import FlashSvg from '@/assets/icons/flashWhite.svg';
-import HobbieSvg from '@/assets/icons/hobbie.svg';
+import HobbieSvg from '@/assets/icons/hobbieBlack.svg';
 
 import styles from './styles.module.scss';
 import cn from 'classnames';

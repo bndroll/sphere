@@ -3,13 +3,14 @@
   flex-direction: column;
   border-radius: 10px;
   background-color: #1C1C1E;
-  gap: 17px;
+  gap: 11px;
   padding: 8px;
 
   .item {
     display: flex;
     gap: 8px;
     box-sizing: border-box;
+    align-items: center;
 
     svg {
       width: 36px;

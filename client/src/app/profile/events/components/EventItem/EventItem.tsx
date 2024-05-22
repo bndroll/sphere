@@ -1,7 +1,7 @@
 import styles from './styles.module.scss';
-import {ReactNode} from 'react';
 import ChipEvent from '@/app/profile/events/components/ChipEvent/ChipEvent';
 import ArrowSvg from '@/assets/icons/arrowWhite.svg';
+import Image, {StaticImageData} from 'next/image';
 
 export interface Chip {
     text: string;
@@ -10,16 +10,14 @@ export interface Chip {
 
 interface EventItemProps {
     title: string;
-    iconEvent: ReactNode;
+    iconEvent: StaticImageData;
     chips: Chip[];
 }
 
 export default function EventItem({ title, iconEvent, chips }: EventItemProps) {
     return (
         <div className={styles.container}>
-            {
-                iconEvent
-            }
+            <Image src={iconEvent} alt={title} className={styles.img}/>
             <div className={styles.content}>
                 <div className={styles.info}>
                     <span className={styles.title}>{title}</span>

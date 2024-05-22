@@ -54,7 +54,7 @@ export default function Profile() {
             <Header iconCompany={<YaSvg />} iconUserSrc={business} userNickname={'@valentinaa'} userName={'Валентина'}/>
             <Button
                 text={'Редактировать профиль'}
-                onClick={() => console.log('')}
+                onClick={() => router.push('/profile/edit')}
                 variant={'secondary'}
                 IconLeft={UserSvg}
                 justify={'start'}
