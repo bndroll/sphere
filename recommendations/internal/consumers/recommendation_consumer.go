@@ -3,6 +3,7 @@ package consumers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"log/slog"
 	"recommendations/internal/domain/usecase"
@@ -15,11 +16,16 @@ type RecommendationHandler struct {
 
 func (r *RecommendationHandler) Handle(msg kafka.Message) {
 	log := r.logger.With("RecommendationHandler.Handle")
+	defer func() {
+		if err := recover(); err != nil {
+			log.Error(fmt.Sprintf("panic err %v", err))
+		}
+	}()
 
 	var msgValue usecase.CreateRecommendation
 	err := json.Unmarshal(msg.Value, &msgValue)
 	if err != nil {
-		log.Error("Error unmarshalling message")
+		log.Error("Error unmarshalling message", "message", string(msg.Value))
 		return
 	}
 

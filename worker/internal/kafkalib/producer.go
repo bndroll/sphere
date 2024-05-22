@@ -24,7 +24,7 @@ func (k *Producer) CreateProducer() *kafka.Producer {
 		k.Logger.Error("Kafka Producer: Failed to create producer: %s", err)
 		panic(err)
 	}
-	k.Logger.Debug("Kafka Producer: Created Producer %v", p)
+	k.Logger.Debug("Kafka Producer: Created Producer %s", p)
 	return p
 }
 
@@ -58,7 +58,7 @@ func (k *Producer) SendRawMessage(topic string, message []byte, headers []kafka.
 	m := e.(*kafka.Message)
 
 	if m.TopicPartition.Error != nil {
-		k.Logger.Error("Kafka Producer: Delivery failed: %v", m.TopicPartition.Error)
+		k.Logger.Error("Kafka Producer: Delivery failed: %s", m.TopicPartition.Error)
 		return m.TopicPartition.Error
 	}
 
@@ -85,7 +85,7 @@ func (k *Producer) SendRawMsg(topic string, key []byte, partition int32, message
 	m := e.(*kafka.Message)
 
 	if m.TopicPartition.Error != nil {
-		k.Logger.Error("Kafka Producer: Delivery failed: %v", m.TopicPartition.Error)
+		k.Logger.Error("Kafka Producer: Delivery failed: %s", m.TopicPartition.Error)
 		return m.TopicPartition.Error
 	}
 	return nil
