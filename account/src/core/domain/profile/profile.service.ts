@@ -62,9 +62,10 @@ export class ProfileService {
       const lastUserProfile =
         await this.profileRepository.findLastUserProfileByUserId({
           userId: user.id,
+          categoryId: category.id,
         });
 
-      if (lastUserProfile && lastUserProfile.category.id === category.id) {
+      if (lastUserProfile) {
         throw new BadRequestException(ProfileErrorMessages.AlreadyExist);
       }
     } else {
