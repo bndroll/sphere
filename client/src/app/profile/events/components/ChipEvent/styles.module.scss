@@ -1,0 +1,45 @@
+.chip {
+  border-radius: 14px;
+  padding: 6px 8px;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  background-color: #1C1C1E;
+
+  .text {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: -0.5px;
+  }
+
+  .icon {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.blue {
+  background-color: #2638D4;
+}
+
+.orange {
+  background-color: #DC7D26;
+}
+
+.purple {
+  background-color: #7B1ED2;
+}
+
+.pink {
+  background-color: #D632FF;
+}
+
+.white {
+  color: #FFFFFF;
+}
+
+.black {
+  color: #000000;
+}
