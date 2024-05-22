@@ -33,10 +33,10 @@ func (k *Consumer) StartConsumer(topics ...string) {
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 	c, err := kafka.NewConsumer(k.KafkaConnector.GetConfigMap(true))
 	if err != nil {
-		k.Logger.Error("failed to start consumer: %v", err)
+		k.Logger.Error("failed to start consumer: %s", err)
 		panic(err)
 	}
-	k.Logger.Info("Created Consumer %v", c)
+	k.Logger.Info("Created Consumer %s", c)
 	if len(topics) == 0 {
 		k.Logger.Error("failed to start consumer: can't get KAFKA_TOPIC param")
 		panic(nil)
@@ -58,7 +58,7 @@ func (k *Consumer) StartConsumer(topics ...string) {
 
 	err = c.SubscribeTopics(topics, rebalanceCb)
 	if err != nil {
-		k.Logger.Error("failed to subscribe topic: %v", err)
+		k.Logger.Error("failed to subscribe topic: %s", err)
 		panic(err)
 	}
 	run := true
@@ -69,7 +69,7 @@ func (k *Consumer) StartConsumer(topics ...string) {
 	for run == true {
 		select {
 		case sig := <-sigchan:
-			k.Logger.Info("Caught signal %v: terminating", sig)
+			k.Logger.Info("Caught signal %s: terminating", sig)
 			run = false
 		default:
 			ev := c.Poll(timeoutMs)
@@ -81,7 +81,7 @@ func (k *Consumer) StartConsumer(topics ...string) {
 				errorsExitCnt = errorsExitCntBase
 				k.Logger.Debug("Message on topic %s, partition: %s: %s", strings.Join(topics, ", "), e.TopicPartition, string(e.Value))
 				if e.Headers != nil {
-					k.Logger.Debug("Headers: %+v", e.Headers)
+					k.Logger.Debug("Headers: %s", e.Headers)
 				}
 				k.Message.Handle(*e)
 			case kafka.Error:
@@ -94,30 +94,30 @@ func (k *Consumer) StartConsumer(topics ...string) {
 					}
 				}
 				if !run {
-					k.Logger.Error("Stop consuming with error: %+v", e)
+					k.Logger.Error("Stop consuming with error: %s", e)
 				} else {
-					k.Logger.Error("Continue consuming with error: %+v", e)
+					k.Logger.Error("Continue consuming with error: %s", e)
 				}
 			default:
-				k.Logger.Error("Ignored %+v", e)
+				k.Logger.Error("Ignored %s", e)
 			}
 		}
 	}
 
-	k.Logger.Info("Closing consumer %v", c)
+	k.Logger.Info("Closing consumer %s", c)
 	_ = c.Close()
 }
 
 func (k *Consumer) CheckConsumer() (int, error) {
 	c, err := kafka.NewConsumer(k.KafkaConnector.GetConfigMap(true))
 	if err != nil {
-		k.Logger.Error("failed to start consumer: %v", err)
+		k.Logger.Error("failed to start consumer: %s", err)
 		return 0, err
 	}
 	metadata, err := c.GetMetadata(nil, true, 500)
 	topicLen := 0
 	if err != nil {
-		k.Logger.Error("failed to subscribe topic: %v", err)
+		k.Logger.Error("failed to subscribe topic: %s", err)
 	} else {
 		topicLen = len(metadata.Topics)
 	}
