@@ -3,27 +3,27 @@ import {
   ChatContract,
   CreateChatContract,
 } from 'src/core/domain/chat/contract/chat.contract';
-import { FindProfileRequest } from 'src/core/domain/chat/dto/find-profiles.dto';
 import { HttpService } from '@nestjs/axios';
-import { AxiosResponse } from 'axios';
+import { ChatRepository } from 'src/core/domain/chat/repositories/chat.repository';
 
 @Injectable()
 export class ChatService {
-  constructor(private readonly httpService: HttpService) {}
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly chatRepository: ChatRepository,
+  ) {}
 
-  async create(message: CreateChatContract.Message) {}
+  async create(message: CreateChatContract.Message) {
+    console.log('create chat topic received, data =', message);
+    return null;
+  }
 
-  async addMember(message: ChatContract.Message) {}
+  async addMember(message: ChatContract.Message) {
+    console.log('add member to chat topic received, data =', message);
+    return null;
+  }
 
-  async findProfiles(ids: string[]) {
-    return await this.httpService.axiosRef
-      .post<
-        FindProfileRequest[],
-        AxiosResponse<FindProfileRequest[]>,
-        { ids: string[] }
-      >(`${process.env.ACCOUNT_SERVICE_URL}/profile/find-by-ids`, {
-        ids: ids,
-      })
-      .then((r) => r.data);
+  async findById(id: string) {
+    return await this.chatRepository.findOne({ where: { id: id } });
   }
 }
