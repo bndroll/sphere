@@ -156,9 +156,12 @@ export class ProfileService {
     const tags = dto.tagsId
       ? await this.tagService.findByIds(dto.tagsId)
       : profile.tags;
+    const picture = dto?.info?.picture
+      ? dto.info.picture
+      : profile.info.picture;
 
     if (
-      (tags.length === 0 || !dto?.info?.picture) &&
+      (tags.length === 0 || !picture) &&
       dto?.visible === ProfileVisible.Open
     ) {
       throw new BadRequestException(ProfileErrorMessages.CannotBeVisible);
