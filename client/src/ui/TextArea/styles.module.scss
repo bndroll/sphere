@@ -1,0 +1,29 @@
+.wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.textarea {
+  background: #1C1C1E;
+  padding: 10px 16px;
+  border-radius: 10px;
+  caret-color: #0A84FF;
+  color: white;
+  line-height: 1.1em;
+  resize: none;
+  height: 80px;
+  overflow: auto;
+  word-break: break-all;
+  font-size: 17px;
+
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  &::placeholder {
+    color: rgba(235, 235, 245, 0.25);
+  }
+}

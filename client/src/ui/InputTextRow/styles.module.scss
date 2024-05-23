@@ -1,0 +1,32 @@
+.wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 17px;
+
+}
+
+.input {
+  background: #1C1C1E;
+  padding: 0 10px;
+  caret-color: #0A84FF;
+  width: 100%;
+  color: white;
+
+  &::placeholder {
+    color: rgba(235, 235, 245, 0.25);
+  }
+}
+
+.label {
+  min-width: 90px;
+}
+
+.closeTag {
+  position: absolute;
+  top: 65%;
+  transform: translateY(-65%);
+  right: 10px;
+  padding: 5px;
+}

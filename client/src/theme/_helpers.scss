@@ -1,0 +1,219 @@
+@use 'sass:map';
+@use 'sass:list';
+
+@mixin text($font-size, $font-style, $font-weight, $line-height, $color: var(--white)) {
+  font-size: $font-size;
+  font-style: $font-style;
+  font-weight: $font-weight;
+  line-height: $line-height;
+  color: $color;
+}
+
+$breakpoints: (
+        xs: 320px,
+        sm: 375px,
+        md: 768px,
+        lg: 1024px,
+        xl: 1440px,
+        xxl: 1920px
+) !default;
+
+$breakpointsNames: map.keys($breakpoints);
+
+// Проверяет есть ли в map-объекте $breakpoints элемент $name
+@function assertBreakpoint($name) {
+  @if map.has-key($breakpoints, $name) {
+    @return true;
+  } @else {
+    @error 'Unknown breakpoint "#{$name}".';
+  }
+}
+
+// Возвращает следующий брейкпоинт (+1) из map-объекта $breakpoints
+// Если следующего брейкпоинта нет, возвращает null
+@function breakpointNext($name) {
+  @if assertBreakpoint($name) {
+    $breakpointNames: map.keys($breakpoints);
+    $n: index($breakpointNames, $name);
+    @return if($n != null and $n < length($breakpointNames), nth($breakpointNames, $n + 1), null);
+  }
+}
+
+// Возвращает значение из map-объекта $breakpoints по ключу $name
+@function breakpointMin($name) {
+  @if assertBreakpoint($name) {
+    @return map.get($breakpoints, $name);
+  }
+}
+
+// Возвращает значение из map-объекта $breakpoints по ключу $next
+@function breakpointMax($name) {
+  $next: breakpointNext($name);
+  @return breakpointMin($next);
+}
+
+// Применяет стили ко всем разрешениям экрана, которые больше, чем значение по ключу $name из map-объекта $breakpoints
+@mixin mediaUp($name) {
+  @if assertBreakpoint($name) {
+    $names: map.keys($breakpoints);
+    @if (index($names, $name) == 1) {
+      // самый маленький брейкопинт - безусловно (всё что меньше - так же)
+      @content;
+    } @else {
+      @media (min-width: breakpointMin($name)) {
+        @content;
+      }
+    }
+  }
+}
+
+// Применяет стили ко всем разрешениям экрана, кторые меньше, чем значение по ключу $name из map-объекта $breakpoints
+@mixin mediaDown($name) {
+  // Отнимается 1px, чтобы не было конфликтов со свойствами @media min-width
+  @media (max-width: calc(breakpointMax($name) - 1px)) {
+    @content;
+  }
+}
+
+// Получает на вход название $breakpoint и список css-свойств $vals (свойства для различных разрешений экрана)
+// $breakpoint имеет определенный $index в списке $breakpointsNames
+// Возвращает значение из списка $vals по индексу $index
+@function arrayPropSlice($breakpoint, $vals) {
+  $index: index($breakpointsNames, $breakpoint);
+  @if $index != null and $index <= length($vals) {
+    $val: list.nth($vals, $index);
+    @if $val != null {
+      @return $val;
+    }
+  }
+  @return null;
+}
+
+// Возвращаем актуальное не-null значение из массива $vals для заданного $breakpoint
+@function arrayPropVal($breakpoint, $vals) {
+  $res: null;
+  $index: index($breakpointsNames, $breakpoint);
+  @for $i from 1 through $index {
+    $val: list.nth($vals, $i);
+    @if $val != null {
+      $res: $val;
+    }
+  }
+  @return $res;
+}
+
+// Принимает $breakpoint (название) и map-объект css стилей
+// Возвращает новый map-объект, где ключ - имя css свойства, а значение - значение этого css свойства для $breakpoint
+@function arrayPropsSlice($breakpoint, $props) {
+  $res: ();
+  @each $name, $vals in $props {
+    $val: arrayPropSlice($breakpoint, $vals);
+    @if $val != null {
+      $res: map.set($res, $name, $val);
+    }
+  }
+  @return $res;
+}
+
+// Принимает map-объект css стилей со значениями для различных breakpoints
+// Возвращает итоговые css стили с адаптивом
+@mixin arrayProps($props) {
+  @each $bp in $breakpointsNames {
+    $res: arrayPropsSlice($bp, $props);
+    @if length(map.keys($res)) > 0 {
+      @include mediaUp($bp) {
+        @each $name, $val in $res {
+          #{$name}: #{$val};
+        }
+      }
+    }
+  }
+}
+
+// Принимает map-объект css стилей со значениями для различных breakpoints и $prefix, который будет добавляться к имени переменной
+// Возваращает css стили с созданными переменными и адаптивом
+@mixin arrayCssVars($props, $prefix: '') {
+  @each $bp in $breakpointsNames {
+    @include mediaUp($bp) {
+      @each $name, $vals in $props {
+        @if $name != typography {
+          $val: arrayPropSlice($bp, $vals);
+          @if $val != null {
+            #{cssVarName('#{$prefix}#{$name}')}: #{$val};
+          }
+        }
+      }
+    }
+  }
+}
+
+// Возвращает селектор корневого элемента с доп параметрами
+@function rootSelector($addon: '') {
+  @return '#{$rootSelector}#{$addon}';
+}
+
+// Применяет стили к корневому элементу
+@mixin withTheme($addon: '') {
+  #{rootSelector($addon)} {
+    @content;
+  }
+}
+
+// Возвращает имя css переменной с префиксом
+@function cssVarName($name) {
+  @return #{$name};
+}
+
+// Возвращает значение css пременной (добавляя префикс к переменной)
+@function cssVar($name, $default: null) {
+  @if $default == null {
+    @return var(cssVarName($name));
+  } @else {
+    @return var(cssVarName($name), $default);
+  }
+}
+
+@function hexToRGBString($hexColor) {
+  @return '#{red($hexColor)},#{green($hexColor)},#{blue($hexColor)}';
+}
+
+// Принимает map-объект css переменных и объявляет их с учетом префиксов
+@mixin cssVars($vars, $prefix: '') {
+  @each $name, $value in $vars {
+    #{cssVarName('#{$prefix}#{$name}')}: #{$value};
+  }
+}
+
+// Создает css переменные для различных тем и разрешений
+@mixin cssVarsVariants($subject, $variants, $prefix: '') {
+  @each $variant, $vars in $variants {
+    @include withTheme('[data-prosv-#{$subject}=#{$variant}]') {
+      @include cssVars($vars);
+    }
+  }
+}
+
+// Получает map-объект css переменных без префиксов и объявляет их равными значениям таким же css пременным, но которые с префиксом
+@mixin cssVarsProps($props) {
+  @each $name in $props {
+    #{$name}: #{cssVar($name)};
+  }
+}
+
+// Возвращает "абсолютный" url
+@function assetUrl($url) {
+  @return url(#{$microBaseUrl + '/assets/' + $url});
+}
+
+// Используется для назначения transition свойств
+@function trs($params...) {
+  $result: ();
+  $duration: 0.3s;
+  $func: ease-in-out;
+
+  @each $param in $params {
+    $result: append($result, $param $duration $func, comma);
+  }
+
+  @return $result;
+}

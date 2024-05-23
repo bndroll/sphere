@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "@tanstack/react-query": "^5.36.2",
+    "@twa-dev/types": "^7.0.0",
+    "@types/uuid": "^9.0.8",
+    "axios": "^1.6.8",
+    "classnames": "^2.5.1",
+    "framer-motion": "^11.2.4",
+    "react-motion": "^0.5.2",
+    "telegram-webapps-types": "^1.0.5",
+    "uuid": "^9.0.1"
+  }
+}

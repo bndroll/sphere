@@ -1,0 +1,144 @@
+$colorsThemes: (
+        light: (
+          // light/white
+                white: #fff,
+                white75: rgba(#fff, 0.75),
+                white50: rgba(#fff, 0.5),
+                white25: rgba(#fff, 0.25),
+                white10: rgba(#fff, 0.1),
+          // light/black
+                black: #000,
+                black75: rgba(#000, 0.75),
+                black50: rgba(#000, 0.5),
+                black25: rgba(#000, 0.25),
+                black10: rgba(#000, 0.1),
+          // light/blackSecondary
+                blackSecondary: #3d3f44,
+          // light/interface
+                interface900: #292d3d,
+                interface750: #545764,
+                interface500: #7f818b,
+                interface250: #a9abb1,
+                interface100: #d4d5d8,
+                interface50: #eaeaec,
+          // light/primary
+                primary01: #0769ad,
+                primary02: #0983d8,
+                primary03: #3a9ce0,
+                primary04: #b5daf3,
+                primary05: #f3f7fa,
+          // light/success
+                success01: #007a52,
+                success02: #009966,
+                success03: #4db894,
+                success04: #99d6c2,
+                success05: #e6f5f0,
+          // light/alert
+                alert01: #c5631f,
+                alert02: #f67c27,
+                alert03: #f89652,
+                alert04: #fbcba9,
+                alert05: #fef2e9,
+          // light/error
+                error01: #c51f2e,
+                error02: #f6273a,
+                error03: #f96875,
+                error04: #fba9b0,
+                error05: #fee9eb,
+        ),
+        contrast: (
+          // contrast/white
+                white: #fff,
+                white75: #fff,
+                white50: #fff,
+                white25: #fff,
+                white10: #fff,
+          // contrast/black
+                black: #292d3d,
+                black75: #292d3d,
+                black50: #292d3d,
+                black25: #fff,
+                black10: #fff,
+          // contrast/blackSecondary
+                blackSecondary: #292d3d,
+          // contrast/interface
+                interface900: #292d3d,
+                interface750: #292d3d,
+                interface500: #292d3d,
+                interface250: #292d3d,
+                interface100: #fff,
+                interface50: #fff,
+          // contrast/primary
+                primary01: #292d3d,
+                primary02: #292d3d,
+                primary03: #292d3d,
+                primary04: #fff,
+                primary05: #fff,
+          // contrast/success
+                success01: #292d3d,
+                success02: #292d3d,
+                success03: #292d3d,
+                success04: #fff,
+                success05: #fff,
+          // contrast/alert
+                alert01: #292d3d,
+                alert02: #292d3d,
+                alert03: #292d3d,
+                alert04: #fff,
+                alert05: #fff,
+          // contrast/error
+                error01: #292d3d,
+                error02: #292d3d,
+                error03: #292d3d,
+                error04: #fff,
+                error05: #fff,
+        ),
+        dark: (
+          // dark/white
+                white: #292d3d,
+                white75: #292d3d,
+                white50: #292d3d,
+                white25: #292d3d,
+                white10: #292d3d,
+          // dark/black
+                black: #fff,
+                black75: #fff,
+                black50: #fff,
+                black25: #fff,
+                black10: #fff,
+          // dark/blackSecondary
+                blackSecondary: #fff,
+          // dark/interface
+                interface900: #fff,
+                interface750: #fff,
+                interface500: #fff,
+                interface250: #fff,
+                interface100: #292d3d,
+                interface50: #292d3d,
+          // dark/primary
+                primary01: #fff,
+                primary02: #fff,
+                primary03: #fff,
+                primary04: #292d3d,
+                primary05: #292d3d,
+          // dark/success
+                success01: #fff,
+                success02: #fff,
+                success03: #fff,
+                success04: #292d3d,
+                success05: #292d3d,
+          // dark/alert
+                alert01: #fff,
+                alert02: #fff,
+                alert03: #fff,
+                alert04: #292d3d,
+                alert05: #292d3d,
+          // dark/error
+                error01: #fff,
+                error02: #fff,
+                error03: #fff,
+                error04: #292d3d,
+                error05: #292d3d,
+        ),
+);
+

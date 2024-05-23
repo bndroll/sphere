@@ -1,0 +1,48 @@
+.button {
+  padding: 12px 16px;
+  border: none;
+  font: inherit;
+  color: inherit;
+  background: #1C1C1E;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+  transition: all .4s;
+  gap: 8px;
+
+  &:active {
+    scale: 1.008;
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.primary {
+  background: #902EEF;
+  color: #FFFFFF;
+}
+
+.disabled {
+  color: #8442C9;
+  background: #56198A;
+}
+
+.secondary {
+  background: #1C1C1E;
+  color: #FFFFFF;
+}
+
+.default {
+  color: #000000;
+  padding: 6px 10px;
+  width: fit-content;
+  background: #FFFFFFE5;
+  font-size: 14px;
+}
+

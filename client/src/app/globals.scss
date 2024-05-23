@@ -1,0 +1,87 @@
+@import "src/theme/colors";
+
+@font-face {
+  font-family: 'SFProDisplay-Bold';
+  src: url('../theme/fonts/ProDisplay/SFPRODISPLAYREGULAR.OTF');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SFProText';
+  src: url('../theme/fonts/ProText/SFProText-Regular.ttf');
+  font-weight: 400;
+  font-style: normal;
+}
+
+* {
+  font-family: 'SFProText', serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: 0.8em;
+}
+
+html {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  -ms-overflow-style: scrollbar;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+body {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  background: #000000;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+h1 {
+  font-size: 48px;
+  font-family: 'SFProDisplay-Bold', serif;
+  color: #ffffff;
+}
+
+
+h2 {
+  font-size: 32px;
+  letter-spacing: -1px;
+  font-family: 'SFProDisplay-Bold', serif;
+  color: #ffffff;
+}
+
+h3 {
+  font-size: 24px;
+  font-family: 'SFProDisplay-Bold', serif;
+  color: #ffffff;
+}
+
+a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+p {
+  color: #ffffff;
+}
+
+input, textarea {
+  all: unset;
+  display: inline-block;
+  background: white;
+}

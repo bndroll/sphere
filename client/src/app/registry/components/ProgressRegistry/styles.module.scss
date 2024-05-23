@@ -1,0 +1,48 @@
+.main {
+  border-top: 1px solid #181818;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  bottom: 0;
+  width: 100vw;
+  padding: 16px 16px 8px 8px;
+  background: black;
+
+  .value {
+    color: #902EEF;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .step {
+    font-size: 20px;
+    color: #747474;
+  }
+
+  .title_wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .progressbar {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #1C1C1E;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress {
+    transition: all .3s ease;
+    position: absolute;
+    width: 20%;
+    height: 8px;
+    background: #B46EFF;
+    border-radius: 4px;
+  }
+}

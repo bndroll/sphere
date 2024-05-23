@@ -1,0 +1,43 @@
+.container {
+  display: flex;
+  border-bottom: 0.5px solid #181818;
+  padding: 12px 0;
+  gap: 8px;
+
+  .img {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+  }
+
+  .content {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .title {
+        font-size: 18px;
+        font-weight: 510;
+        line-height: 14px;
+        letter-spacing: -0.5px;
+        color: #FFFFFF;
+      }
+
+      .chips {
+        display: flex;
+        gap: 6px;
+      }
+    }
+
+    .btn {
+      background: transparent;
+      border: none;
+      min-width: 44px;
+    }
+  }
+}
