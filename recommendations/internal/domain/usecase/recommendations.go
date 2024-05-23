@@ -36,7 +36,7 @@ func NewRecommendations(storage Storage, accountUrl *url.URL, logger *slog.Logge
 		logger:     logger,
 	}
 }
-func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecommendationsRequest) (*ProfilesResponse, error) {
+func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecommendationsRequest) ([]map[string]any, error) {
 	log := r.logger.With(ctx, "Recommendation.GetRecommendations")
 	log.Info("Starting GetRecommendations", slog.String("ProfileID", req.ProfileID.String()))
 
@@ -79,7 +79,7 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 	return resp, nil
 }
 
-func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesRequest) (*ProfilesResponse, error) {
+func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesRequest) ([]map[string]any, error) {
 	log := r.logger.With(ctx, "Recommendation.GetProfiles")
 	log.Info("Starting GetProfiles", "request", request)
 
@@ -96,6 +96,7 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 		log.Error("Error creating new HTTP request", err)
 		return nil, err
 	}
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := r.client.Do(req)
 	if err != nil {
@@ -119,7 +120,7 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 	}
 
 	log.Info("Successfully finished GetProfiles")
-	return &ProfilesResponse{responseDTO}, nil
+	return dataMap, nil
 }
 
 func (r *Recommendations) CreateRecommendation(ctx context.Context, action CreateRecommendation) error {

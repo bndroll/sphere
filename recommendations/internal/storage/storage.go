@@ -37,7 +37,7 @@ func (s *Storage) GetRecommendationsByVector(ctx context.Context, vector float64
 
 	db := s.db.WithContext(ctx).Model(&entity.Recommendation{}).Select("recommendations.profile_id")
 	if filter.Male != "" {
-		db = db.Where("male = ?", filter.Male)
+		db = db.Where("gender = ?", filter.Male)
 	}
 	if filter.Category != "" {
 		db = db.Where("category = ?", filter.Category)
