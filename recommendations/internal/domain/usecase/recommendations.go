@@ -105,6 +105,7 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 	defer resp.Body.Close()
 
 	respData, err := io.ReadAll(resp.Body)
+	log.Info("Data", string(respData))
 	if err != nil {
 		log.Error("Error reading response body", err)
 		return nil, err
