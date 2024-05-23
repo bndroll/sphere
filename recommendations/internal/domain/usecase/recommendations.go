@@ -112,8 +112,8 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 		return nil, err
 	}
 
-	var responseDTO []ProfileDTO
-	err = json.Unmarshal(respData, &responseDTO)
+	var dataMap []map[string]any
+	err = json.Unmarshal(respData, dataMap)
 	if err != nil {
 		log.Error("Error unmarshalling response data", err)
 		return nil, err
