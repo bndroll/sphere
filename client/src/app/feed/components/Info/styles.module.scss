@@ -32,6 +32,7 @@
     .chips {
       display: flex;
       gap: 4px;
+      flex-wrap: wrap;
     }
 
     .text {
@@ -44,6 +45,7 @@
     width: 100%;
     height: auto;
     object-fit: cover;
+
   }
 
   .btnContainer {
