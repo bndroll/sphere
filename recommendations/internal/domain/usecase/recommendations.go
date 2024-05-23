@@ -57,10 +57,10 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 	}
 	if req.Category == "Романтическая" {
 		switch target.Gender {
-		case "male":
-			filter.Male = "female"
-		case "female":
-			filter.Male = "male"
+		case "Male":
+			filter.Male = "Female"
+		case "Female":
+			filter.Male = "Male"
 		}
 	}
 	ids, err := r.storage.GetRecommendationsByVector(ctx, target.Vector, filter)
@@ -81,11 +81,11 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 
 func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesRequest) ([]map[string]any, error) {
 	log := r.logger.With(ctx, "Recommendation.GetProfiles")
-	log.Info("Starting GetProfiles", "request", request)
+	log.Info("Starting GetProfiles", request)
 
 	data, err := json.Marshal(&request)
 	if err != nil {
-		log.Error("Error marshalling request %s", err)
+		log.Error("Error marshalling request", err)
 		return nil, err
 	}
 
@@ -93,14 +93,14 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 
 	req, err := http.NewRequestWithContext(ctx, "POST", r.accountURL.String()+"/profile/find-by-ids", buff)
 	if err != nil {
-		log.Error("Error creating new HTTP request %s", err)
+		log.Error("Error creating new HTTP request", err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := r.client.Do(req)
 	if err != nil {
-		log.Error("Error executing HTTP request %s", err)
+		log.Error("Error executing HTTP request", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -108,14 +108,14 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 	respData, err := io.ReadAll(resp.Body)
 	log.Info("RESPONSE DATA %s", string(respData))
 	if err != nil {
-		log.Error("Error reading response body %s", err)
+		log.Error("Error reading response body", err)
 		return nil, err
 	}
 
 	var dataMap []map[string]any
 	err = json.Unmarshal(respData, &dataMap)
 	if err != nil {
-		log.Error("Error unmarshalling response data %s", err)
+		log.Error("Error unmarshalling response data", err)
 		return nil, err
 	}
 
