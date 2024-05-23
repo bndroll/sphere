@@ -59,7 +59,7 @@ func (s *Storage) GetRecommendationsByVector(ctx context.Context, vector float64
 }
 
 func (s *Storage) CreateRecommendation(ctx context.Context, entity entity.Recommendation) error {
-	return s.db.WithContext(ctx).Create(&entity).Error
+	return s.db.WithContext(ctx).Save(&entity).Error
 }
 
 func (s *Storage) CreateReaction(ctx context.Context, entity entity.Reaction) error {
