@@ -85,7 +85,7 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 
 	data, err := json.Marshal(&request)
 	if err != nil {
-		log.Error("Error marshalling request", err)
+		log.Error("Error marshalling request", "error", err)
 		return nil, err
 	}
 
@@ -93,29 +93,29 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 
 	req, err := http.NewRequestWithContext(ctx, "POST", r.accountURL.String()+"/profile/find-by-ids", buff)
 	if err != nil {
-		log.Error("Error creating new HTTP request", err)
+		log.Error("Error creating new HTTP request", "error", err)
 		return nil, err
 	}
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := r.client.Do(req)
 	if err != nil {
-		log.Error("Error executing HTTP request", err)
+		log.Error("Error executing HTTP request", "error", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	respData, err := io.ReadAll(resp.Body)
-	log.Info("Data", string(respData))
+	log.Info("RESPONSE DATA", "data", string(respData))
 	if err != nil {
-		log.Error("Error reading response body", err)
+		log.Error("Error reading response body", "error", err)
 		return nil, err
 	}
 
 	var dataMap []map[string]any
-	err = json.Unmarshal(respData, dataMap)
+	err = json.Unmarshal(respData, &dataMap)
 	if err != nil {
-		log.Error("Error unmarshalling response data", err)
+		log.Error("Error unmarshalling response data", "error", err)
 		return nil, err
 	}
 
