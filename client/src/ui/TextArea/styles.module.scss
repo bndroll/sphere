@@ -10,11 +10,12 @@
   border-radius: 10px;
   caret-color: #0A84FF;
   color: white;
-  line-height: 1em;
+  line-height: 1.1em;
   resize: none;
-  height: 100px;
+  height: 80px;
   overflow: auto;
   word-break: break-all;
+  font-size: 17px;
 
 
   &::-webkit-scrollbar {

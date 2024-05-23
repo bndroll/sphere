@@ -11,12 +11,11 @@
   ))
 }
 
-
 .welcome {
   background: linear-gradient(250deg, #6819bd 0%, #390764 30.72%, #160029 100%);
   border-radius: 10px;
   display: flex;
-  height: 80vh;
+  height: 70vh;
   flex-direction: column;
   justify-content: space-between;
   padding: 8px;
@@ -62,6 +61,22 @@
       }
     }
 
+    :nth-child(3) {
+      top: -260px;
+      left: 30px;
+
+      svg {
+        border-radius: 100%;
+        width: 750px;
+        height: 750px;
+
+        path {
+          stroke-width: 20px;
+          box-shadow: inset 18px 18px 24px 0 rgba(41, 22, 61, 0.1);
+        }
+      }
+    }
+
     .circle1 {
       top: -300px;
       left: -0px;
@@ -98,3 +113,9 @@
   position: absolute;
   left: -200px
 }
+
+
+.welcome_default {
+  height: 40vh;
+}
+

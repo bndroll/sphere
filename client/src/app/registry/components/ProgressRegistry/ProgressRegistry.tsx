@@ -1,35 +1,37 @@
 import styles from "./styles.module.scss";
 import { Button } from "@/ui/Button/Button";
 import ArrowSVG from "@/assets/icons/Arrow.svg";
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useContext } from "react";
+import {
+  UserRegistryContext,
+  UserRegistryContextType,
+} from "@/utils/context/UserRegistryContext";
 
-type Props = {
-  step: number;
-  onNextClick: () => void;
-  isDisabled: boolean;
-};
-export const ProgressRegistry: FC<Props> = ({
-  onNextClick,
-  step,
-  isDisabled = false,
-}) => {
-  const procentBar = useCallback(() => {
-    const width = [0, 22, 80, 90];
-    return width[step];
-  }, [step]);
+export const ProgressRegistry: FC = () => {
+  const { progress } = useContext<UserRegistryContextType>(UserRegistryContext);
+
+  const percentBar = useCallback(() => {
+    return progress.percent;
+  }, [progress.percent]);
+
+  const click = useCallback(() => {
+    progress.onClickBtn();
+  }, [progress]);
+
+  if (progress.isHide) return <></>;
 
   return (
     <div className={styles.main}>
       <div className={styles.title_wrapper}>
         <p className={styles.title}>
           <span className={styles.step}>Этап </span>
-          {step} из 3
+          {progress.countSteps} из 3
         </p>
-        <p className={styles.value}>{procentBar()}%</p>
+        <p className={styles.value}>{percentBar()}%</p>
       </div>
       <p className={styles.progressbar}>
         <span
-          style={{ width: `${procentBar()}%` }}
+          style={{ width: `${percentBar()}%` }}
           className={styles.progress}
         ></span>
       </p>
@@ -37,8 +39,8 @@ export const ProgressRegistry: FC<Props> = ({
         text="Следующий этап"
         IconRight={ArrowSVG}
         justify="space-between"
-        disabled={isDisabled}
-        onClick={onNextClick}
+        disabled={progress.isAvailableNextPage}
+        onClick={click}
       />
     </div>
   );

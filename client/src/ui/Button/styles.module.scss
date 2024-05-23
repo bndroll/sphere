@@ -29,8 +29,13 @@
 }
 
 .disabled {
-  background: #ffffff;
-  color: #8d8d8d;
+  color: #8442C9;
+  background: #56198A;
+}
+
+.secondary {
+  background: #1C1C1E;
+  color: #FFFFFF;
 }
 
 .default {
@@ -41,7 +46,3 @@
   font-size: 14px;
 }
 
-.disabled {
-  background: #ffffff;
-  color: #8d8d8d;
-}
