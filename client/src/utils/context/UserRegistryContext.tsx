@@ -12,6 +12,7 @@ export type Profile = {
   title: string;
   type: ProfilesT;
   icon?: ReactNode;
+  isUpdated?: boolean;
 };
 
 export type UserGender = "Male" | "Female";
@@ -61,6 +62,7 @@ export type ProfileInfo = {
 };
 
 export type UserProfile = {
+  id?: string;
   categoryId: string;
   tagsId: string[];
   type: "User";
@@ -99,6 +101,7 @@ const defaultValue: UserRegistryContextType = {
   setProgressOnClick: (onCLick: () => void) => {},
   setCountStep: (val: number) => {},
   setSecondStep: (data: UserProfile) => {},
+  setEnabledProfile: (val: ProfilesT) => {},
 };
 
 const profileMapper = {
@@ -106,25 +109,28 @@ const profileMapper = {
     title: "Деловые знакомства",
     type: "network",
     icon: <BusinessSVG />,
+    isUpdated: false,
   },
   dating: {
     title: "Романтические отношения",
     type: "dating",
     icon: <DateSVG />,
+    isUpdated: false,
   },
   hobbies: {
     title: "Приятный досуг",
     type: "hobbies",
     icon: <HobbiesSVG />,
+    isUpdated: false,
   },
 };
 
 export const categoryMapper = {
-  Романтическая: {
+  Деловая: {
     type: "network",
     icon: <BusinessSVG />,
   },
-  Деловая: {
+  Романтическая: {
     type: "dating",
     icon: <DateSVG />,
   },
@@ -164,6 +170,7 @@ export type UserRegistryContextType = {
   setCountStep: (val: number) => void;
   setAllCategories: (val: CategoryT[]) => void;
   setSecondStep: (data: UserProfile) => void;
+  setEnabledProfile: (val: ProfilesT) => void;
 };
 
 export const UserRegistryContext =
@@ -231,6 +238,21 @@ export default function UserRegistryContextProvider({
     setUser((prev) => ({ ...prev, currentProfileData: data }));
   };
 
+  const setEnabledProfile = (profile: ProfilesT) => {
+    setUser((prev) => ({
+      ...prev,
+      enablesProfiles: prev.enablesProfiles.map((prof) => {
+        if (prof.type === profile) {
+          return {
+            ...prof,
+            isUpdated: true,
+          };
+        }
+        return prof;
+      }),
+    }));
+  };
+
   return (
     <UserRegistryContext.Provider
       value={{
@@ -247,6 +269,7 @@ export default function UserRegistryContextProvider({
         setCountStep,
         setAllCategories,
         setSecondStep,
+        setEnabledProfile,
       }}
     >
       {children}

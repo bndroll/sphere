@@ -1,5 +1,5 @@
 import styles from "./styles.module.scss";
-import { FC, FormEvent, useCallback, useState } from "react";
+import { FC, FormEvent, useCallback, useEffect, useState } from "react";
 
 type Props = {
   placeholder?: string;
@@ -20,6 +20,10 @@ export const TextArea: FC<Props> = ({
     setValue(val);
     onChange?.(val);
   }, []);
+
+  useEffect(() => {
+    setValue(value);
+  }, [value]);
 
   return (
     <textarea

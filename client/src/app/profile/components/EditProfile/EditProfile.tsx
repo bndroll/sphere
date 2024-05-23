@@ -1,17 +1,10 @@
-import { TopBanner } from "@/app/registry/components/_components/TopBanner/TopBanner";
+import { useCallback, useEffect, useState } from "react";
+import { CategoryT } from "@/api/services/category/category.types";
+import { UserProfile } from "@/utils/context/UserRegistryContext";
 import styles from "./styles.module.scss";
-import { TextArea } from "@/ui/TextArea/TextArea";
-import { InputTextRow } from "@/ui/InputTextRow/InputTextRow";
-import { SwitchRow } from "@/ui/SwitchRow/SwitchRow";
-import { SelectRow } from "@/ui/SelectRow/SelectRow";
-import { FC, useCallback, useContext, useEffect, useState } from "react";
-import {
-  ProfilesT,
-  UserProfile,
-  UserRegistryContext,
-  UserRegistryContextType,
-} from "@/utils/context/UserRegistryContext";
 import { PhotoLoad } from "@/components/PhotoLoad/PhotoLoad";
+import { TextArea } from "@/ui/TextArea/TextArea";
+import { SelectRow } from "@/ui/SelectRow/SelectRow";
 import {
   cities,
   education,
@@ -20,29 +13,23 @@ import {
   skills,
   workStatus,
 } from "@/app/registry/components/FirstProfile/first_profile.constants";
-import { CategoryT } from "@/api/services/category/category.types";
-import { useRouter } from "next/navigation";
-import { createProfile } from "@/api/services/profile/profile.api";
-import { AnotherProfiles } from "@/app/registry/components/AnotherProfiles/AnotherProfiles";
+import { InputTextRow } from "@/ui/InputTextRow/InputTextRow";
+import { SwitchRow } from "@/ui/SwitchRow/SwitchRow";
+import {
+  categoryMapper,
+  UserMappingProfile,
+} from "@/utils/context/UserStoreContext";
+import { usePathname, useRouter } from "next/navigation";
+import { getCategories } from "@/api/services/category/category.api";
+import { findProfiles } from "@/api/services/profile/find-by-user.api";
+import Image from "next/image";
+import ProfileBg from "@/assets/images/profile_bg.png";
+import { Button } from "@/ui/Button/Button";
+import { updateProfile } from "@/api/services/profile/update-profile.api";
 
-type Props = {
-  categoryType: ProfilesT;
-};
-export const FirstProfile: FC<Props> = ({ categoryType }) => {
-  const {
-    categories,
-    setSecondStep,
-    user,
-    setProgressOnClick,
-    setStepProgress,
-    setPercent,
-    setCountStep,
-    setHideProgress,
-    setEnabledProfile,
-  } = useContext<UserRegistryContextType>(UserRegistryContext);
-
+export const EditProfile = () => {
+  const [profile, setProfile] = useState<UserMappingProfile>();
   const router = useRouter();
-
   const [category, setCategory] = useState<CategoryT | undefined>();
   const [tagsIds, setTagsIds] = useState([]);
   const [about, setAbout] = useState("");
@@ -65,21 +52,87 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
   const [userStatus, setUserStatus] = useState("");
   const [hobbies, setHobbies] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
+  const [username, setUsername] = useState("");
+  const pathName = usePathname();
+
+  useEffect(() => {
+    const a = async () => {
+      const cats = await getCategories();
+      const account = await findProfiles();
+
+      let profilies: UserMappingProfile[] = [];
+      cats.forEach((category) => {
+        account.map((profile) => {
+          if (profile.categoryId === category.id) {
+            // @ts-ignore
+            profilies.push({
+              ...profile,
+              // @ts-ignore
+              code: categoryMapper[category.title].type,
+              // @ts-ignore
+              name: categoryMapper[category.title].desc,
+              // @ts-ignore
+              icon: categoryMapper[category.title].icon,
+            } as UserMappingProfile);
+          }
+        });
+      });
+
+      setCategory(cats.find((c) => c.id === pathName.split("/")[2]));
+
+      setProfile(
+        profilies.find(
+          (profile) => profile.categoryId === pathName.split("/")[2],
+        ),
+      );
+    };
+    void a();
+  }, []);
+
+  useEffect(() => {
+    if (profile) {
+      setAbout(profile.info.about ?? "");
+      setPickture(profile.info.picture ?? "");
+      setCity(profile.info.city ?? "");
+      setEducation(profile.info.education ?? "");
+      setUserLanguage(profile.info.languages ?? []);
+      setUserPhone(profile.info.contacts?.phone ?? "");
+      setUserTelegram(profile.info.contacts?.telegram ?? "");
+      setUserVk(profile.info.contacts?.vk ?? "");
+      setUserSite(profile.info.contacts?.site ?? "");
+      setUserGender(profile.info.dating?.gender ?? "");
+      setUserHeight(profile.info.dating?.height ?? "");
+      setUserAlcohol(profile.info.dating?.alcohol === "Да");
+      setUserSmoking(profile.info.dating?.smoking === "Да");
+      setUserPost(profile.info.work?.post ?? "");
+      setUserExpiriens(profile.info.work?.experience ?? "");
+      setUserSkills(profile.info.work?.skills ?? []);
+      setUserStatus(profile.info.work?.status ?? "");
+      setHobbies(profile.info.hobby?.hobbies ?? []);
+      setUsername(profile.name ?? "");
+      setTags(
+        category?.tags
+          // @ts-ignore
+          .filter((c) => profile.tags?.includes(c.id))
+          .map((c) => c.title) ?? [],
+      );
+    }
+  }, [pathName, profile, category]);
 
   const categoryTags = useCallback(() => {
     return category?.tags.map((c) => c.title);
   }, [category]);
 
-  const handleCreateProfile = useCallback(async () => {
+  const handleUpdateProfile = useCallback(async () => {
     const data: UserProfile = {
       categoryId: category?.id!,
       type: "User",
-      visible: user.enablesProfiles.length === 1 ? "Open" : "Close",
+      visible: "Open",
       tagsId:
         category?.tags.filter((c) => tags.includes(c.title)).map((t) => t.id) ??
         [],
       info: {
-        name: user.username,
+        name: username,
         about: about,
         picture: pickture,
         city: city,
@@ -109,9 +162,11 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
       },
     };
     try {
-      await createProfile(data);
-      router.push("/feed");
-    } catch (r) {}
+      await updateProfile(data, profile!.id);
+      router.push("/profile");
+    } catch (r) {
+      alert(r);
+    }
   }, [
     about,
     userSite,
@@ -123,8 +178,6 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
     city,
     pickture,
     category,
-    user,
-    tags,
     hobbies,
     userStatus,
     userSkills,
@@ -136,54 +189,17 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
     userGender,
   ]);
 
-  useEffect(() => {
-    setCategory(categories.get(categoryType));
-    setProgressOnClick(async () => {
-      await handleCreateProfile();
-      setEnabledProfile(categoryType);
-      if (user.enablesProfiles.length === 1) {
-        router.push("/feed");
-      } else {
-        setStepProgress(<AnotherProfiles />);
-        setPercent(60);
-        setHideProgress(true);
-      }
-    });
-  }, [
-    categories,
-    categoryType,
-    handleCreateProfile,
-    about,
-    userSite,
-    userVk,
-    userEmail,
-    userTelegram,
-    userPhone,
-    userEducation,
-    city,
-    pickture,
-    category,
-    user,
-    tags,
-    hobbies,
-    userStatus,
-    userSkills,
-    userExpiriens,
-    userPost,
-    userSmoking,
-    userAlcohol,
-    userHeight,
-    userGender,
-  ]);
+  const handleCancel = () => {
+    router.push("/profile");
+  };
 
   return (
     <div className={styles.wrapper}>
-      <TopBanner
-        title="Заполним вашу анкету"
-        label="Создание профиля"
-        titleClassname={styles.bannerTitle}
-      />
-      <PhotoLoad onUpload={setPickture} />
+      <Image src={ProfileBg} className={styles.bg} alt="" />
+      <div className={styles.header}>
+        {profile?.icon} {profile?.name} анкета
+      </div>
+      <PhotoLoad onUpload={setPickture} value={pickture} />
       <TextArea
         placeholder="Я являюсь финансовым директором в сфере fin-tech, обладающим высокой квалификацией и отпытом работы в финансовой сфере"
         value={about}
@@ -277,7 +293,7 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
           placeholder="www.example.com"
         />
       </div>
-      <div className={styles.form_block} style={{ marginBottom: "11px" }}>
+      <div className={styles.form_block}>
         <InputTextRow
           label="Должность"
           value={userPost}
@@ -314,6 +330,10 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
           onMultiChange={setTags}
           options={categoryTags()}
         />
+      </div>
+      <div className={styles.actions}>
+        <Button text="Сохранить" onClick={handleUpdateProfile} />
+        <Button text="Назад" variant="secondary" onClick={handleCancel} />
       </div>
     </div>
   );

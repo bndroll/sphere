@@ -32,6 +32,7 @@ export const UsefulCategory: FC<Props> = ({ isAvailableNextPage }) => {
     setCountStep,
     setHideProgress,
     setAllCategories,
+    setIsAvailableNextPageProgress,
   } = useContext<UserRegistryContextType>(UserRegistryContext);
 
   useEffect(() => {
@@ -44,14 +45,16 @@ export const UsefulCategory: FC<Props> = ({ isAvailableNextPage }) => {
       if (isNetworking) profiles.push("network");
       if (isDating) profiles.push("dating");
       if (isHobbies) profiles.push("hobbies");
+      setIsAvailableNextPageProgress(false);
       setFirstStep(username.toString(), profiles);
       setProgressOnClick(() => {
         setStepProgress(<ChooseFirstRegistry />);
         setPercent(40);
+
         setCountStep(2);
         setHideProgress(true);
       });
-    }
+    } else setIsAvailableNextPageProgress(true);
   }, [isDating, isHobbies, isNetworking, username]);
 
   useEffect(() => {}, [

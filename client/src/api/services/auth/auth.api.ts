@@ -15,3 +15,16 @@ export const postAuth = async (
 
   return data;
 };
+
+export const passwordAuth = async (
+  username: string | number,
+  password: string | number,
+  axios = axiosInstance,
+) => {
+  const { data } = await axios.post<AuthResponse>("account/auth/sign-in", {
+    username: username,
+    password: password,
+  });
+
+  return data;
+};

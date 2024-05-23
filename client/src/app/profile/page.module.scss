@@ -1,4 +1,6 @@
 .container {
+  width: 100vw;
+  height: 100vh;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -23,7 +25,8 @@
   }
 
   .tabBar {
-    position: static;
-    margin-top: 20px;
+    position: sticky;
+    padding: 15px 0;
+    bottom: 0;
   }
 }

@@ -6,20 +6,25 @@ import Image from "next/image";
 
 type Props = {
   onUpload: (url: string) => void;
+  value?: string;
 };
-export const PhotoLoad: FC<Props> = ({ onUpload }) => {
+export const PhotoLoad: FC<Props> = ({ onUpload, value }) => {
   const a = useFileUpload();
 
-  const [accImage, setAccImage] = useState("");
+  const [accImage, setAccImage] = useState<string>("");
 
   const handleAttachFile = useCallback(() => {
     a.openFilePicker();
   }, [a]);
 
   useEffect(() => {
+    if (value) setAccImage(value);
+  }, [value]);
+
+  useEffect(() => {
     setAccImage(a.dataUrl);
     onUpload(accImage);
-  }, [a.dataUrl]);
+  }, [a.dataUrl, accImage, onUpload]);
 
   const handleReset = useCallback(() => {
     setAccImage("");
@@ -28,16 +33,20 @@ export const PhotoLoad: FC<Props> = ({ onUpload }) => {
 
   return (
     <div className={styles.wrapper}>
-      {!accImage && (
+      {!value && !accImage && (
         <div className={styles.upload} onClick={handleAttachFile}>
           {a.inputComponent}
           <PhotoSVG />
         </div>
       )}
-      {accImage && (
+      {(value || accImage) && (
         <div className={styles.upload} onClick={handleReset}>
           <Image
-            src={`https://sphereapp.ru/api/account${accImage}`}
+            src={
+              value
+                ? `https://sphereapp.ru/api/account${value}`
+                : `https://sphereapp.ru/api/account${accImage}`
+            }
             alt="photo_account"
             width={210}
             height={140}

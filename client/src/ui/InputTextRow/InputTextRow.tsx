@@ -1,5 +1,5 @@
 import styles from "./styles.module.scss";
-import { FC, FormEvent, useCallback, useRef, useState } from "react";
+import { FC, FormEvent, useCallback, useEffect, useRef, useState } from "react";
 
 type Props = {
   placeholder?: string;
@@ -22,6 +22,10 @@ export const InputTextRow: FC<Props> = ({
   const handleFocus = () => {
     setIsFocused(true);
   };
+
+  useEffect(() => {
+    setValue(value);
+  }, [value]);
 
   const handleBlur = () => {
     setIsFocused(false);

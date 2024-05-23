@@ -41,6 +41,10 @@ export const SelectRow: FC<Props> = ({
     setSelfOptions(options);
   }, [options]);
 
+  useEffect(() => {
+    setValue(value);
+  }, [value]);
+
   const handleSelect = (val: string) => {
     setValue(val);
     setOpenSelect(false);
