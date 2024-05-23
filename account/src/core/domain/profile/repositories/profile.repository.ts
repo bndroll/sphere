@@ -24,9 +24,9 @@ export class ProfileRepository extends BaseRepository<Profile> {
 
   async findByUserId(userId: string): Promise<Profile[]> {
     return await this.createQueryBuilder('p')
-      .innerJoinAndSelect('p.user', 'user')
-      .innerJoinAndSelect('p.category', 'category')
-      .innerJoinAndSelect('p.tags', 'tags')
+      .leftJoinAndSelect('p.user', 'user')
+      .leftJoinAndSelect('p.category', 'category')
+      .leftJoinAndSelect('p.tags', 'tags')
       .where('p.userId = :userId', { userId })
       .getMany();
   }
@@ -42,8 +42,8 @@ export class ProfileRepository extends BaseRepository<Profile> {
 
   async findProfilesByIds(dto: FindByIdsDto) {
     return await this.createQueryBuilder('p')
-      .innerJoinAndSelect('p.user', 'user')
-      .innerJoinAndSelect('p.category', 'category')
+      .leftJoinAndSelect('p.user', 'user')
+      .leftJoinAndSelect('p.category', 'category')
       .leftJoinAndSelect('p.tags', 'tags')
       .where('p.id IN (:...ids)', { ids: dto.ids })
       .getMany();
