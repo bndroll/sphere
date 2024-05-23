@@ -81,7 +81,7 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 
 func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesRequest) (*ProfilesResponse, error) {
 	log := r.logger.With(ctx, "Recommendation.GetProfiles")
-	log.Info("Starting GetProfiles", slog.Any("request", request))
+	log.Info("Starting GetProfiles", "request", request)
 
 	data, err := json.Marshal(&request)
 	if err != nil {

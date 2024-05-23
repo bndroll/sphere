@@ -35,7 +35,7 @@ func (s *Storage) GetRecommendationByProfileId(ctx context.Context, profileId uu
 func (s *Storage) GetRecommendationsByVector(ctx context.Context, vector float64, filter usecase.RecommendationFilter) ([]uuid.UUID, error) {
 	var res []uuid.UUID
 
-	db := s.db.WithContext(ctx).Model(&entity.Recommendation{}).Select("recommendations.id")
+	db := s.db.WithContext(ctx).Model(&entity.Recommendation{}).Select("recommendations.profile_id")
 	if filter.Male != "" {
 		db = db.Where("male = ?", filter.Male)
 	}
