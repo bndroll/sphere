@@ -4,6 +4,14 @@
   gap: 16px;
   height: 50vh;
 
+  .empty {
+    color: rgba(235, 235, 245, 0.3);
+    font-size: 14px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+  }
+
   .form {
     display: flex;
     flex-direction: column;

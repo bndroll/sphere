@@ -9,22 +9,25 @@ import CircleSvg from "@/assets/icons/circle.svg";
 import { AnimatePresence, motion } from "framer-motion";
 import { container, item } from "@/components/AuthView/AuthView.animation";
 import { useRouter } from "next/navigation";
-import { postAuth } from "@/api/services/auth/auth.api";
+import { passwordAuth, postAuth } from "@/api/services/auth/auth.api";
 import { Preload } from "@/components/Preload/Preload";
 import cn from "classnames";
 import { TextInput } from "@/ui/TextInput/TextInput";
 import { findProfiles } from "@/api/services/profile/find-by-user.api";
-import { FeedPage } from "@/app/feed/components/FeedPage/FeedPage";
 import UserStoreContextProvider, {
   UserStoreContext,
 } from "@/utils/context/UserStoreContext";
 import { getCategories } from "@/api/services/category/category.api";
+import TelegramSVG from "@/assets/icons/tg_icon.svg";
+import { FeedPage } from "@/app/feed/components/FeedPage/FeedPage";
 
 export const AuthView = () => {
   const [isTelegram, setIsTelegram] = useState(false);
   const [isHasAuth, setIsHasAuth] = useState(false);
   const [loading, setLoading] = useState(true);
   const initData = useTelegramInitData();
+  const [login, setLogin] = useState<string | number>("");
+  const [password, setPassword] = useState<string | number>("");
   const { handleSetUserProfilies, setAllCategories } =
     useContext(UserStoreContext);
 
@@ -45,9 +48,8 @@ export const AuthView = () => {
           const account = await findProfiles();
           if (account.length > 0) {
             setIsHasAuth(true);
-            handleSetUserProfilies(account);
             const b = await getCategories();
-            setAllCategories(b);
+            handleSetUserProfilies(account, b);
           }
         } catch (e) {
           setIsHasAuth(false);
@@ -62,12 +64,25 @@ export const AuthView = () => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
 
+  const authDisables = useCallback(() => {
+    return login.toString().length < 2 || password.toString().length < 2;
+  }, [login, password]);
+
   const textButton = useCallback(() => {
     return `Войти по @${initData?.user?.username ?? ""}`;
   }, [initData?.user?.username]);
 
   const clickHandler = () => {
     router.push("/registry");
+  };
+
+  const handleEnter = async () => {
+    await passwordAuth(login, password);
+  };
+
+  const handleNavigateToTelegram = () => {
+    return;
+    // window.location.href = ''
   };
 
   const telegramWindow = () => {
@@ -131,15 +146,32 @@ export const AuthView = () => {
           </motion.div>
         </div>
         <div className={styles.auth_form}>
-          <TextInput placeholder="Логин" />
-          <TextInput type="password" placeholder="Пароль" />
+          <TextInput placeholder="Логин" value={login} onChange={setLogin} />
+          <TextInput
+            type="password"
+            placeholder="Пароль"
+            value={password}
+            onChange={setPassword}
+          />
         </div>
-        <Button
-          text={textButton()}
-          IconRight={ArrowSVG}
-          justify="space-between"
-          onClick={clickHandler}
-        />
+        <div className={styles.other}>
+          <Button
+            text="Войти в аккаунт"
+            onClick={handleEnter}
+            disabled={authDisables()}
+          />
+          <span className={styles.secondary_2}>Или</span>
+          <Button
+            text="Войти через Telegram"
+            variant="secondary"
+            IconLeft={TelegramSVG}
+            onClick={handleNavigateToTelegram}
+          />
+          <span className={styles.registration}>
+            <span className={styles.secondary}>Нет профиля?</span>
+            <span className={styles.create}>Создайте его</span>
+          </span>
+        </div>
       </motion.div>
     );
   };

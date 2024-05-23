@@ -107,7 +107,7 @@ export const education: string[] = [
   "Высшее образование",
   "Несколько высших образований",
 ];
-export const hobbies: string[] = [
+export const hobbiesOptions: string[] = [
   "Чтение",
   "Путешествия",
   "Спорт",

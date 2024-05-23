@@ -14,7 +14,14 @@ import { NavBar } from "@/app/feed/components/NavBar/NavBar";
 import { Info } from "@/app/feed/components/Info/Info";
 import TabBar from "@/app/feed/components/TabBar/TabBar";
 import { getReccomendation } from "@/api/services/reccomendation/recomendation.api";
-import { UserStoreContext } from "@/utils/context/UserStoreContext";
+import {
+  categoryMapper,
+  UserMappingProfile,
+  UserStoreContext,
+} from "@/utils/context/UserStoreContext";
+import { getCategories } from "@/api/services/category/category.api";
+import { findProfiles } from "@/api/services/profile/find-by-user.api";
+import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
 
 export const FeedPage = () => {
   const [tabs, setTabs] = useState(["Романтическая", "Деловая", "Досуговая"]);
@@ -22,18 +29,41 @@ export const FeedPage = () => {
   const [customStyles, setCustomStyles] = useState({});
   const [[page, direction], setPage] = useState([0, 0]);
   const [[card, directionCard], setCard] = useState([0, 0]);
-  const { usersProfilies } = useContext(UserStoreContext);
+  const { usersProfilies, user, handleSetUserProfilies } =
+    useContext(UserStoreContext);
   const imageIndex = wrap(0, tabs.length, page);
 
-  const { categories } = useContext(UserStoreContext);
+  const [fFeeds, setFFeeds] = useState<ProfileCardType[]>([]);
 
   useEffect(() => {
     const a = async () => {
-      const category = categories.get("network");
-      if (category) await getReccomendation(category.id, category.title, 10);
+      const cats = await getCategories();
+      const account = await findProfiles();
+      let profilies: UserMappingProfile[] = [];
+      cats.forEach((category) => {
+        account.map((profile) => {
+          if (profile.categoryId === category.id) {
+            // @ts-ignore
+            profilies.push({
+              ...profile,
+              // @ts-ignore
+              code: categoryMapper[category.title].type,
+              // @ts-ignore
+              name: categoryMapper[category.title].desc,
+              // @ts-ignore
+              icon: categoryMapper[category.title].icon,
+            } as UserMappingProfile);
+          }
+        });
+      });
+      const feedsRequests = profilies.map((profile) =>
+        getReccomendation(profile.id, profile.name, 10),
+      );
+      const feeds = await Promise.all(feedsRequests);
+      setFFeeds(feeds.flat());
     };
     void a();
-  }, []);
+  }, [usersProfilies]);
 
   const imageIndex2 = wrap(0, tabs.length, card);
 
@@ -78,7 +108,7 @@ export const FeedPage = () => {
         onDragStart={() => setCustomStyles({ opacity: 0.5 })}
         onDragEnd={handleEndSwipe}
       >
-        {tabs.map((item) => (
+        {tabs.map((tab) => (
           <motion.div
             className={styles.swiper_vert}
             variants={variants2}
@@ -86,14 +116,19 @@ export const FeedPage = () => {
             animate={{ y: `-${imageIndex2 * 100}%` }}
             transition={cardTransition}
           >
-            {[1, 2, 3].map(() => (
-              <div className={styles.content}>
-                <Info
-                  key={item}
-                  handleLikeClick={handleEndCertSwipe}
-                  stylesCustom={customStyles}
-                />
-              </div>
+            {fFeeds.map((item) => (
+              <>
+                {tab === item.category.title && (
+                  <div className={styles.content}>
+                    <Info
+                      key={item.id}
+                      data={item}
+                      handleLikeClick={handleEndCertSwipe}
+                      stylesCustom={customStyles}
+                    />
+                  </div>
+                )}
+              </>
             ))}
           </motion.div>
         ))}
