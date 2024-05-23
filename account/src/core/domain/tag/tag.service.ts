@@ -11,6 +11,9 @@ export class TagService {
   }
 
   async findByIds(ids: string[]) {
+    if (ids.length === 0) {
+      return [];
+    }
     return await this.tagRepository.find({ where: { id: In(ids) } });
   }
 }
