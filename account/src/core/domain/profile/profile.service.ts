@@ -153,7 +153,9 @@ export class ProfileService {
       throw new BadRequestException(ProfileErrorMessages.AccessDenied);
     }
 
-    const tags = await this.tagService.findByIds(dto.tagsId);
+    const tags = dto.tagsId
+      ? await this.tagService.findByIds(dto.tagsId)
+      : profile.tags;
 
     if (
       (tags.length === 0 || !dto?.info?.picture) &&
