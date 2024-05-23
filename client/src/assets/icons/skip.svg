@@ -1,0 +1,21 @@
+<svg width="32" height="33" viewBox="0 0 32 33" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_i_274_22374)">
+<rect y="0.333496" width="32" height="32" rx="6" fill="black"/>
+<path d="M25.6599 14.44L24.6799 18.62C23.8399 22.23 22.1799 23.69 19.0599 23.39C18.5599 23.35 18.0199 23.26 17.4399 23.12L15.7599 22.72C11.5899 21.73 10.2999 19.67 11.2799 15.49L12.2599 11.3C12.4599 10.45 12.6999 9.71001 12.9999 9.10001C14.1699 6.68001 16.1599 6.03001 19.4999 6.82001L21.1699 7.21001C25.3599 8.19001 26.6399 10.26 25.6599 14.44Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M19.0601 23.39C18.4401 23.81 17.6601 24.16 16.7101 24.47L15.1301 24.99C11.1601 26.27 9.0701 25.2 7.7801 21.23L6.5001 17.28C5.2201 13.31 6.2801 11.21 10.2501 9.92998L11.8301 9.40998C12.2401 9.27998 12.6301 9.16998 13.0001 9.09998C12.7001 9.70998 12.4601 10.45 12.2601 11.3L11.2801 15.49C10.3001 19.67 11.5901 21.73 15.7601 22.72L17.4401 23.12C18.0201 23.26 18.5601 23.35 19.0601 23.39Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.6399 12.53L21.4899 13.76" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15.6599 16.4L18.5599 17.14" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<defs>
+<filter id="filter0_i_274_22374" x="0" y="0.333496" width="32" height="32" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="4"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_274_22374"/>
+</filter>
+</defs>
+</svg>
