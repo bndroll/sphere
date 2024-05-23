@@ -33,14 +33,6 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
           draggable={false}
         />
       )}
-      <Image
-        src={`https://sphereapp.ru/api/account${data.info.picture}`}
-        alt="Photo"
-        width={100}
-        height={100}
-        className={styles.img}
-        draggable={false}
-      />
       <div className={styles.info} style={stylesCustom}>
         <div className={styles.titleContainer}>
           <h2 className={styles.title}>{data.info.name}</h2>
