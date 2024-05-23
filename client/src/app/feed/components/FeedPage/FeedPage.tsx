@@ -24,7 +24,7 @@ import { findProfiles } from "@/api/services/profile/find-by-user.api";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
 
 export const FeedPage = () => {
-  const [tabs, setTabs] = useState(["Романтическая", "Деловая", "Досуговая"]);
+  const [tabs, setTabs] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState(1);
   const [customStyles, setCustomStyles] = useState({});
   const [[page, direction], setPage] = useState([0, 0]);
@@ -56,6 +56,10 @@ export const FeedPage = () => {
           }
         });
       });
+
+      profilies.map((profile) =>
+        setTabs((prev) => Array.from(new Set([...prev, profile.name]))),
+      );
       const feedsRequests = profilies.map((profile) =>
         getReccomendation(profile.id, profile.name, 10),
       );
