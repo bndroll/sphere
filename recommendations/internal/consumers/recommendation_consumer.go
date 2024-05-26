@@ -9,13 +9,13 @@ import (
 	"recommendations/internal/domain/usecase"
 )
 
-type RecommendationHandler struct {
+type CreateRecommendationHandler struct {
 	uc     *usecase.Recommendations
 	logger *slog.Logger
 }
 
-func (r *RecommendationHandler) Handle(msg kafka.Message) {
-	log := r.logger.With("RecommendationHandler.Handle")
+func (r *CreateRecommendationHandler) Handle(msg kafka.Message) {
+	log := r.logger.With("CreateRecommendationHandler.Handle")
 	defer func() {
 		if err := recover(); err != nil {
 			log.Error(fmt.Sprintf("panic err %v", err))
@@ -36,9 +36,43 @@ func (r *RecommendationHandler) Handle(msg kafka.Message) {
 	}
 }
 
-func NewRecommendationHandler(uc *usecase.Recommendations, logger *slog.Logger) *RecommendationHandler {
-	return &RecommendationHandler{
+func NewCreateRecommendationHandler(uc *usecase.Recommendations, logger *slog.Logger) *CreateRecommendationHandler {
+	return &CreateRecommendationHandler{
 		uc:     uc,
 		logger: logger,
+	}
+}
+
+type DeleteRecommendationHandler struct {
+	uc     *usecase.Recommendations
+	logger *slog.Logger
+}
+
+func (r *DeleteRecommendationHandler) Handle(msg kafka.Message) {
+	log := r.logger.With("DeleteRecommendationHandler.Handle")
+	defer func() {
+		if err := recover(); err != nil {
+			log.Error(fmt.Sprintf("panic err %v", err))
+			return
+		}
+	}()
+
+	var msgValue usecase.DeleteRecommendation
+	err := json.Unmarshal(msg.Value, &msgValue)
+	if err != nil {
+		log.Error("Error unmarshalling message", "message", string(msg.Value))
+		return
+	}
+
+	err = r.uc.DeleteRecommendation(context.Background(), msgValue.ProfileID)
+	if err != nil {
+		log.Error("Error deleting recommendation", "error", err.Error())
+	}
+}
+
+func NewDeleteRecommendationHandler(uc *usecase.Recommendations, logger *slog.Logger) *DeleteRecommendationHandler {
+	return &DeleteRecommendationHandler{
+		logger: logger,
+		uc:     uc,
 	}
 }
