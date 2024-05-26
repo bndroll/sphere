@@ -26,6 +26,7 @@ type Storage interface {
 	GetRecommendationsByVector(ctx context.Context, vector float64, filter RecommendationFilter) ([]uuid.UUID, error)
 	CreateRecommendation(ctx context.Context, vector entity.Recommendation) error
 	CreateReaction(ctx context.Context, reaction entity.Reaction) error
+	DeleteRecommendationByProfileID(ctx context.Context, profileID uuid.UUID) error
 }
 
 func NewRecommendations(storage Storage, accountUrl *url.URL, logger *slog.Logger) *Recommendations {
@@ -36,7 +37,19 @@ func NewRecommendations(storage Storage, accountUrl *url.URL, logger *slog.Logge
 		logger:     logger,
 	}
 }
-func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecommendationsRequest) (*ProfilesResponse, error) {
+
+func (r *Recommendations) DeleteRecommendation(ctx context.Context, profileID uuid.UUID) error {
+	log := r.logger.With("Recommendation.DeleteRecommendation")
+	err := r.storage.DeleteRecommendationByProfileID(ctx, profileID)
+	if err != nil {
+		log.Error("Error deleting recommendation", "error", err.Error(), "profileID", profileID.String())
+		return err
+	}
+
+	return nil
+}
+
+func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecommendationsRequest) ([]map[string]any, error) {
 	log := r.logger.With(ctx, "Recommendation.GetRecommendations")
 	log.Info("Starting GetRecommendations", slog.String("ProfileID", req.ProfileID.String()))
 
@@ -57,10 +70,10 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 	}
 	if req.Category == "Романтическая" {
 		switch target.Gender {
-		case "male":
-			filter.Male = "female"
-		case "female":
-			filter.Male = "male"
+		case "Male":
+			filter.Male = "Female"
+		case "Female":
+			filter.Male = "Male"
 		}
 	}
 	ids, err := r.storage.GetRecommendationsByVector(ctx, target.Vector, filter)
@@ -79,13 +92,13 @@ func (r *Recommendations) GetRecommendations(ctx context.Context, req GetRecomme
 	return resp, nil
 }
 
-func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesRequest) (*ProfilesResponse, error) {
+func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesRequest) ([]map[string]any, error) {
 	log := r.logger.With(ctx, "Recommendation.GetProfiles")
-	log.Info("Starting GetProfiles", slog.Any("request", request))
+	log.Info("Starting GetProfiles", "request", request)
 
 	data, err := json.Marshal(&request)
 	if err != nil {
-		log.Error("Error marshalling request", err)
+		log.Error("Error marshalling request", "error", err)
 		return nil, err
 	}
 
@@ -96,29 +109,31 @@ func (r *Recommendations) GetProfiles(ctx context.Context, request ProfilesReque
 		log.Error("Error creating new HTTP request", err)
 		return nil, err
 	}
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := r.client.Do(req)
 	if err != nil {
-		log.Error("Error executing HTTP request", err)
+		log.Error("Error executing HTTP request", "error", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	respData, err := io.ReadAll(resp.Body)
+	log.Info("RESPONSE DATA %s", string(respData))
 	if err != nil {
-		log.Error("Error reading response body", err)
+		log.Error("Error reading response body", "error", err)
 		return nil, err
 	}
 
-	var responseDTO []ProfileDTO
-	err = json.Unmarshal(respData, &responseDTO)
+	var dataMap []map[string]any
+	err = json.Unmarshal(respData, &dataMap)
 	if err != nil {
-		log.Error("Error unmarshalling response data", err)
+		log.Error("Error unmarshalling response data", "error", err)
 		return nil, err
 	}
 
 	log.Info("Successfully finished GetProfiles")
-	return &ProfilesResponse{responseDTO}, nil
+	return dataMap, nil
 }
 
 func (r *Recommendations) CreateRecommendation(ctx context.Context, action CreateRecommendation) error {

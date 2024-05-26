@@ -52,3 +52,7 @@ type RecommendationFilter struct {
 	ProfileID uuid.UUID
 	Limit     int
 }
+
+type DeleteRecommendation struct {
+	ProfileID uuid.UUID `json:"id"`
+}
