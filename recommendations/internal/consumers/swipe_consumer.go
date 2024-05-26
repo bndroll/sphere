@@ -14,7 +14,7 @@ type SwipeHandler struct {
 }
 
 func (s *SwipeHandler) Handle(msg kafka.Message) {
-	log := s.logger.With("RecommendationHandler.Handle")
+	log := s.logger.With("CreateRecommendationHandler.Handle")
 
 	var msgValue usecase.CreateReactionRequest
 	err := json.Unmarshal(msg.Value, &msgValue)
