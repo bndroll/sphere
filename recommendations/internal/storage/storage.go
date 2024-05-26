@@ -65,3 +65,7 @@ func (s *Storage) CreateRecommendation(ctx context.Context, entity entity.Recomm
 func (s *Storage) CreateReaction(ctx context.Context, entity entity.Reaction) error {
 	return s.db.WithContext(ctx).Create(&entity).Error
 }
+
+func (s *Storage) DeleteRecommendationByProfileID(ctx context.Context, profileID uuid.UUID) error {
+	return s.db.WithContext(ctx).Where("profile_id = ?", profileID.String()).Delete(&entity.Recommendation{}).Error
+}

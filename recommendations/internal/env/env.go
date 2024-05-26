@@ -7,11 +7,12 @@ import (
 )
 
 var (
-	HttpPort                  = fmt.Sprintf(":%s", Getter("HTTP_PORT", "8080"))
-	KafkaRecommendationsTopic = Getter("KAFKA_RECOMMENDATIONS_TOPIC", "")
-	KafkaSwipeTopic           = Getter("KAFKA_SWIPE_TOPIC", "")
-	AccountURL                = GetterURL("ACCOUNT_URL")
-	DataSourceName            = Getter("DATA_SOURCE_NAME", "")
+	HttpPort                        = fmt.Sprintf(":%s", Getter("HTTP_PORT", "8080"))
+	KafkaRecommendationsTopic       = Getter("KAFKA_RECOMMENDATIONS_TOPIC", "")
+	KafkaSwipeTopic                 = Getter("KAFKA_SWIPE_TOPIC", "")
+	KafkaDeleteRecommendationsTopic = Getter("KAFKA_DELETE_RECOMMENDATIONS_TOPIC", "")
+	AccountURL                      = GetterURL("ACCOUNT_URL")
+	DataSourceName                  = Getter("DATA_SOURCE_NAME", "")
 )
 
 func Getter(key, defaultValue string) string {
