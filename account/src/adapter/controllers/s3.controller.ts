@@ -43,7 +43,7 @@ export class S3Controller {
       throw new BadRequestException('No file uploaded');
     }
     return await this.s3Service.upload({
-      data: file.buffer,
+      file: file,
       bucket: dto.bucket,
     });
   }
