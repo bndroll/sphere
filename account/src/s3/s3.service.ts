@@ -11,7 +11,8 @@ export class S3Service {
 
   async upload(dto: UploadDto): Promise<string> {
     const fileName = `${generateString()}.webp`;
-    await this.s3.putObject(dto.bucket, fileName, dto.data);
+    const buffer = await this.convertToWebP(dto.data);
+    await this.s3.putObject(dto.bucket, fileName, buffer);
     return `/s3/${dto.bucket}/${fileName}`;
   }
 
@@ -22,6 +23,6 @@ export class S3Service {
   }
 
   private async convertToWebP(file: Buffer): Promise<Buffer> {
-    return sharp(file).webp().toBuffer();
+    return sharp(file).webp({ quality: 100 }).toBuffer();
   }
 }
