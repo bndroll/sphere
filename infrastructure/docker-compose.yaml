@@ -193,6 +193,18 @@ services:
     networks:
       - common
 
+  environment:
+    build:
+      context: ../environment
+      dockerfile: ./Dockerfile
+    container_name: environment
+    depends_on: [ gateway ]
+    ports:
+      - "7090:7090"
+    env_file: ../environment/.env
+    networks:
+      - common
+
 networks:
   common:
     driver: bridge
