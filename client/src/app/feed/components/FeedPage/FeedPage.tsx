@@ -114,6 +114,7 @@ export const FeedPage = () => {
       >
         {tabs.map((tab) => (
           <motion.div
+            key={tab}
             className={styles.swiper_vert}
             variants={variants2}
             initial="visible"
