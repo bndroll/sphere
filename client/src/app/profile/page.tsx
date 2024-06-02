@@ -18,6 +18,8 @@ import {
   UserMappingProfile,
   UserStoreContext,
 } from "@/utils/context/UserStoreContext";
+import { findProfiles } from "@/api/services/profile/find-by-user.api";
+import { getCategories } from "@/api/services/category/category.api";
 
 export default function Profile() {
   const router = useRouter();
@@ -25,7 +27,22 @@ export default function Profile() {
     [],
   );
 
-  const { usersProfilies } = useContext(UserStoreContext);
+  const { usersProfilies, user, handleSetUserProfilies } =
+    useContext(UserStoreContext);
+
+  useEffect(() => {
+    const a = async () => {
+      try {
+        const account = await findProfiles();
+        if (account.length > 0) {
+          const b = await getCategories();
+          handleSetUserProfilies(account, b);
+        }
+      } catch (e) {}
+    };
+
+    void a();
+  }, []);
 
   useEffect(() => {
     setUsersProfilies(usersProfilies);
