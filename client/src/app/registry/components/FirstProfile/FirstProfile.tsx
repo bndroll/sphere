@@ -2,7 +2,6 @@ import { TopBanner } from "@/app/registry/components/_components/TopBanner/TopBa
 import styles from "./styles.module.scss";
 import { TextArea } from "@/ui/TextArea/TextArea";
 import { InputTextRow } from "@/ui/InputTextRow/InputTextRow";
-import { SwitchRow } from "@/ui/SwitchRow/SwitchRow";
 import { SelectRow } from "@/ui/SelectRow/SelectRow";
 import { FC, useCallback, useContext, useEffect, useState } from "react";
 import {
@@ -237,18 +236,6 @@ export const FirstProfile: FC<Props> = ({ categoryType }) => {
           onMultiChange={setHobbies}
           multiSelect
           options={hobbiesOptions}
-        />
-        <SwitchRow
-          label="Курение"
-          value={userSmoking}
-          onChange={setUserSmoking}
-          className={styles.switch}
-        />
-        <SwitchRow
-          label="Алкоголь"
-          value={userAlcohol}
-          onChange={setUserAlcohol}
-          className={styles.switch}
         />
       </div>
       <div className={styles.form_block}>

@@ -21,6 +21,12 @@
     .user {
       width: 80px;
       height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: gray;
+      border-radius: 50px;
 
       .userImg {
         width: 100%;

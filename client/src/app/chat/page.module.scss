@@ -1,0 +1,96 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 8px;
+  gap: 8px;
+  height: 100vh;
+
+  .title {
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 24px;
+    color: #FFFFFF;
+  }
+
+  .chips {
+    display: flex;
+    gap: 6px;
+
+    .chip {
+      padding: 8px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 14px;
+      letter-spacing: -0.5px;
+      color: #747474;
+      background-color: #1C1C1E;
+    }
+
+    .activeChip {
+      background-color: #FFFFFFE5;
+      color: #000000;
+    }
+  }
+
+  .items {
+    display: flex;
+    flex-direction: column;
+
+    .item {
+      display: flex;
+      border-bottom: 0.5px solid #181818;
+      gap: 8px;
+      padding: 12px 0;
+
+      .img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        object-position: top;
+      }
+
+      .info {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
+        .user {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          .name {
+            font-size: 18px;
+            font-weight: 510;
+            line-height: 18px;
+            letter-spacing: -0.5px;
+            color: #FFFFFF;
+          }
+
+          .text {
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 14px;
+            letter-spacing: -0.5px;
+            color: #FFFFFF80;
+          }
+        }
+
+        .time {
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 14px;
+          letter-spacing: -0.5px;
+          color: #FFFFFF80;
+        }
+      }
+    }
+  }
+
+  .tabBar {
+    position: fixed;
+  }
+}
+

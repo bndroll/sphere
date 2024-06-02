@@ -22,9 +22,14 @@ import {
 import { getCategories } from "@/api/services/category/category.api";
 import { findProfiles } from "@/api/services/profile/find-by-user.api";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
+import { NothingInCategory } from "@/app/feed/components/NothingPage/NothingInCategory";
 
 export const FeedPage = () => {
-  const [tabs, setTabs] = useState<string[]>([]);
+  const [tabs, setTabs] = useState<string[]>([
+    "Романтическая",
+    "Деловая",
+    "Досуговая",
+  ]);
   const [activeTab, setActiveTab] = useState(1);
   const [customStyles, setCustomStyles] = useState({});
   const [[page, direction], setPage] = useState([0, 0]);
@@ -57,11 +62,12 @@ export const FeedPage = () => {
         });
       });
 
-      profilies.map((profile) =>
-        setTabs((prev) => Array.from(new Set([...prev, profile.name]))),
-      );
-      const feedsRequests = profilies.map((profile) =>
-        getReccomendation(profile.id, profile.name, 10),
+      // profilies.map((profile) =>
+      //   setTabs((prev) => Array.from(new Set([...prev, profile.name]))),
+      // );
+      const feedsRequests = profilies.map(
+        async (profile) =>
+          await getReccomendation(profile.id, profile.name, 10),
       );
       const feeds = await Promise.all(feedsRequests);
       setFFeeds(feeds.flat());
@@ -99,6 +105,13 @@ export const FeedPage = () => {
     setCustomStyles({ opacity: 1 });
   };
 
+  const isHasSomeProfilies = useCallback(
+    (type: string) => {
+      return fFeeds.some((f) => f.category.title == type);
+    },
+    [fFeeds],
+  );
+
   return (
     <div className={styles.container}>
       <NavBar tabs={tabs} current={activeTab} onChange={handleChangeTab} />
@@ -114,15 +127,17 @@ export const FeedPage = () => {
       >
         {tabs.map((tab) => (
           <motion.div
+            key={tab}
             className={styles.swiper_vert}
             variants={variants2}
             initial="visible"
             animate={{ y: `-${imageIndex2 * 100}%` }}
             transition={cardTransition}
           >
-            {fFeeds.map((item) => (
-              <>
-                {tab === item.category.title && (
+            {isHasSomeProfilies(tab) ? (
+              fFeeds.map((item) => (
+                <>
+                  tab === item.category.title && (
                   <div className={styles.content}>
                     <Info
                       key={item.id}
@@ -131,9 +146,12 @@ export const FeedPage = () => {
                       stylesCustom={customStyles}
                     />
                   </div>
-                )}
-              </>
-            ))}
+                  )
+                </>
+              ))
+            ) : (
+              <NothingInCategory />
+            )}
           </motion.div>
         ))}
       </motion.div>
