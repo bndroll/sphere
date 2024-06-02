@@ -18,6 +18,8 @@
     "react": "^18",
     "react-dom": "^18",
     "sass": "^1.77.2",
+    "uuid": "^9.0.1",
+    "uuid4": "^2.0.3",
     "yarn": "^1.22.22"
   },
   "devDependencies": {
@@ -26,6 +28,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "telegram-webapps-types": "^1.0.5",

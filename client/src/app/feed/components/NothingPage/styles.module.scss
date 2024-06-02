@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+
+  img {
+    position: absolute;
+    top: 40px;
+  }
+
+  .info {
+    color: white;
+    text-align: center;
+    line-height: 16px;
+  }
+}
