@@ -1,7 +1,6 @@
 "use client";
 import Header from "@/app/profile/components/Header/Header";
 import YaSvg from "@/assets/icons/yandex.svg";
-import business from "@/assets/images/business.png";
 import { Button } from "@/ui/Button/Button";
 import UserSvg from "@/assets/icons/userPurple.svg";
 import EventSvg from "@/assets/icons/event.svg";
@@ -74,9 +73,9 @@ export default function Profile() {
       <div className={styles.container}>
         <Header
           iconCompany={<YaSvg />}
-          iconUserSrc={business}
-          userNickname={"@valentinaa"}
-          userName={"Валентина"}
+          iconUserSrc={allUsersProfilies?.[0]?.info?.picture ?? ""}
+          userNickname={"@karpakov02"}
+          userName={"Кирилл"}
         />
         <Button
           text={"Редактировать профиль"}
