@@ -8,7 +8,6 @@ import {
 } from "react";
 import { v4 as uuid4 } from "uuid";
 import { upload } from "@/api/services/upload/upload.api";
-// import { useFilesUploader } from "@/api/services/uploadTmpFile";
 
 const fileValidation = {
   accept: {
