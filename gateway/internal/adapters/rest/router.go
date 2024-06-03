@@ -25,7 +25,6 @@ func New(producer *kafkalib.Producer, log *slog.Logger) *Handler {
 func (h Handler) Router() *gin.Engine {
 	r := gin.New()
 
-	r.Use(CORSMiddleware())
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 
@@ -37,7 +36,7 @@ func (h Handler) Router() *gin.Engine {
 	})
 
 	service := r.Group("api").Group("gateway")
-	service.POST("/reactions", h.SwipeReaction)
+	service.POST("/reactions", CORSMiddleware(), h.SwipeReaction)
 
 	service.Handle("GET", "/health/check", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "ok"})
