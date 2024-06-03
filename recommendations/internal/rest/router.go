@@ -44,7 +44,6 @@ func (h *Handler) Router() *gin.Engine {
 
 	return r
 }
-
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
