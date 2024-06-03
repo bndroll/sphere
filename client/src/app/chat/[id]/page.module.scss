@@ -1,0 +1,99 @@
+.container {
+  display: flex;
+  padding: 0 8px;
+  flex-direction: column;
+
+  .head {
+    display: flex;
+    border-bottom: 1px solid #181818;
+    gap: 20px;
+    padding: 14px 0;
+
+    .btn {
+      background: transparent;
+      border: none;
+      rotate: 180deg;
+    }
+
+    .headInfo {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      .info {
+        display: flex;
+        flex-direction: column;
+
+        .title {
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 18px;
+          letter-spacing: -0.5px;
+          color: #FFFFFF;
+        }
+
+        .count {
+          font-size: 10px;
+          font-weight: 400;
+          line-height: 10px;
+          letter-spacing: -0.5px;
+          text-align: left;
+          color: #FFFFFF80;
+        }
+      }
+
+    }
+  }
+
+  .chat {
+    display: flex;
+    flex-direction: column;
+    margin-top: 16px;
+    gap: 20px;
+
+    .item {
+      display: flex;
+      gap: 16px;
+
+      .img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+      }
+
+      .msg {
+        display: flex;
+        flex-direction: column;
+        background-color: #1C1C1F;
+        padding: 8px 8px 18px 8px;
+        border-radius: 8px;
+        .name {
+          font-size: 12px;
+          font-weight: 510;
+          line-height: 14px;
+          letter-spacing: -0.5px;
+          color: #FFFFFF80;
+        }
+
+        .text {
+          font-size: 14px;
+          font-weight: 400;
+          line-height: 18px;
+          color: #FFFFFF;
+        }
+      }
+
+      .my {
+        background-color: #902EEF;
+      }
+
+    }
+
+    .myMsg {
+      align-self: flex-end;
+    }
+  }
+
+  .tabBar {
+    position: fixed;
+  }
+}
