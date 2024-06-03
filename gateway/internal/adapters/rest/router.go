@@ -25,6 +25,7 @@ func New(producer *kafkalib.Producer, log *slog.Logger) *Handler {
 func (h Handler) Router() *gin.Engine {
 	r := gin.New()
 
+	r.Use(CORSMiddleware())
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 
@@ -36,6 +37,7 @@ func (h Handler) Router() *gin.Engine {
 	})
 
 	service := r.Group("api").Group("gateway")
+	service.POST("/reactions", h.SwipeReaction)
 
 	service.Handle("GET", "/health/check", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "ok"})
@@ -51,8 +53,22 @@ func (h Handler) Router() *gin.Engine {
 
 	//SWIPE
 	swipe := service.Group("/swipe")
-	service.POST("/reaction", h.SwipeReaction)
 	swipe.Any("/*path", h.Redirect("/swipe", env.SwipeURL))
 
 	return r
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "*")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }
