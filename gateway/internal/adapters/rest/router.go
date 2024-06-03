@@ -28,13 +28,6 @@ func (h Handler) Router() *gin.Engine {
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
 
-	r.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"message": "resource not found"})
-	})
-	r.NoMethod(func(c *gin.Context) {
-		c.JSON(http.StatusMethodNotAllowed, gin.H{"applicationErrorCode": http.StatusText(http.StatusMethodNotAllowed), "message": "method not allowed"})
-	})
-
 	service := r.Group("api").Group("gateway")
 
 	service.Handle("GET", "/health/check", func(c *gin.Context) {
@@ -43,8 +36,8 @@ func (h Handler) Router() *gin.Engine {
 
 	//REACTIONS
 	reactions := service.Group("/reactions")
-	reactions.POST("/", h.SwipeReaction)
-	reactions.OPTIONS("/", CORSMiddleware())
+	reactions.Use(CORSMiddleware())
+	reactions.POST("/create", h.SwipeReaction)
 	//ACCOUNT
 	account := service.Group("/account")
 	account.Any("/*path", h.Redirect("", env.AccountURL))
