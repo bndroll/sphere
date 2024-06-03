@@ -27,6 +27,7 @@ func (h Handler) Router() *gin.Engine {
 
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
+	r.Use(CORSMiddleware())
 
 	service := r.Group("api").Group("gateway")
 
@@ -36,7 +37,6 @@ func (h Handler) Router() *gin.Engine {
 
 	//REACTIONS
 	reactions := service.Group("/reactions")
-	reactions.Use(CORSMiddleware())
 	reactions.POST("/create", h.SwipeReaction)
 	//ACCOUNT
 	account := service.Group("/account")
@@ -59,7 +59,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "*")
 
-		if c.Request.Method == "OPTIONS" {
+		if c.Request.Method == "OPTIONS" && c.Request.RequestURI == "/api/gateway/reactions/create" {
 			c.AbortWithStatus(204)
 			return
 		}
