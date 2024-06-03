@@ -36,12 +36,15 @@ func (h Handler) Router() *gin.Engine {
 	})
 
 	service := r.Group("api").Group("gateway")
-	service.POST("/reactions", CORSMiddleware(), h.SwipeReaction)
 
 	service.Handle("GET", "/health/check", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "ok"})
 	})
 
+	//REACTIONS
+	reactions := service.Group("/reactions")
+	reactions.POST("/", h.SwipeReaction)
+	reactions.OPTIONS("/", CORSMiddleware())
 	//ACCOUNT
 	account := service.Group("/account")
 	account.Any("/*path", h.Redirect("", env.AccountURL))
