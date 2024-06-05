@@ -17,6 +17,7 @@ import {
   ChatContract,
   CreateChatContract,
 } from 'src/core/domain/swipe/contract/chat.contract';
+import { DeleteProfileContract } from 'src/core/domain/swipe/contract/delete-profile.contract';
 
 @Injectable()
 export class SwipeService {
@@ -157,6 +158,11 @@ export class SwipeService {
         ids: notReactedSwipes,
       })
       .then((r) => r.data);
+  }
+
+  async clearProfileSwipes(dto: DeleteProfileContract.Message) {
+    const profileSwipes = await this.swipeRepository.findByProfileId(dto.id);
+    await this.swipeRepository.remove(profileSwipes);
   }
 
   async sendAddChatMember(dto: ChatContract.Message) {
