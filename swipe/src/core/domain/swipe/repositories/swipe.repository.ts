@@ -46,4 +46,11 @@ export class SwipeRepository extends BaseRepository<Swipe> {
       .andWhere('s.type = :type', { type: SwipeType.Like })
       .getMany();
   }
+
+  async findByProfileId(profileId: string) {
+    return await this.createQueryBuilder('s')
+      .where('s.profileId = :profileId', { profileId: profileId })
+      .orWhere('s.profileRecId = :profileId', { profileId: profileId })
+      .getMany();
+  }
 }
