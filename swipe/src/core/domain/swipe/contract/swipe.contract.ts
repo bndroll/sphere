@@ -5,7 +5,7 @@ export namespace SwipeContract {
 
   export interface Message {
     profileId: string;
-    profileRecId: string;
+    recProfileId: string;
     type: SwipeType;
   }
 }
@@ -15,7 +15,7 @@ export namespace SwipeDWHContract {
 
   export interface Message {
     profileId: string;
-    profileRecId: string;
+    recProfileId: string;
     type: SwipeType;
   }
 }
