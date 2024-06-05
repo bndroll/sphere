@@ -30,7 +30,7 @@ export class SwipeService {
   ) {}
 
   async create(dto: SwipeContract.Message) {
-    if (dto.profileId === dto.profileRecId) {
+    if (dto.profileId === dto.recProfileId) {
       return null;
     }
 
@@ -40,7 +40,7 @@ export class SwipeService {
         AxiosResponse<FindProfileRequest[]>,
         { ids: string[] }
       >(`${process.env.ACCOUNT_SERVICE_URL}/profile/find-by-ids`, {
-        ids: [dto.profileId, dto.profileRecId],
+        ids: [dto.profileId, dto.recProfileId],
       })
       .then((r) => r.data);
     if (profiles.length < 2) {
@@ -49,19 +49,19 @@ export class SwipeService {
 
     const profile = profiles.find((profile) => profile.id === dto.profileId);
     const profileRec = profiles.find(
-      (profile) => profile.id === dto.profileRecId,
+      (profile) => profile.id === dto.recProfileId,
     );
 
     const lastSwipe = await this.swipeRepository.findByProfileIds({
-      profileId: dto.profileRecId,
+      profileId: dto.recProfileId,
       profileRecId: dto.profileId,
     });
 
     const existingSwipe = await this.swipeRepository.findByProfileIds({
       profileId: dto.profileId,
-      profileRecId: dto.profileRecId,
+      profileRecId: dto.recProfileId,
     });
-    if (existingSwipe && dto.type === existingSwipe.type) {
+    if (existingSwipe && dto.type === existingSwipe.type && lastSwipe) {
       lastSwipe.reaction = true;
       await this.swipeRepository.save(lastSwipe);
       return null;
@@ -128,14 +128,14 @@ export class SwipeService {
 
     const swipe = Swipe.create({
       profileId: dto.profileId,
-      profileRecId: dto.profileRecId,
+      profileRecId: dto.recProfileId,
       type: dto.type,
     });
     await this.swipeRepository.save(swipe);
 
     const swipeDWHMessage: SwipeDWHContract.Message = {
       profileId: dto.profileId,
-      profileRecId: dto.profileRecId,
+      recProfileId: dto.recProfileId,
       type: dto.type,
     };
     await this.producerSwipeDWH.send({
