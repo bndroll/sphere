@@ -42,11 +42,13 @@ export class S3Service {
       });
       return sharp(outputBuffer)
         .withMetadata()
+        .rotate()
         .webp({ quality: 100 })
         .toBuffer();
     } else {
       return sharp(file.buffer)
         .withMetadata()
+        .rotate()
         .webp({ quality: 100 })
         .toBuffer();
     }
