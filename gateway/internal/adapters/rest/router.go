@@ -50,6 +50,10 @@ func (h Handler) Router() *gin.Engine {
 	swipe := service.Group("/swipe")
 	swipe.Any("/*path", h.Redirect("/swipe", env.SwipeURL))
 
+	//CHAT
+	chat := service.Group("/chat")
+	chat.Any("/*path", h.Redirect("chat", env.ChatURL))
+
 	return r
 }
 
