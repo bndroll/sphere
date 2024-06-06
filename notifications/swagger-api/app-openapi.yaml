@@ -1,0 +1,141 @@
+openapi: 3.0.0
+info:
+  title: Сервис Notifications
+  description: Сервис для работы с уведомлениями пользователя
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081/api/v1/
+    description: Localhost server V1
+paths:
+  /notification/health/check:
+    get:
+      tags:
+        - Health
+      summary: Проверка жизнеспособности сервиса
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1HealthResponse'
+        default:
+          description: An unexpected error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+  /notification/list:
+    get:
+      tags:
+        - Geo
+      summary: Определение информации о местоположении пользователя
+      parameters:
+        - name: userID
+          in: header
+          description: Географическая широта
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: number
+            example: 57.6215477
+        - name: lon
+          in: query
+          description: Географическая долгота
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: number
+            example: 39.8977411
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/geo_v1Location'
+        "400":
+          description: Сервер не может распознать запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        "401":
+          description: Ошибка аутентификации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        "403":
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        "500":
+          description: Серверная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        default:
+          description: Серверная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+  /api-composer/geo/checkCity:
+    get:
+      tags:
+        - Delivery
+      summary: Возвращает признак того, что в город есть доставка
+      parameters:
+        - name: query
+          in: query
+          description: kladr
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A successful response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - ok
+                      - fail
+                    example: "ok"
+        "400":
+          description: Сервер не может распознать запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        "401":
+          description: Ошибка аутентификации
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        "403":
+          description: Доступ запрещен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        "500":
+          description: Серверная ошибка
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/runtimeError'
+        default:
