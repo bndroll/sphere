@@ -92,8 +92,35 @@ export class ChatService {
     }
   }
 
-  async addMember(message: ChatContract.Message) {
-    console.log('add member to chat topic received, data =', message);
+  async addMember(dto: ChatContract.Message) {
+    let existingProfileEvent = await this.profileService.findByProfileId(
+      dto.profileId,
+    );
+    let existingProfileUser = await this.profileService.findByProfileId(
+      dto.profileSecondId,
+    );
+    if (!existingProfileEvent) {
+      existingProfileEvent = await this.profileService.create({
+        profileId: dto.profileId,
+      });
+    }
+    if (!existingProfileUser) {
+      existingProfileUser = await this.profileService.create({
+        profileId: dto.profileSecondId,
+      });
+    }
+
+    const existingChat = await this.chatRepository.findByProfileId(
+      existingProfileEvent.profileId,
+    );
+    console.log('existingChat', existingChat);
+    if (!existingChat) {
+      this.logger.warn('Event chat group doesnt exist for this profile');
+      return;
+    }
+    console.log('existingProfileEvent', existingProfileEvent);
+    console.log('existingProfileUser', existingProfileUser);
+
     return null;
   }
 
