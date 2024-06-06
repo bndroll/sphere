@@ -46,7 +46,7 @@ func (s *Storage) GetRecommendationsByVector(ctx context.Context, vector float64
 	if filter.ProfileID != uuid.Nil {
 		db = db.
 			Joins("LEFT JOIN reactions ON reactions.recommendation_id = recommendations.id").
-			Where("recommendations.profile_id != ? AND (reactions.profile_id != ? OR (next_view is NOT NULL AND next_view < ? AND reactions.profile_id = ?)) OR reactions.profile_id IS NULL", filter.ProfileID, filter.ProfileID, time.Now(), filter.ProfileID)
+			Where("recommendations.profile_id != ? AND (reactions.profile_id != ? OR (next_view is NOT NULL AND next_view < ? AND reactions.profile_id = ?) OR reactions.profile_id IS NULL)", filter.ProfileID, filter.ProfileID, time.Now(), filter.ProfileID)
 	}
 
 	err := db.Limit(filter.Limit).Find(&res).Error
