@@ -13,13 +13,13 @@
     .form {
       display: flex;
       flex-direction: column;
-      background-color: #1C1C1E;
+      background-color: var(--neitral-primary);
       border-radius: 10px;
       padding-left: 16px;
 
       .formItem > * {
         padding: 11px 16px 11px 0;
-        border-bottom: 1px solid #3C3C3C;
+        border-bottom: 1px solid var(--separator);
 
         &:first-child input {
           padding-left: 0;

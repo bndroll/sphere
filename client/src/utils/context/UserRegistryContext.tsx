@@ -66,7 +66,7 @@ export type UserProfile = {
   categoryId: string;
   tagsId: string[];
   type: "User";
-  visible: "Open" | "Close";
+  visible?: "Open" | "Close";
   info: ProfileInfo;
 };
 

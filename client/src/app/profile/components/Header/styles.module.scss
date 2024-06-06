@@ -24,9 +24,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
       background: gray;
+      overflow: hidden;
       border-radius: 50px;
+
+      img {
+        overflow: hidden;
+        border-radius: 50px;
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+      }
 
       .userImg {
         width: 100%;
@@ -50,7 +58,7 @@
     font-size: 24px;
     font-weight: 510;
     line-height: 24px;
-    color: #FFFFFF;
+    color: var(--text-neitral-primary);
     letter-spacing: -1px;
   }
 
@@ -58,6 +66,6 @@
     font-size: 14px;
     font-weight: 400;
     line-height: 16px;
-    color: #C1C1C1;
+    color: var(--text-neitral-secondary);
   }
 }

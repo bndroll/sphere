@@ -11,7 +11,7 @@ type Props = {
 export const PhotoLoad: FC<Props> = ({ onUpload, value }) => {
   const a = useFileUpload();
 
-  const [accImage, setAccImage] = useState<string>("");
+  const [accImage, setAccImage] = useState<string>(value ?? "");
 
   const handleAttachFile = useCallback(() => {
     a.openFilePicker();
@@ -22,14 +22,15 @@ export const PhotoLoad: FC<Props> = ({ onUpload, value }) => {
   }, [value]);
 
   useEffect(() => {
-    setAccImage(a.dataUrl);
-    onUpload(accImage);
-  }, [a.dataUrl, accImage, onUpload]);
+    setAccImage(a.dataUrl.length > 0 ? a.dataUrl : value ?? "");
+    onUpload(a.dataUrl.length > 0 ? a.dataUrl : value ?? "");
+  }, [value, a.dataUrl, accImage, onUpload]);
 
   const handleReset = useCallback(() => {
-    setAccImage("");
+    setAccImage((prev) => "");
+    onUpload("");
     a.resetPhotoState();
-  }, [a]);
+  }, [a, onUpload]);
 
   return (
     <div className={styles.wrapper}>

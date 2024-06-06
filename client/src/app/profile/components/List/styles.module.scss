@@ -2,9 +2,13 @@
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  background-color: #1C1C1E;
+  background-color: var(--neitral-primary);
   gap: 11px;
   padding: 8px;
+
+  .disabled {
+    opacity: 0.5;
+  }
 
   .item {
     display: flex;
@@ -20,13 +24,14 @@
     .text {
       display: flex;
       justify-content: space-between;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       width: 100%;
-      border-bottom: 1px solid #3C3C3C;
-      color: #FFFFFF;
+      border-bottom: 1px solid var(--separator);
+      color: var(--text-neitral-primary);;
       font-size: 17px;
       font-weight: 400;
       line-height: 32px;
+      align-items: center;
     }
 
     .borderNone {
@@ -34,9 +39,14 @@
       padding-bottom: 0;
     }
 
+    .secondary {
+      font-size: 14px;
+      color: var(--black);
+    }
+
     .special {
       display: flex;
-      background: #FFFFFFE5;
+      background: var(--black);
       border-radius: 14px;
       height: 26px;
       width: fit-content;

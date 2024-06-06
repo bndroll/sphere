@@ -5,11 +5,11 @@
 }
 
 .textarea {
-  background: #1C1C1E;
+  background: var(--neitral-primary);
   padding: 10px 16px;
   border-radius: 10px;
   caret-color: #0A84FF;
-  color: white;
+  color: var(--text-neitral-primary);
   line-height: 1.1em;
   resize: none;
   height: 80px;
@@ -24,6 +24,6 @@
   }
 
   &::placeholder {
-    color: rgba(235, 235, 245, 0.25);
+    color: var(--text-neitral-secondary);
   }
 }

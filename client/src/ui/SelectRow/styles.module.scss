@@ -5,12 +5,15 @@
   justify-content: space-between;
   font-size: 17px;
 
+  label p {
+    color: var(--text-neitral-primary);
+  }
 
   .value_wrapper {
     display: flex;
     align-items: center;
     gap: 16px;
-    color: rgba(235, 235, 245, 0.6);
+    color: var(--text-neitral-primary);;
     font-size: 17px;
     padding: 7px 0;
   }
@@ -29,9 +32,9 @@
   position: fixed;
   width: 0%;
   min-height: 1000vh;
-  background: black;
+  background: var(--bg-primary);
   padding-top: 16px;
-  border-top: 1px solid rgba(84, 84, 88, 0.53);
+  border-top: 1px solid var(--separator);
   top: 0;
   right: 0;
   transition: all .2s;
@@ -47,12 +50,12 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
-    background: black;
+    background: var(--bg-primary);
     width: 100%;
     padding: 20px 10px;
     position: fixed;
     bottom: 0;
-    border-top: 1px solid rgba(84, 84, 88, 0.53);
+    border-top: 1px solid var(--separator);
   }
 
 
@@ -67,13 +70,13 @@
     height: 99vh;
 
     > * {
-      border-top: 1px solid #3C3C3C;
+      border-top: 1px solid var(--separator);
       padding: 10px 10px 10px 0;
     }
 
     .multi_option {
       width: 100%;
-      color: white;
+      color: var(--text-neitral-primary);
       padding: 19px 16px 19px 10px;
       display: flex;
       align-items: center;
@@ -85,18 +88,19 @@
         height: 20px;
         justify-content: center;
         align-items: center;
-        border: 1px solid #3C3C3C;
+        border: 1px solid var(--separator);
         border-radius: 50px;
       }
 
       .active {
         background: #B46EFF;
+        color: var(--bg-primary);
       }
     }
 
     .option {
       width: 100%;
-      color: white;
+      color: var(--text-neitral-primary);
       padding: 19px 16px 19px 0;
 
       display: flex;

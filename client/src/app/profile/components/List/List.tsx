@@ -5,6 +5,7 @@ import cn from "classnames";
 export interface ListItem {
   icon: ReactNode;
   text: string;
+  visible?: "Open" | "Close";
   specialIcon?: ReactNode;
   specialText?: string;
   onClick?: () => void;
@@ -15,10 +16,16 @@ interface ListProps {
 }
 
 export default function List({ items }: ListProps) {
-  return (
+  return items.length > 0 ? (
     <ul className={styles.list}>
       {items.map((item, index) => (
-        <li className={styles.item} key={item.text} onClick={item.onClick}>
+        <li
+          className={cn(styles.item, {
+            [styles.disabled]: item.visible == "Close",
+          })}
+          key={item.text}
+          onClick={item.onClick}
+        >
           {item.icon}
           <span
             className={cn(styles.text, {
@@ -32,9 +39,14 @@ export default function List({ items }: ListProps) {
                 {item.specialIcon}
               </div>
             )}
+            {item.visible === "Close" && (
+              <span className={styles.secondary}>не активно</span>
+            )}
           </span>
         </li>
       ))}
     </ul>
+  ) : (
+    <></>
   );
 }

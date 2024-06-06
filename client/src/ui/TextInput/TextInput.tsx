@@ -4,6 +4,7 @@ import {
   FormEvent,
   HTMLInputTypeAttribute,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -31,6 +32,10 @@ export const TextInput: FC<Props> = ({
   const handleFocus = () => {
     setTimeout(() => setIsFocused(true));
   };
+
+  useEffect(() => {
+    setValue(value);
+  }, [value]);
 
   const handleBlur = () => {
     setTimeout(() => setIsFocused(false));

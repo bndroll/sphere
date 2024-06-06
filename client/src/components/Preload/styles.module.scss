@@ -3,13 +3,26 @@
   top: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 100;
-  background: #000000;
+  z-index: 1001;
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
+  .text {
+    position: absolute;
+    bottom: -50px;
+    width: 100px;
+    height: 40px;
+    font-size: 16px;
+    line-height: 16px;
+    font-weight: 600;
+    background-image: linear-gradient(to right, #ffa9dd 10%, #aa77fe 90%);
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
 
   .anim_wrapper {
     display: flex;
@@ -35,7 +48,7 @@
     justify-content: center;
 
     .remove {
-      background: #000000;
+      background: var(--bg-primary);
       width: 199px;
       height: 199px;
       border-radius: 100%;
