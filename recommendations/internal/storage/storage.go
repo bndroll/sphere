@@ -49,7 +49,7 @@ func (s *Storage) GetRecommendationsByVector(ctx context.Context, vector float64
 			Where("recommendations.profile_id != ? AND (reactions.profile_id != ? OR (next_view is NOT NULL AND next_view < ? AND reactions.profile_id = ?) OR reactions.profile_id IS NULL)", filter.ProfileID, filter.ProfileID, time.Now(), filter.ProfileID)
 	}
 
-	err := db.Limit(filter.Limit).Find(&res).Error
+	err := db.Limit(filter.Limit).Order("recommendations.vector DESC").Find(&res).Error
 	if err != nil {
 		return nil, err
 	}
