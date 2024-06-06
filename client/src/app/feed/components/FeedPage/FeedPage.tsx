@@ -23,6 +23,8 @@ import { getCategories } from "@/api/services/category/category.api";
 import { findProfiles } from "@/api/services/profile/find-by-user.api";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
 import { NothingInCategory } from "@/app/feed/components/NothingPage/NothingInCategory";
+import { SwipeType } from "@/api/services/swipe/swipe.api";
+import { vibrate } from "@/utils/hooks/vibration.helper";
 
 export const FeedPage = () => {
   const [tabs, setTabs] = useState<string[]>([
@@ -36,11 +38,13 @@ export const FeedPage = () => {
   const [[card, directionCard], setCard] = useState([0, 0]);
   const { usersProfilies, user, handleSetUserProfilies } =
     useContext(UserStoreContext);
+  const [profil, setProfil] = useState<UserMappingProfile[]>([]);
   const imageIndex = wrap(0, tabs.length, page);
 
   const [fFeeds, setFFeeds] = useState<ProfileCardType[]>([]);
 
   useEffect(() => {
+    vibrate();
     const a = async () => {
       const cats = await getCategories();
       const account = await findProfiles();
@@ -65,6 +69,7 @@ export const FeedPage = () => {
       // profilies.map((profile) =>
       //   setTabs((prev) => Array.from(new Set([...prev, profile.name]))),
       // );
+      setProfil(profilies);
       const feedsRequests = profilies.map(
         async (profile) =>
           await getReccomendation(profile.id, profile.name, 10),
@@ -78,20 +83,24 @@ export const FeedPage = () => {
   const imageIndex2 = wrap(0, tabs.length, card);
 
   const handleChangeTab = useCallback((tab: number) => {
-    paginate(tab);
+    paginate(tab, true);
   }, []);
 
-  const paginate = (newDirection: number) => {
+  const paginate = (newDirection: number, reset = false) => {
+    vibrate();
     setPage([page + newDirection, newDirection]);
+    setCard([0, 0]);
     setActiveTab(wrap(0, tabs.length, page + newDirection) + 1);
   };
 
   const paginateVertical = (newDirection: number) => {
-    setCard([card + newDirection, newDirection]);
+    vibrate();
+    setCard([card + newDirection - 1, newDirection]);
   };
 
   const handleEndSwipe = (e: MouseEvent, { offset, velocity }: PanInfo) => {
     const swipe = swipePower(offset.x, velocity.x);
+    if ("vibrate" in navigator) return navigator.vibrate(100);
     if (swipe < -swipeConfidenceThreshold) {
       paginate(1);
     } else if (swipe > swipeConfidenceThreshold) {
@@ -102,8 +111,22 @@ export const FeedPage = () => {
 
   const handleEndCertSwipe = () => {
     paginateVertical(1);
-    setCustomStyles({ opacity: 1 });
+    setCustomStyles(cardTransition);
   };
+
+  const handleGiveReaction = useCallback(
+    (profileId: string) => async (type: SwipeType, recProfileId: string) => {
+      const profile = profil.find((pr) => pr.categoryId == profileId);
+      if (profile) {
+        // await swipeProfile(profile.id, type, recProfileId);
+        handleEndCertSwipe();
+        setFFeeds((prevState) => [
+          ...prevState.filter((p) => p.id !== recProfileId),
+        ]);
+      }
+    },
+    [profil, handleEndCertSwipe],
+  );
 
   const isHasSomeProfilies = useCallback(
     (type: string) => {
@@ -137,16 +160,16 @@ export const FeedPage = () => {
             {isHasSomeProfilies(tab) ? (
               fFeeds.map((item) => (
                 <>
-                  tab === item.category.title && (
-                  <div className={styles.content}>
-                    <Info
-                      key={item.id}
-                      data={item}
-                      handleLikeClick={handleEndCertSwipe}
-                      stylesCustom={customStyles}
-                    />
-                  </div>
-                  )
+                  {tab === item.category.title && (
+                    <div className={styles.content} key={item.id}>
+                      <Info
+                        key={item.id}
+                        data={item}
+                        handleLikeClick={handleGiveReaction(item.category.id)}
+                        stylesCustom={customStyles}
+                      />
+                    </div>
+                  )}
                 </>
               ))
             ) : (

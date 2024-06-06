@@ -32,13 +32,13 @@
       justify-content: space-between;
       align-items: center;
       padding: 8px 0;
-      border-top: 1px solid #3C3C3C;
+      border-top: 1px solid var(--separator);
     }
   }
 
   .block_form {
     display: flex;
-    background: #1C1C1E;
+    background: var(--neitral-primary);
     border-radius: 10px;
     width: 100%;
     padding: 0 8px;

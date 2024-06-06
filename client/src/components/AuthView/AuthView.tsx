@@ -20,6 +20,7 @@ import UserStoreContextProvider, {
 import { getCategories } from "@/api/services/category/category.api";
 import TelegramSVG from "@/assets/icons/tg_icon.svg";
 import { FeedPage } from "@/app/feed/components/FeedPage/FeedPage";
+import { useTheme } from "@/utils/hooks/useTheme";
 
 export const AuthView = () => {
   const [isTelegram, setIsTelegram] = useState(false);
@@ -31,12 +32,16 @@ export const AuthView = () => {
   const { handleSetUserProfilies, setAllCategories } =
     useContext(UserStoreContext);
 
+  useTheme();
+
   useEffect(() => {
     const a = async () => {
       setLoading(true);
       if (initData?.user) {
         setIsTelegram(true);
         window.Telegram.WebApp.expand();
+        // @ts-ignore
+        window.Telegram.WebApp.isClosingConfirmationEnabled = true;
         const { accessToken, refreshToken } = await postAuth({
           telegramId: initData.user.id.toString(),
           username: initData.user.username ?? "",
@@ -56,10 +61,9 @@ export const AuthView = () => {
         }
       } else setIsTelegram(false);
       setTimeout(() => setLoading(false), 2000);
-      setTimeout(() => (isHasAuth ? router.push("/feed") : null), 3000);
     };
     void a();
-  }, [initData]);
+  }, [handleSetUserProfilies, initData, isHasAuth]);
 
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -158,7 +162,7 @@ export const AuthView = () => {
           <Button
             text="Войти в аккаунт"
             onClick={handleEnter}
-            disabled={authDisables()}
+            // disabled={authDisables()}
           />
           <span className={styles.secondary_2}>Или</span>
           <Button
@@ -176,16 +180,21 @@ export const AuthView = () => {
     );
   };
 
+  const isFeed = () => {
+    router.push("/feed");
+    return <FeedPage />;
+  };
+
   return (
     <>
       <UserStoreContextProvider>
         <AnimatePresence mode="wait">
-          <motion.div key={isTelegram}>
+          <motion.div key={isTelegram ? "1" : "0"}>
             {loading ? (
               <Preload />
             ) : isTelegram ? (
               isHasAuth ? (
-                <FeedPage />
+                isFeed()
               ) : (
                 telegramWindow()
               )

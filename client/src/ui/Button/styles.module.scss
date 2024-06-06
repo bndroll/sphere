@@ -2,8 +2,8 @@
   padding: 12px 16px;
   border: none;
   font: inherit;
-  color: inherit;
-  background: #1C1C1E;
+  color: var(--text-neitral-primary);
+  background: var(--neitral-primary);
   cursor: pointer;
   width: 100%;
   display: flex;
@@ -25,7 +25,7 @@
 
 .primary {
   background: #902EEF;
-  color: #FFFFFF;
+  color: white;
 }
 
 .disabled {
@@ -34,8 +34,8 @@
 }
 
 .secondary {
-  background: #1C1C1E;
-  color: #FFFFFF;
+  background: var(--neitral-primary);
+  color: var(--text-neitral-primary);
 }
 
 .default {

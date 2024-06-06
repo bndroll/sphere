@@ -8,10 +8,11 @@ import HeartSvg from "@/assets/icons/heart.svg";
 import HeartSlashSvg from "@/assets/icons/heart-slash.svg";
 import { CSSProperties, FC, useRef, useState } from "react";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
+import { SwipeType } from "@/api/services/swipe/swipe.api";
 
 interface Props {
   stylesCustom?: CSSProperties;
-  handleLikeClick: () => void;
+  handleLikeClick: (type: SwipeType, recProfileId: string) => void;
   data: ProfileCardType;
 }
 
@@ -21,6 +22,10 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
   const tabs = ["Романтическая", "Деловая", "Досуговая"];
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
+  const handleClick = (type: SwipeType) => {
+    handleLikeClick(type, data.id);
+  };
+
   return (
     <div className={styles.container}>
       {data.info.picture?.length && (
@@ -29,6 +34,7 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
           alt="Photo"
           width={2560}
           height={1440}
+          quality={100}
           className={styles.img}
           draggable={false}
         />
@@ -60,7 +66,7 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
             text="Нравится"
             className={styles.btn}
             IconLeft={() => <HeartSvg className={styles.iconBtn} />}
-            onClick={handleLikeClick}
+            onClick={() => handleClick(SwipeType.Like)}
           />
           <Button
             variant="secondary"
@@ -68,7 +74,7 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
             text="Не интересно"
             className={styles.btn}
             IconLeft={() => <HeartSlashSvg className={styles.iconBtn} />}
-            onClick={handleLikeClick}
+            onClick={() => handleClick(SwipeType.Dislike)}
           />
         </div>
       </div>

@@ -14,7 +14,6 @@ import {
   workStatus,
 } from "@/app/registry/components/FirstProfile/first_profile.constants";
 import { InputTextRow } from "@/ui/InputTextRow/InputTextRow";
-import { SwitchRow } from "@/ui/SwitchRow/SwitchRow";
 import {
   categoryMapper,
   UserMappingProfile,
@@ -25,7 +24,10 @@ import { findProfiles } from "@/api/services/profile/find-by-user.api";
 import Image from "next/image";
 import ProfileBg from "@/assets/images/profile_bg.png";
 import { Button } from "@/ui/Button/Button";
+import { vibrate } from "@/utils/hooks/vibration.helper";
 import { updateProfile } from "@/api/services/profile/update-profile.api";
+import Trash from "@/assets/icons/trash.svg";
+import { deleteProfile } from "@/api/services/profile/profile.api";
 
 export const EditProfile = () => {
   const [profile, setProfile] = useState<UserMappingProfile>();
@@ -36,7 +38,7 @@ export const EditProfile = () => {
   const [pickture, setPickture] = useState("");
   const [city, setCity] = useState("Москва");
   const [userEducation, setEducation] = useState("Основное общее образование");
-  const [userLanguage, setUserLanguage] = useState<string[]>(["Русский"]);
+  const [userLanguage, setUserLanguage] = useState<string[]>([]);
   const [userPhone, setUserPhone] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userTelegram, setUserTelegram] = useState("");
@@ -56,6 +58,7 @@ export const EditProfile = () => {
   const pathName = usePathname();
 
   useEffect(() => {
+    vibrate();
     const a = async () => {
       const cats = await getCategories();
       const account = await findProfiles();
@@ -79,7 +82,6 @@ export const EditProfile = () => {
       });
 
       setCategory(cats.find((c) => c.id === pathName.split("/")[2]));
-
       setProfile(
         profilies.find(
           (profile) => profile.categoryId === pathName.split("/")[2],
@@ -96,11 +98,20 @@ export const EditProfile = () => {
       setCity(profile.info.city ?? "");
       setEducation(profile.info.education ?? "");
       setUserLanguage(profile.info.languages ?? []);
+      setUserEmail(profile.info.contacts?.email ?? "");
       setUserPhone(profile.info.contacts?.phone ?? "");
       setUserTelegram(profile.info.contacts?.telegram ?? "");
       setUserVk(profile.info.contacts?.vk ?? "");
       setUserSite(profile.info.contacts?.site ?? "");
-      setUserGender(profile.info.dating?.gender ?? "");
+      setUserGender(
+        profile.info.dating?.gender
+          ? profile.info.dating?.gender === "Male"
+            ? "Мужской"
+            : profile.info.dating?.gender === "Female"
+              ? "Женский"
+              : ""
+          : "",
+      );
       setUserHeight(profile.info.dating?.height ?? "");
       setUserAlcohol(profile.info.dating?.alcohol === "Да");
       setUserSmoking(profile.info.dating?.smoking === "Да");
@@ -109,7 +120,7 @@ export const EditProfile = () => {
       setUserSkills(profile.info.work?.skills ?? []);
       setUserStatus(profile.info.work?.status ?? "");
       setHobbies(profile.info.hobby?.hobbies ?? []);
-      setUsername(profile.name ?? "");
+      setUsername(profile.info.name ?? "");
       setTags(
         category?.tags
           // @ts-ignore
@@ -117,7 +128,7 @@ export const EditProfile = () => {
           .map((c) => c.title) ?? [],
       );
     }
-  }, [pathName, profile, category]);
+  }, [pathName, profile, profile?.info, category]);
 
   const categoryTags = useCallback(() => {
     return category?.tags.map((c) => c.title);
@@ -126,8 +137,8 @@ export const EditProfile = () => {
   const handleUpdateProfile = useCallback(async () => {
     const data: UserProfile = {
       categoryId: category?.id!,
-      type: "User",
       visible: "Open",
+      type: "User",
       tagsId:
         category?.tags.filter((c) => tags.includes(c.title)).map((t) => t.id) ??
         [],
@@ -136,6 +147,7 @@ export const EditProfile = () => {
         about: about,
         picture: pickture,
         city: city,
+        languages: userLanguage,
         education: userEducation,
         contacts: {
           phone: userPhone,
@@ -164,21 +176,24 @@ export const EditProfile = () => {
     try {
       await updateProfile(data, profile!.id);
       router.push("/profile");
-    } catch (r) {
-      alert(r);
-    }
+    } catch (r) {}
   }, [
+    username,
+    router,
     about,
     userSite,
     userVk,
+    tags,
     userEmail,
     userTelegram,
     userPhone,
     userEducation,
+    userLanguage,
     city,
     pickture,
     category,
     hobbies,
+    profile,
     userStatus,
     userSkills,
     userExpiriens,
@@ -189,15 +204,25 @@ export const EditProfile = () => {
     userGender,
   ]);
 
-  const handleCancel = () => {
-    router.push("/profile");
-  };
+  const handleCancel = useCallback(() => {
+    router.push("/profile?a=1");
+  }, [router]);
+
+  const handleDeleteProfile = useCallback(async () => {
+    await deleteProfile(profile!.id);
+    router.push("/profile?a=1");
+  }, [profile]);
 
   return (
     <div className={styles.wrapper}>
       <Image src={ProfileBg} className={styles.bg} alt="" />
       <div className={styles.header}>
-        {profile?.icon} {profile?.name} анкета
+        <span className={styles.num}>
+          {profile?.icon} {profile?.name} анкета
+        </span>
+        <span className={styles.trash} onClick={handleDeleteProfile}>
+          <Trash />
+        </span>
       </div>
       <PhotoLoad onUpload={setPickture} value={pickture} />
       <TextArea
@@ -211,6 +236,12 @@ export const EditProfile = () => {
           options={cities}
           value={city}
           onChange={setCity}
+        />
+        <InputTextRow
+          label="Имя"
+          placeholder="Вас зовут.."
+          value={username}
+          onChange={setUsername}
         />
         <SelectRow
           label="Образование"
@@ -253,18 +284,6 @@ export const EditProfile = () => {
           onMultiChange={setHobbies}
           multiSelect
           options={hobbiesOptions}
-        />
-        <SwitchRow
-          label="Курение"
-          value={userSmoking}
-          onChange={setUserSmoking}
-          className={styles.switch}
-        />
-        <SwitchRow
-          label="Алкоголь"
-          value={userAlcohol}
-          onChange={setUserAlcohol}
-          className={styles.switch}
         />
       </div>
       <div className={styles.form_block}>
