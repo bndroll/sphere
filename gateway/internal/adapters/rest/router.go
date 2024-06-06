@@ -25,24 +25,19 @@ func New(producer *kafkalib.Producer, log *slog.Logger) *Handler {
 func (h Handler) Router() *gin.Engine {
 	r := gin.New()
 
-	r.Use(CORSMiddleware())
 	r.Use(gin.Recovery())
 	r.Use(gin.Logger())
-
-	r.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, gin.H{"message": "resource not found"})
-	})
-	r.NoMethod(func(c *gin.Context) {
-		c.JSON(http.StatusMethodNotAllowed, gin.H{"applicationErrorCode": http.StatusText(http.StatusMethodNotAllowed), "message": "method not allowed"})
-	})
+	r.Use(CORSMiddleware())
 
 	service := r.Group("api").Group("gateway")
-	service.POST("/reactions", h.SwipeReaction)
 
 	service.Handle("GET", "/health/check", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"message": "ok"})
 	})
 
+	//REACTIONS
+	reactions := service.Group("/reactions")
+	reactions.POST("/create", h.SwipeReaction)
 	//ACCOUNT
 	account := service.Group("/account")
 	account.Any("/*path", h.Redirect("", env.AccountURL))
@@ -68,7 +63,7 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "*")
 
-		if c.Request.Method == "OPTIONS" {
+		if c.Request.Method == "OPTIONS" && c.Request.RequestURI == "/api/gateway/reactions/create" {
 			c.AbortWithStatus(204)
 			return
 		}

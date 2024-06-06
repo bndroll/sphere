@@ -8,10 +8,6 @@ type GetRecommendationsRequest struct {
 	Limit     int       `json:"limit"`
 }
 
-type ProfilesResponse struct {
-	Items []ProfileDTO `json:"items"`
-}
-
 type ProfileDTO struct {
 	ID       uuid.UUID `json:"id"`
 	Type     string    `json:"type"`
