@@ -40,9 +40,15 @@ export class S3Service {
         format: 'JPEG',
         quality: 1,
       });
-      return sharp(outputBuffer).webp({ quality: 100 }).toBuffer();
+      return sharp(outputBuffer)
+        .withMetadata()
+        .webp({ quality: 100 })
+        .toBuffer();
     } else {
-      return sharp(file.buffer).webp({ quality: 100 }).toBuffer();
+      return sharp(file.buffer)
+        .withMetadata()
+        .webp({ quality: 100 })
+        .toBuffer();
     }
   }
 }
