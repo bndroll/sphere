@@ -12,6 +12,7 @@ var (
 	RecommendationsURL = GetterURL("RECOMMENDATIONS_URL")
 	SwipeURL           = GetterURL("SWIPE_URL")
 	KafkaSwipeTopic    = Getter("KAFKA_SWIPE_TOPIC", "")
+	ChatURL            = GetterURL("CHAT_URL")
 )
 
 func Getter(key, defaultValue string) string {
