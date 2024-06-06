@@ -5,6 +5,7 @@
 
 .env
 .prod.env
+.nestjs_repl_history
 
 # Logs
 logs

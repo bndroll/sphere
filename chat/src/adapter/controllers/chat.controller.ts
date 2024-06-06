@@ -16,7 +16,7 @@ export class ChatController {
     return await this.profileService.findChats(profileId);
   }
 
-  @Get(':id')
+  @Get('find-messages/:id')
   async findMessages(@Param('id') id: string) {
     return await this.messageService.findByChat(id);
   }

@@ -4,6 +4,8 @@ import { generateString } from '@nestjs/typeorm';
 import { UploadDto } from './dto/upload-file.dto';
 import sharp from 'sharp';
 import { FastifyReply } from 'fastify';
+import { MemoryStorageFile } from '@blazity/nest-file-fastify';
+import convert from 'heic-convert';
 
 @Injectable()
 export class S3Service {
@@ -15,7 +17,7 @@ export class S3Service {
     let fileName = `${generateString()}`;
     let buffer: Buffer = dto.file.buffer;
     try {
-      buffer = await this.convertToWebP(dto.file.buffer);
+      buffer = await this.convertToWebP(dto.file);
       fileName = fileName + '.webp';
     } catch (e) {
       this.logger.error('Error while converting image to webp');
@@ -31,7 +33,16 @@ export class S3Service {
     res.send(object);
   }
 
-  private async convertToWebP(file: Buffer): Promise<Buffer> {
-    return sharp(file).webp({ quality: 100 }).toBuffer();
+  private async convertToWebP(file: MemoryStorageFile): Promise<Buffer> {
+    if (file.mimetype === 'image/heic') {
+      const outputBuffer = await convert({
+        buffer: file.buffer,
+        format: 'JPEG',
+        quality: 1,
+      });
+      return sharp(outputBuffer).webp({ quality: 100 }).toBuffer();
+    } else {
+      return sharp(file.buffer).webp({ quality: 100 }).toBuffer();
+    }
   }
 }
