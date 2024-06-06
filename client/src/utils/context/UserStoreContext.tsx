@@ -10,7 +10,7 @@ import BusinessSVG from "@/assets/images/buisness.svg";
 import DateSVG from "@/assets/images/date.svg";
 import HobbiesSVG from "@/assets/images/hobbie.svg";
 
-export const categoryMapper = {
+export const categoryMapper: Record<string, any> = {
   Деловая: {
     type: "network",
     desc: "Деловая",

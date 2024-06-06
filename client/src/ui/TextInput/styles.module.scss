@@ -5,16 +5,16 @@
 }
 
 .input {
-  background: #1C1C1E;
+  background: var(--neitral-primary);
   padding: 10px 40px 10px 16px;
   border-radius: 10px;
   caret-color: #0A84FF;
   position: relative;
   width: 100%;
-  color: white;
+  color: var(--text-neitral-primary);
 
   &::placeholder {
-    color: rgba(235, 235, 245, 0.25);
+    color: var(--text-neitral-secondary);
   }
 }
 

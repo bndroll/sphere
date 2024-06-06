@@ -28,7 +28,7 @@
 }
 
 .active path {
-  stroke: #FFFFFF;
+  stroke: var(--text-neitral-primary);
 }
 
 .active svg {
@@ -36,7 +36,7 @@
 }
 
 .active {
-  color: #FFFFFF;
+  color: var(--text-neitral-primary);
   z-index: 5;
 }
 

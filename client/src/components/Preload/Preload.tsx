@@ -7,6 +7,7 @@ export const Preload = () => {
     <motion.div className={styles.main}>
       <div className={styles.anim_wrapper}>
         <ReviewLogoSVG />
+        <p className={styles.text}>исследуй этот мир</p>
         <div className={styles.circle}>
           <svg className={styles.spinner} viewBox="0 0 50 50">
             <circle

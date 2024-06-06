@@ -2,6 +2,7 @@
   display: flex;
   padding: 0 8px;
   flex-direction: column;
+  min-height: 100vh;
 
   .head {
     display: flex;
@@ -13,12 +14,14 @@
       background: transparent;
       border: none;
       rotate: 180deg;
+      color: var(--text-neitral-secondary)
     }
 
     .headInfo {
       display: flex;
       gap: 6px;
       align-items: center;
+
       .info {
         display: flex;
         flex-direction: column;
@@ -28,7 +31,7 @@
           font-weight: 400;
           line-height: 18px;
           letter-spacing: -0.5px;
-          color: #FFFFFF;
+          color: var(--text-neitral-secondary)
         }
 
         .count {
@@ -37,7 +40,7 @@
           line-height: 10px;
           letter-spacing: -0.5px;
           text-align: left;
-          color: #FFFFFF80;
+          color: var(--text-neitral-secondary)
         }
       }
 
@@ -55,37 +58,44 @@
       gap: 16px;
 
       .img {
-        width: 30px;
+        min-width: 30px;
+        min-height: 30px;
+        max-width: 30px;
         height: 30px;
+        object-fit: cover;
         border-radius: 50%;
       }
 
       .msg {
         display: flex;
         flex-direction: column;
-        background-color: #1C1C1F;
+        background-color: var(--neitral-primary);
         padding: 8px 8px 18px 8px;
         border-radius: 8px;
+
         .name {
           font-size: 12px;
           font-weight: 510;
           line-height: 14px;
           letter-spacing: -0.5px;
-          color: #FFFFFF80;
+          color: var(--text-neitral-primary);
         }
 
         .text {
           font-size: 14px;
           font-weight: 400;
           line-height: 18px;
-          color: #FFFFFF;
+          color: var(--text-neitral-primary);
         }
       }
 
       .my {
         background-color: #902EEF;
-      }
 
+        .text {
+          color: white;
+        }
+      }
     }
 
     .myMsg {

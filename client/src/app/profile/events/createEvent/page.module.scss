@@ -1,15 +1,25 @@
 .container {
   display: flex;
   flex-direction: column;
+  position: relative;
   gap: 16px;
   padding: 8px;
+
+  .bg {
+    position: absolute;
+    width: 430px;
+    height: 170px;
+    top: 0;
+    right: 0;
+    z-index: -1;
+  }
 
   .card {
     display: flex;
     flex-direction: column;
     gap: 8px;
     padding: 8px 16px;
-    background-color: #1C1C1E;
+    background-color: var(--neitral-primary);
     border-radius: 10px;
 
     .btnPlus {
@@ -45,16 +55,22 @@
     }
   }
 
+  .datePicker {
+    position: relative;
+    height: 240px;
+    overflow: hidden;
+  }
+
   .form {
     display: flex;
     flex-direction: column;
-    background-color: #1C1C1E;
+    background-color: var(--neitral-primary);
     border-radius: 10px;
     padding: 0 0 0 16px;
 
     .formItem > * {
       padding: 11px 16px 11px 0;
-      border-bottom: 1px solid #3C3C3C;
+      border-bottom: 1px solid var(--separator);
 
       &:last-child {
         border-bottom: none;
@@ -64,7 +80,7 @@
 
   .customBtn {
     border: 1.5px solid #902EEF;
-    color: #FFFFFF;
+    color: var(--text-neitral-primary);
   }
 
   .btnWrap {
@@ -73,7 +89,7 @@
     padding: 16px 0;
 
     .whiteText {
-      color: #FFFFFF;
+      color: var(--text-neitral-primary);
     }
   }
 }

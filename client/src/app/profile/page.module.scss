@@ -9,7 +9,7 @@
 
   .btn {
     padding: 8px;
-    color: #FFFFFF;
+    color: var(--text-neitral-primary);;
   }
 
   .btnText {
@@ -20,13 +20,13 @@
   }
 
   .btnDisabled {
-    background: #1C1C1E;
+    background: var(--neitral-primary);
     padding: 8px;
   }
 
   .tabBar {
     position: sticky;
     padding: 15px 0;
-    bottom: 0;
+    bottom: -5px;
   }
 }

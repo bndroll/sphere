@@ -43,6 +43,7 @@ export const SelectRow: FC<Props> = ({
 
   useEffect(() => {
     setValue(value);
+    setSavedValue(value);
   }, [value]);
 
   const handleSelect = (val: string) => {
