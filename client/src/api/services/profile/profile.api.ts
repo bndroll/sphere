@@ -9,3 +9,8 @@ export const createProfile = async (
 
   return data;
 };
+
+export const deleteProfile = async (id: string, axios = axiosInstance) => {
+  const { data } = await axios.delete<UserProfile>(`account/profile/${id}`);
+  return data;
+};

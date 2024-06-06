@@ -3,7 +3,24 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 16px 0 33px 0;
+  gap: 10px;
+  padding: 16px 0;
+
+  .additional {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .upload {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--neitral-primary);
+    padding: 20px;
+    border-radius: 50px;
+  }
 
   .btn {
     display: flex;
@@ -13,7 +30,7 @@
     height: 80px;
     border-radius: 50%;
     border: none;
-    background-color: #1C1C1E;
+    background-color: var(--neitral-primary);
     margin-bottom: 8px;
   }
 

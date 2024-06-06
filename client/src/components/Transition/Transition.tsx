@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTheme } from "@/utils/hooks/useTheme";
 
 export default function Transition({
   children,
@@ -9,6 +10,7 @@ export default function Transition({
   children: React.ReactNode;
   loading?: boolean;
 }) {
+  useTheme();
   return (
     <motion.div
       style={{ height: "100%" }}

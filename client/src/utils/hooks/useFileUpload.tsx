@@ -57,6 +57,7 @@ export const useFileUpload = () => {
 
   const resetPhotoState = useCallback(() => {
     setFiles(null);
+    setDataUrl("");
     setFileDataURL([]);
   }, []);
 

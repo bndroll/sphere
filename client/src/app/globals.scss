@@ -38,7 +38,7 @@ body {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  background: #000000;
+  background: var(--bg-primary);
 }
 
 input::-webkit-outer-spin-button,
@@ -83,5 +83,36 @@ p {
 input, textarea {
   all: unset;
   display: inline-block;
-  background: white;
+  background: var(--text-neitral-primary);
 }
+
+.theme-light {
+  --bg-primary: white;
+  --primary: #902EEF;
+  --neitral-primary: #EFEFEF;
+  --neitral-secondary: #DCDCDC;
+  --separator: #DCDCDC;
+  --text-neitral-primary: #151515;
+  --text-neitral-secondary: #585858;
+  --text-neitral: #BDBDBD;
+  --text-neitral-reverse: #FFFFFF;
+  --filter-bg: invert(10) hue-rotate(180deg);
+  --black: black;
+}
+
+.theme-dark {
+  --bg-primary: black;
+  --primary: #902EEF;
+  --neitral-primary: #1C1C1E;
+  --neitral-secondary: #DCDCDC;
+  --separator: #3C3C3C;
+  --text-neitral-primary: white;
+  --text-neitral-secondary: #C1C1C1;
+  --text-neitral: #BDBDBD;
+  --text-neitral-reverse: #FFFFFF;
+  --filter-bg: invert(0) hue-rotate(0);
+  --black: black;
+}
+
+
+

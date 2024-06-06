@@ -23,6 +23,7 @@
     top: 0;
     right: 0;
     z-index: -1;
+    filter: var(--filter-bg);
   }
 
 
@@ -30,16 +31,29 @@
     display: flex;
     gap: 8px;
     align-items: center;
+    justify-content: space-between;
     padding: 10px;
-    font-size: 32px;
-    color: white;
-    border-bottom: 1px solid #3C3C3C;
+    font-size: 20px;
+    color: var(--text-neitral-primary);
+    border-bottom: 1px solid var(--separator);
+
+    .num {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .trash svg {
+      color: red;
+      width: 25px;
+      height: 25px;
+    }
   }
 }
 
 .form_block {
   display: flex;
-  background: #1C1C1E;
+  background: var(--neitral-primary);
   border-radius: 10px;
   width: 100%;
   padding: 10px 0 10px 16px;
@@ -50,7 +64,7 @@
   }
 
   > * {
-    border-top: 1px solid #3C3C3C;
+    border-top: 1px solid var(--separator);
     padding: 10px 10px 10px 0;
 
     &:first-child {
