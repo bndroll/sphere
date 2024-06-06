@@ -9,6 +9,12 @@ export class ProfileRepository extends BaseRepository<Profile> {
     super(Profile, dataSource.createEntityManager());
   }
 
+  async findByProfileId(profileId: string) {
+    return await this.createQueryBuilder('p')
+      .where('p.profileId = :profileId', { profileId: profileId })
+      .getOne();
+  }
+
   async findChats(profileId: string) {
     return await this.createQueryBuilder('p')
       .leftJoinAndSelect('p.chats', 'chats')
