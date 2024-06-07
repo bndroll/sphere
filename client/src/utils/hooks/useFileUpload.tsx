@@ -66,9 +66,8 @@ export const useFileUpload = () => {
       <input
         onChange={handleFileChange}
         style={{ display: "none" }}
-        multiple
         type="file"
-        accept="image/png,image/jpeg,image/jpg,image/heic"
+        accept="image/png,image/jpeg,image/jpg,image/heic,image/heif"
         ref={ref}
       />
     );

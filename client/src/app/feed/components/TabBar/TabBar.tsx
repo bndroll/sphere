@@ -29,7 +29,7 @@ export default function TabBar({ tabs, className, onMenuClick }: TabBarProps) {
       icon: <LovelySvg />,
       title: "События",
       href: "/events",
-      counter: 10,
+      counter: 2,
     },
     {
       icon: <FormSvg />,
@@ -41,7 +41,6 @@ export default function TabBar({ tabs, className, onMenuClick }: TabBarProps) {
       icon: <MessSvg />,
       title: "Мессенеджер",
       href: "/chat",
-      counter: 151,
     },
     {
       icon: <UserSvg />,
