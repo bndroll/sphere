@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { SwipeRepository } from 'src/core/domain/swipe/repositories/swipe.repository';
 import { Swipe, SwipeType } from 'src/core/domain/swipe/entities/swipe.entity';
@@ -21,6 +21,8 @@ import { DeleteProfileContract } from 'src/core/domain/swipe/contract/delete-pro
 
 @Injectable()
 export class SwipeService {
+  private readonly logger = new Logger(SwipeService.name);
+
   constructor(
     @Inject('KAFKA_SWIPE_DWH_PRODUCER')
     private readonly producerSwipeDWH: Producer,
@@ -166,6 +168,7 @@ export class SwipeService {
   }
 
   async sendAddChatMember(dto: ChatContract.Message) {
+    this.logger.verbose('Chat member added; Value:', dto);
     await this.producerChat.send({
       topic: ChatContract.topic,
       messages: [{ value: JSON.stringify(dto) }],
@@ -173,6 +176,7 @@ export class SwipeService {
   }
 
   async sendAddChat(dto: CreateChatContract.Message) {
+    this.logger.verbose('Chat created; Value:', dto);
     await this.producerChat.send({
       topic: CreateChatContract.topic,
       messages: [{ value: JSON.stringify(dto) }],
