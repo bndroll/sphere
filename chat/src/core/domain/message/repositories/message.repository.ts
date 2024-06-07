@@ -13,7 +13,7 @@ export class MessageRepository extends BaseRepository<Message> {
     return await this.createQueryBuilder('m')
       .leftJoinAndSelect('m.profile', 'profile')
       .where('m.chatId = :chatId', { chatId })
-      .orderBy('m.createdDate', 'DESC')
-      .getOne();
+      .orderBy('m.createDate', 'DESC')
+      .getMany();
   }
 }

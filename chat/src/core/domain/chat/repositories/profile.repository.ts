@@ -11,26 +11,27 @@ export class ProfileRepository extends BaseRepository<Profile> {
 
   async findByProfileId(profileId: string) {
     return await this.createQueryBuilder('p')
-      .where('p.profileId = :profileId', { profileId: profileId })
+      .where('p.id = :profileId', { profileId: profileId })
       .getOne();
   }
 
   async findChats(profileId: string) {
     return await this.createQueryBuilder('p')
       .leftJoinAndSelect('p.chats', 'chats')
-      .where('p.id = :profileId', { profileId })
+      .where('p.profileId = :profileId', { profileId })
       .getMany();
   }
 
-  async findProfiles(chatId: string) {
+  async findByUserId(userId: string) {
     return await this.createQueryBuilder('p')
-      .where('c.chatId = :chatId', { chatId })
+      .where('p.userId = :userId', { userId: userId })
       .getOne();
   }
 
-  async findMessagesByProfileAndChat(telegramId: string) {
-    return await this.createQueryBuilder('u')
-      .where('u.telegram_id = :telegramId', { telegramId })
-      .getOne();
+  async findByChatId(chatId: string) {
+    return await this.createQueryBuilder('p')
+      .leftJoinAndSelect('p.chats', 'c')
+      .where('c.id = :chatId', { chatId: chatId })
+      .getMany();
   }
 }

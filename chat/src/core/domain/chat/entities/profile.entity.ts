@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -31,7 +32,12 @@ export class Profile {
   messages: Relation<Message[]>;
 
   @Column('uuid', { name: 'profile_id' })
+  @Index()
   profileId: string;
+
+  @Column('uuid', { name: 'user_id' })
+  @Index()
+  userId: string;
 
   @Column('jsonb')
   info: ProfileInfo;
@@ -47,6 +53,7 @@ export class Profile {
     const instance = new Profile();
     instance.id = generateString();
     instance.profileId = dto.profileId;
+    instance.userId = dto.userId;
     instance.info = dto.info;
     instance.chats = [];
     instance.messages = [];
