@@ -1,17 +1,14 @@
 package env
 
 import (
-	"fmt"
+	"net/url"
 	"os"
 )
 
 var (
-	HttpPort     = fmt.Sprintf(":%s", Getter("HTTP_PORT", "8080"))
-	KafkaBrokers = Getter("KAFKA_BROKERS", "")
-	KafkaGroupID = Getter("KAFKA_GROUP_ID", "")
-	KafkaTopics  = Getter("KAFKA_TOPICS", "")
-
-	DataSourceName = Getter("DATA_SOURCE_NAME", "")
+	KafkaSwipeTopic = Getter("KAFKA_SWIPE_TOPIC", "create.swipe.command")
+	TelegramToken   = Getter("TELEGRAM_TOKEN", "")
+	AccountURL      = GetterURL("ACCOUNT_URL")
 )
 
 func Getter(key, defaultValue string) string {
@@ -20,4 +17,16 @@ func Getter(key, defaultValue string) string {
 	}
 
 	return defaultValue
+}
+
+func GetterURL(key string) *url.URL {
+	if value, ok := os.LookupEnv(key); ok {
+		u, e := url.Parse(value)
+		if e != nil {
+			panic(e)
+		}
+		return u
+	}
+
+	panic("environment variable '" + key + "' has not been set")
 }

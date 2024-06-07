@@ -1,10 +1,12 @@
 package app
 
 import (
-	"context"
 	"log/slog"
 	"net/http"
-	"notifications/internal/domain/usecase"
+	"notifications/internal/consumers"
+	"notifications/internal/env"
+	"notifications/internal/kafkalib"
+	"notifications/internal/telegram"
 	"os"
 )
 
@@ -18,17 +20,17 @@ func (a *App) Run() error {
 	defer close(a.err)
 	l := setupLogger()
 
-	uc := usecase.NewNotificationsUseCase(l, st, ws)
+	service := telegram.NewService(env.TelegramToken, l)
 
-	err = <-a.err
-	return err
+	a.runSwipeConsumer(service, l)
+
+	return nil
 }
 
-func (a *App) Shutdown(ctx context.Context) error {
-	if err := a.httpServer.Shutdown(ctx); err != nil {
-		return err
-	}
-	return nil
+func (a *App) runSwipeConsumer(service *telegram.Service, logger *slog.Logger) {
+	handler := consumers.NewSwipeHandler(service, logger)
+	consumer := kafkalib.NewKafkaConsumer(handler, logger)
+	consumer.StartConsumer(env.KafkaSwipeTopic)
 }
 
 func setupLogger() *slog.Logger {
