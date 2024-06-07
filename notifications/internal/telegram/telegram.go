@@ -44,7 +44,7 @@ func (s *Service) Notify(request CreateReactionRequest) {
 	if request.Type != "like" {
 		return
 	}
-	tgID, err := s.getTelegramID(request.ProfileID)
+	tgID, err := s.getTelegramID(request.RecProfileID)
 	if err != nil {
 		s.logger.Error("failed to get telegram id", "error", err)
 	}

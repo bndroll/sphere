@@ -1,11 +1,16 @@
 package rest
 
 import (
+	"crypto/tls"
 	"gateway/internal/env"
 	"gateway/internal/kafkalib"
 	"github.com/gin-gonic/gin"
 	"log/slog"
+	"net"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"time"
 )
 
 type Handler struct {
@@ -54,7 +59,34 @@ func (h Handler) Router() *gin.Engine {
 	chat := service.Group("/chat")
 	chat.Any("/*path", h.Redirect("chat", env.ChatURL))
 
+	//WSS
+	service.GET("/wss", h.WSS)
+
 	return r
+}
+
+func (h Handler) WSS(c *gin.Context) {
+
+	wssUrl, err := url.ParseRequestURI(env.ChatWssURL)
+	if err != nil {
+		h.logger.Error("error parse chat wss url")
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "error parse chat wss url"})
+		return
+	}
+
+	director := func(req *http.Request) {
+		req.URL = wssUrl
+	}
+	dialer := &net.Dialer{
+		KeepAlive: 30 * time.Second,
+	}
+	proxy := &httputil.ReverseProxy{Director: director, Transport: &http.Transport{
+		Proxy:               http.ProxyFromEnvironment,
+		DialContext:         dialer.DialContext,
+		TLSHandshakeTimeout: 10 * time.Second,
+		TLSClientConfig:     &tls.Config{InsecureSkipVerify: true},
+	}}
+	proxy.ServeHTTP(c.Writer, c.Request)
 }
 
 func CORSMiddleware() gin.HandlerFunc {
