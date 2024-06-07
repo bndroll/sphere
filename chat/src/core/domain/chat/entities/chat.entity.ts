@@ -50,4 +50,8 @@ export class Chat {
     instance.profiles = [];
     return instance;
   }
+
+  updateAddProfile(profile: Profile) {
+    this.profiles.push(profile);
+  }
 }
