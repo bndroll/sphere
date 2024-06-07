@@ -133,7 +133,6 @@ export default function UpdateEventSlug() {
 
   const handleCreateEvent = useCallback(async () => {
     const currentCategory = allCategories.find((cat) => cat.title === category);
-    alert(currentCategory);
     if (!currentCategory) return;
     const data: UserProfile = {
       categoryId: currentCategory.id,
