@@ -23,7 +23,7 @@ import { getCategories } from "@/api/services/category/category.api";
 import { findProfiles } from "@/api/services/profile/find-by-user.api";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
 import { NothingInCategory } from "@/app/feed/components/NothingPage/NothingInCategory";
-import { SwipeType } from "@/api/services/swipe/swipe.api";
+import { swipeProfile, SwipeType } from "@/api/services/swipe/swipe.api";
 import { vibrate } from "@/utils/hooks/vibration.helper";
 
 export const FeedPage = () => {
@@ -51,7 +51,7 @@ export const FeedPage = () => {
       let profilies: UserMappingProfile[] = [];
       cats.forEach((category) => {
         account.map((profile) => {
-          if (profile.categoryId === category.id) {
+          if (profile.categoryId === category.id && profile.type === "User") {
             // @ts-ignore
             profilies.push({
               ...profile,
@@ -66,9 +66,6 @@ export const FeedPage = () => {
         });
       });
 
-      // profilies.map((profile) =>
-      //   setTabs((prev) => Array.from(new Set([...prev, profile.name]))),
-      // );
       setProfil(profilies);
       const feedsRequests = profilies.map(
         async (profile) =>
@@ -118,7 +115,7 @@ export const FeedPage = () => {
     (profileId: string) => async (type: SwipeType, recProfileId: string) => {
       const profile = profil.find((pr) => pr.categoryId == profileId);
       if (profile) {
-        // await swipeProfile(profile.id, type, recProfileId);
+        await swipeProfile(profile.id, type, recProfileId);
         handleEndCertSwipe();
         setFFeeds((prevState) => [
           ...prevState.filter((p) => p.id !== recProfileId),

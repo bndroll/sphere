@@ -9,16 +9,22 @@ import HeartSlashSvg from "@/assets/icons/heart-slash.svg";
 import { CSSProperties, FC, useRef, useState } from "react";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
 import { SwipeType } from "@/api/services/swipe/swipe.api";
+import Chat from "@/assets/icons/message-text.svg";
 
 interface Props {
   stylesCustom?: CSSProperties;
   handleLikeClick: (type: SwipeType, recProfileId: string) => void;
   data: ProfileCardType;
+  isFromEvents?: boolean;
 }
 
-export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
+export const Info: FC<Props> = ({
+  stylesCustom,
+  handleLikeClick,
+  data,
+  isFromEvents = false,
+}) => {
   const chipRef = useRef<HTMLDivElement>(null);
-
   const tabs = ["Романтическая", "Деловая", "Досуговая"];
   const [selectedTab, setSelectedTab] = useState(tabs[0]);
 
@@ -40,7 +46,18 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
         />
       )}
       <div className={styles.info} style={stylesCustom}>
+        {isFromEvents && <span className={styles.liked}>Вас лайкнули</span>}
         <div className={styles.titleContainer}>
+          {data.info.avatarPicture && (
+            <Image
+              src={`https://sphereapp.ru/api/account${data.info.avatarPicture}`}
+              alt="logo"
+              quality={100}
+              width={40}
+              height={40}
+              className={styles.icon}
+            />
+          )}
           <h2 className={styles.title}>{data.info.name}</h2>
           <Button
             IconRight={ArrowSvg}
@@ -63,9 +80,15 @@ export const Info: FC<Props> = ({ stylesCustom, handleLikeClick, data }) => {
           <Button
             variant="primary"
             justify="center"
-            text="Нравится"
+            text={isFromEvents ? "Перейти в чат" : "Нравится"}
             className={styles.btn}
-            IconLeft={() => <HeartSvg className={styles.iconBtn} />}
+            IconLeft={() =>
+              isFromEvents ? (
+                <Chat className={styles.iconBtn} />
+              ) : (
+                <HeartSvg className={styles.iconBtn} />
+              )
+            }
             onClick={() => handleClick(SwipeType.Like)}
           />
           <Button

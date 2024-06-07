@@ -1,6 +1,6 @@
 import { useFileUpload } from "@/utils/hooks/useFileUpload";
 import styles from "./styles.module.scss";
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import PhotoSVG from "@/assets/icons/photo.svg";
 import Image from "next/image";
 
@@ -10,6 +10,7 @@ type Props = {
 };
 export const PhotoLoad: FC<Props> = ({ onUpload, value }) => {
   const a = useFileUpload();
+  const ref = useRef<HTMLImageElement | null>(null);
 
   const [accImage, setAccImage] = useState<string>(value ?? "");
 
@@ -50,7 +51,7 @@ export const PhotoLoad: FC<Props> = ({ onUpload, value }) => {
             }
             alt="photo_account"
             width={210}
-            height={140}
+            height={240}
           />
         </div>
       )}

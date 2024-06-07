@@ -6,6 +6,7 @@
   justify-content: center;
   align-items: center;
   background-color: var(--neitral-primary);
+  color: var(--text-neitral-reverse);
 
   .text {
     font-size: 13px;
@@ -37,9 +38,9 @@
 }
 
 .white {
-  color: #FFFFFF;
+  color: white;
 }
 
 .black {
-  color: #000000;
+  color: var(--text-neitral-reverse);
 }
