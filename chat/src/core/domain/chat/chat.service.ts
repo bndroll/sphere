@@ -113,15 +113,15 @@ export class ChatService {
     const existingChat = await this.chatRepository.findByProfileId(
       existingProfileEvent.profileId,
     );
-    console.log('existingChat', existingChat);
     if (!existingChat) {
       this.logger.warn('Event chat group doesnt exist for this profile');
       return;
     }
-    console.log('existingProfileEvent', existingProfileEvent);
-    console.log('existingProfileUser', existingProfileUser);
 
-    return null;
+    existingChat.updateAddProfile(existingProfileUser);
+    await this.chatRepository.save(existingChat);
+
+    return;
   }
 
   async findById(id: string) {

@@ -6,5 +6,6 @@ export class CreateProfileDto {
 
 export class CreateProfileEntityDto {
   profileId: string;
+  userId: string;
   info: ProfileInfo;
 }

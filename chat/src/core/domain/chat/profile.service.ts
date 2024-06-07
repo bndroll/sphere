@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { FindProfileRequest } from 'src/core/domain/chat/dto/find-profiles.dto';
 import { HttpService } from '@nestjs/axios';
 import { AxiosResponse } from 'axios';
@@ -8,6 +8,8 @@ import { Profile } from 'src/core/domain/chat/entities/profile.entity';
 
 @Injectable()
 export class ProfileService {
+  private readonly logger = new Logger(ProfileService.name);
+
   constructor(
     private readonly httpService: HttpService,
     private readonly profileRepository: ProfileRepository,
@@ -31,6 +33,7 @@ export class ProfileService {
     return await this.profileRepository.save(
       Profile.create({
         profileId: dto.profileId,
+        userId: accountProfile.user.id,
         info: {
           name: accountProfile.info.name,
           avatar: accountProfile.info.picture,
@@ -38,8 +41,6 @@ export class ProfileService {
       }),
     );
   }
-
-  async addMember() {}
 
   async findById(id: string) {
     return await this.profileRepository.findByIdBR(id);
@@ -51,6 +52,20 @@ export class ProfileService {
 
   async findChats(id: string) {
     return await this.profileRepository.findChats(id);
+  }
+
+  async checkUserExist(userId: string) {
+    try {
+      const profile = await this.profileRepository.findByUserId(userId);
+      return !!profile;
+    } catch (error) {
+      this.logger.warn('Error while checking user exist');
+      return false;
+    }
+  }
+
+  async findByChatId(chatId: string): Promise<Profile[]> {
+    return await this.profileRepository.findByChatId(chatId);
   }
 
   async findProfiles(ids: string[]) {
