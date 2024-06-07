@@ -2,13 +2,11 @@
 import { Button } from "@/ui/Button/Button";
 import { TextArea } from "@/ui/TextArea/TextArea";
 import styles from "./page.module.scss";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import ProfileBg from "@/assets/images/profile_bg.png";
 import { useCallback, useEffect, useState } from "react";
 import "react-mobile-datepicker-ts/dist/main.css";
-import cn from "classnames";
-import DatePicker from "react-mobile-datepicker-ts/";
 import Transition from "@/components/Transition/Transition";
 import { SelectRow } from "@/ui/SelectRow/SelectRow";
 import { InputTextRow } from "@/ui/InputTextRow/InputTextRow";
@@ -19,21 +17,24 @@ import {
 } from "@/app/registry/components/FirstProfile/first_profile.constants";
 import HeaderLoadPhoto from "@/app/profile/components/HeaderLoadPhoto/HeaderLoadPhoto";
 import { TextInput } from "@/ui/TextInput/TextInput";
-import { useScrollLock } from "@/utils/hooks/useScrollLock";
 import "dayjs/locale/ru";
-import dayjs from "dayjs";
 import { getCategories } from "@/api/services/category/category.api";
 import { UserProfile } from "@/utils/context/UserRegistryContext";
 import { CategoryT } from "@/api/services/category/category.types";
-import { createProfile } from "@/api/services/profile/profile.api";
 import { LoadEventPickture } from "@/app/profile/events/components/LoadEventPickture/LoadEventPickture";
+import {
+  categoryMapper,
+  UserMappingProfile,
+} from "@/utils/context/UserStoreContext";
+import { vibrate } from "@/utils/hooks/vibration.helper";
+import { findProfiles } from "@/api/services/profile/find-by-user.api";
+import { updateProfile } from "@/api/services/profile/update-profile.api";
 
 const categories = ["Деловая", "Романтическая", "Досуговая"];
 
-export default function CreateEvent() {
+export default function UpdateEventSlug() {
   const router = useRouter();
   const [username, setUserName] = useState<string | number>("");
-  const { setScrollLock, removeScrollLock } = useScrollLock();
   const [category, setCategory] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [city, setCity] = useState("");
@@ -51,32 +52,65 @@ export default function CreateEvent() {
   const [allCategories, setCategories] = useState<CategoryT[]>([]);
   const [time, setTime] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
+  const [profile, setProfile] = useState<UserMappingProfile>();
+  const pathName = usePathname();
+  const [initialCategory, setInitialCategory] = useState<
+    UserMappingProfile | undefined
+  >();
 
-  const handleClick = () => {
-    setIsOpen(true);
-  };
+  useEffect(() => {
+    if (profile) {
+      setDescription(profile.info.about ?? "");
+      setPicture(profile.info.picture ?? "");
+      setCity(profile.info.city ?? "");
+      setLanguages(profile.info.languages ?? []);
+      setEmail(profile.info.contacts?.email ?? "");
+      setPhone(profile.info.contacts?.phone ?? "");
+      setTelegram(profile.info.contacts?.telegram ?? "");
+      setVk(profile.info.contacts?.vk ?? "");
+      setSite(profile.info.contacts?.site ?? "");
+      setUserName(profile.info.name ?? "");
+      setIcon(profile.info.avatarPicture ?? "");
+      setIsClose(profile.visible === "Open");
+    }
+  }, [pathName, profile, profile?.info, category]);
 
-  const data = useCallback(() => {
-    return dayjs(time).locale("ru").format("DD  MMMM YYYY");
-  }, [time]);
+  useEffect(() => {
+    vibrate();
+    const a = async () => {
+      const cats = await getCategories();
+      const account = await findProfiles();
 
-  const handleCancel = () => {
-    setIsOpen(false);
-  };
+      let profilies: UserMappingProfile[] = [];
+      cats.forEach((category) => {
+        account.map((profile) => {
+          if (profile.categoryId === category.id) {
+            // @ts-ignore
+            profilies.push({
+              ...profile,
+              // @ts-ignore
+              code: categoryMapper[category.title].type,
+              // @ts-ignore
+              name: categoryMapper[category.title].desc,
+              // @ts-ignore
+              icon: categoryMapper[category.title].icon,
+            } as UserMappingProfile);
+          }
+        });
+      });
 
-  const handleSelect = useCallback(
-    (time: Date) => {
-      setTime(time);
-      setIsOpen(false);
-      removeScrollLock();
-    },
-    [removeScrollLock],
-  );
+      setProfile(
+        profilies.find((profile) => profile.id === pathName.split("/")[3]),
+      );
+      const category = profilies.find(
+        (profile) => profile.id === pathName.split("/")[3],
+      );
+      setInitialCategory(category);
 
-  const handleFakeClick = () => {
-    handleClick();
-    setScrollLock();
-  };
+      setCategory(category?.name ?? "");
+    };
+    void a();
+  }, []);
 
   useEffect(() => {
     const a = async () => {
@@ -87,13 +121,19 @@ export default function CreateEvent() {
         .find((tag) => tag.title === category)
         ?.tags.map((t) => t.title);
       setTags(currentTags ?? []);
+
+      const selected = categories
+        .filter((c) => !profile?.tags?.includes(c.id))[0]
+        .tags.map((c) => c.title);
+      setSelectedTags(selected);
     };
 
     void a();
-  }, [category]);
+  }, [category, profile]);
 
   const handleCreateEvent = useCallback(async () => {
     const currentCategory = allCategories.find((cat) => cat.title === category);
+    alert(currentCategory);
     if (!currentCategory) return;
     const data: UserProfile = {
       categoryId: currentCategory.id,
@@ -121,7 +161,7 @@ export default function CreateEvent() {
       },
     };
 
-    await createProfile(data);
+    await updateProfile(data, profile!.id);
     router.push("/profile/events");
   }, [
     router,
@@ -135,6 +175,7 @@ export default function CreateEvent() {
     isClose,
     phone,
     pickture,
+    profile,
     site,
     tags,
     telegram,
@@ -186,37 +227,8 @@ export default function CreateEvent() {
               multiSelect={true}
               onMultiChange={setLanguages}
             />
-            <SelectRow
-              label="Категория"
-              options={categories}
-              value={category}
-              onChange={setCategory}
-            />
             <SwitchRow label="Закрытый" value={isClose} onChange={setIsClose} />
           </div>
-        </div>
-        <div className={cn(styles.form, styles.datePicker)}>
-          <div
-            className={cn(styles.fak, { [styles.fake]: !isOpen })}
-            onScroll={handleFakeClick}
-          >
-            <div style={{ height: "500px" }} onScroll={handleFakeClick}></div>
-          </div>
-          <DatePicker
-            isPopup={false}
-            theme="ios"
-            cancelText=""
-            customHeader={
-              <div className={styles.datePicker_header}>
-                <span>Дата начала</span>
-                <span>{data()}</span>
-              </div>
-            }
-            value={time}
-            isOpen={false}
-            onSelect={handleSelect}
-            onCancel={handleCancel}
-          />
         </div>
         <div className={styles.form}>
           <div className={styles.formItem}>
@@ -272,7 +284,7 @@ export default function CreateEvent() {
         />
         <div className={styles.btnWrap}>
           <Button
-            text="Создать"
+            text="Сохранить"
             onClick={handleCreateEvent}
             variant="primary"
           />

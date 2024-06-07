@@ -31,7 +31,8 @@ export const categoryMapper: Record<string, any> = {
 export type UserMappingProfile = {
   categoryId: string;
   tagsId: string[];
-  type: "User";
+  tags?: string[];
+  type: "User" | "Event";
   id: string;
   visible: "Open" | "Close";
   info: ProfileInfo;

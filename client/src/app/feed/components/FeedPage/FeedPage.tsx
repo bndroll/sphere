@@ -25,6 +25,7 @@ import { ProfileCardType } from "@/api/services/reccomendation/recomendation.typ
 import { NothingInCategory } from "@/app/feed/components/NothingPage/NothingInCategory";
 import { SwipeType, swipeProfile } from "@/api/services/swipe/swipe.api";
 import { vibrate } from "@/utils/hooks/vibration.helper";
+
 export const FeedPage = () => {
   const [tabs, setTabs] = useState<string[]>([
     "Романтическая",

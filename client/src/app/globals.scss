@@ -98,6 +98,7 @@ input, textarea {
   --text-neitral-reverse: #FFFFFF;
   --filter-bg: invert(10) hue-rotate(180deg);
   --black: black;
+  --backdrop: #9393937E;
 }
 
 .theme-dark {
@@ -109,9 +110,10 @@ input, textarea {
   --text-neitral-primary: white;
   --text-neitral-secondary: #C1C1C1;
   --text-neitral: #BDBDBD;
-  --text-neitral-reverse: #FFFFFF;
+  --text-neitral-reverse: #000000;
   --filter-bg: invert(0) hue-rotate(0);
   --black: black;
+  --backdrop: #000000E5;
 }
 
 
