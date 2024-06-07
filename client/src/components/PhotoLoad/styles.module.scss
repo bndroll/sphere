@@ -14,12 +14,13 @@
     width: 210px;
     background: var(--neitral-primary);
     overflow: hidden;
+    position: relative;
 
     img {
       padding: 0;
       width: 100%;
       height: auto;
-      object-fit: cover;
+      object-fit: fill;
     }
   }
 

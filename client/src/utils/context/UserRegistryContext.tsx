@@ -55,7 +55,7 @@ export type ProfileInfo = {
   dating?: ProfileInfoDating;
   work?: ProfileInfoWork;
   hobby?: ProfileInfoHobby;
-
+  avatarPicture?: string;
   open?: boolean;
   startDate?: Date;
   endDate?: Date;
@@ -65,7 +65,7 @@ export type UserProfile = {
   id?: string;
   categoryId: string;
   tagsId: string[];
-  type: "User";
+  type: "User" | "Event";
   visible?: "Open" | "Close";
   info: ProfileInfo;
 };
