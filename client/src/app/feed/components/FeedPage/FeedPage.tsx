@@ -51,7 +51,7 @@ export const FeedPage = () => {
       let profilies: UserMappingProfile[] = [];
       cats.forEach((category) => {
         account.map((profile) => {
-          if (profile.categoryId === category.id) {
+          if (profile.categoryId === category.id && profile.type === "User") {
             // @ts-ignore
             profilies.push({
               ...profile,
