@@ -50,8 +50,8 @@ export class ProfileService {
     return await this.profileRepository.findByProfileId(profileId);
   }
 
-  async findChats(id: string) {
-    return await this.profileRepository.findChats(id);
+  async findChats(userId: string) {
+    return await this.profileRepository.findChats(userId);
   }
 
   async checkUserExist(userId: string) {
