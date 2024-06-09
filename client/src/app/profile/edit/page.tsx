@@ -20,6 +20,7 @@ export default function EditProfile() {
       <HeaderLoadPhoto
         title="Загрузить фото"
         text="По умолчанию будет использоваться фото самой первой созданной анкеты"
+        onUpload={() => {}}
       />
       <div className={styles.content}>
         <div className={styles.form}>
