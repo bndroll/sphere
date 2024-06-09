@@ -1,6 +1,11 @@
 "use client";
 import { EditProfile } from "@/app/profile/components/EditProfile/EditProfile";
+import Transition from "@/components/Transition/Transition";
 
 export default function EditProfileSlug() {
-  return <EditProfile />;
+  return (
+    <Transition>
+      <EditProfile />
+    </Transition>
+  );
 }

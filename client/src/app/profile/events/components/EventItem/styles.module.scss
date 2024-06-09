@@ -1,13 +1,47 @@
 .container {
   display: flex;
-  border-bottom: 0.5px solid #181818;
+  border-bottom: 0.5px solid var(--separator);
   padding: 12px 0;
   gap: 8px;
+
+  .empty {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    background: var(--text-neitral);
+  }
+
+  .chip {
+    display: flex;
+    padding: 5px 12px;
+    color: white;
+    border-radius: 12px;
+    align-items: center;
+    gap: 5px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .buisness {
+    background: #3C4FFF;
+  }
+
+  .romantic {
+    background: #D83BFF;
+  }
+
+  .hobbie {
+    background: #FF9738;
+  }
 
   .img {
     width: 60px;
     height: 60px;
     border-radius: 6px;
+    object-fit: cover;
   }
 
   .content {
@@ -18,14 +52,15 @@
     .info {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 4px;
 
       .title {
         font-size: 18px;
         font-weight: 510;
         line-height: 14px;
         letter-spacing: -0.5px;
-        color: #FFFFFF;
+        color: var(--text-neitral-primary);;
       }
 
       .chips {

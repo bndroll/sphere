@@ -25,6 +25,7 @@ import { ProfileCardType } from "@/api/services/reccomendation/recomendation.typ
 import { NothingInCategory } from "@/app/feed/components/NothingPage/NothingInCategory";
 import { SwipeType, swipeProfile } from "@/api/services/swipe/swipe.api";
 import { vibrate } from "@/utils/hooks/vibration.helper";
+
 export const FeedPage = () => {
   const [tabs, setTabs] = useState<string[]>([
     "Романтическая",
@@ -50,7 +51,7 @@ export const FeedPage = () => {
       let profilies: UserMappingProfile[] = [];
       cats.forEach((category) => {
         account.map((profile) => {
-          if (profile.categoryId === category.id) {
+          if (profile.categoryId === category.id && profile.type === "User") {
             // @ts-ignore
             profilies.push({
               ...profile,

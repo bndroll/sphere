@@ -18,8 +18,16 @@
     align-items: center;
     justify-content: center;
     background: var(--neitral-primary);
-    padding: 20px;
     border-radius: 50px;
+    overflow: hidden;
+    width: 80px;
+    height: 80px;
+
+    img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+    }
   }
 
   .btn {
@@ -44,7 +52,7 @@
     font-weight: 510;
     line-height: 14px;
     letter-spacing: -0.5px;
-    color: #FFFFFF;
+    color: var(--text-neitral-primary);
     margin-bottom: 4px;
   }
 
