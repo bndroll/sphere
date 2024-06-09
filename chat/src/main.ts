@@ -7,13 +7,19 @@ import {
 } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import * as fs from 'node:fs';
 
 async function bootstrap() {
+  const httpsOptions = {
+    key: fs.readFileSync('./ssl/server.key'),
+    cert: fs.readFileSync('./ssl/server.crt'),
+  };
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter(),
     {
       cors: true,
+      httpsOptions: httpsOptions,
     },
   );
   app.useGlobalPipes(new ValidationPipe());
