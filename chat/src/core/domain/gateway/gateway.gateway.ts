@@ -15,7 +15,7 @@ import { CreateMessageContract } from 'src/core/domain/gateway/dto/create-messag
 import { ChatService } from 'src/core/domain/chat/chat.service';
 import { MessageService } from 'src/core/domain/message/message.service';
 
-@WebSocketGateway(4000)
+@WebSocketGateway({ transports: ['websocket'], cors: true, path: '/wss' })
 export class GatewayGateway
   implements OnGatewayConnection, OnGatewayDisconnect
 {
