@@ -12,6 +12,6 @@ RUN npm install
 COPY --from=build /app/dist ./dist
 COPY ./src/ssl/server.key ./ssl/
 COPY ./src/ssl/server.crt ./ssl/
-EXPOSE 8040
+EXPOSE 8060
 CMD ["node", "dist/main.js"]
 

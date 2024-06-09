@@ -189,6 +189,7 @@ services:
     depends_on: [gateway]
     ports:
       - "8060:8060"
+      - "4000:4000" 
     env_file: ../chat/.env
     networks:
       - common
