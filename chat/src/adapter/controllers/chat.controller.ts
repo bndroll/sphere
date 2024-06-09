@@ -11,9 +11,9 @@ export class ChatController {
     private readonly profileService: ProfileService,
   ) {}
 
-  @Get('find-chats/:profileId')
-  async findChats(@Param('profileId') profileId: string) {
-    return await this.profileService.findChats(profileId);
+  @Get('find-chats/:userId')
+  async findChats(@Param('userId') userId: string) {
+    return await this.profileService.findChats(userId);
   }
 
   @Get('find-messages/:id')

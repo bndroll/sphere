@@ -15,10 +15,10 @@ export class ProfileRepository extends BaseRepository<Profile> {
       .getOne();
   }
 
-  async findChats(profileId: string) {
+  async findChats(userId: string) {
     return await this.createQueryBuilder('p')
       .leftJoinAndSelect('p.chats', 'chats')
-      .where('p.profileId = :profileId', { profileId })
+      .where('p.userId = :userId', { userId: userId })
       .getMany();
   }
 
