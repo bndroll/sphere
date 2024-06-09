@@ -43,8 +43,10 @@ export class GatewayGateway
 
   async handleDisconnect(socket: Socket) {
     const userId = socket.request.headers['user-id'] as string;
-    this.gatewaySessionManager.removeUserSocket(userId);
-    this.logger.verbose(`Disconnect websocket, userId: ${userId}`);
+    const deleted = this.gatewaySessionManager.removeUserSocket(userId);
+    if (deleted) {
+      this.logger.verbose(`Disconnect websocket, userId: ${userId}`);
+    }
   }
 
   @SubscribeMessage(CreateMessageContract.topic)
@@ -62,7 +64,9 @@ export class GatewayGateway
 
     for (const userId of profilesUsers) {
       const userSocket = this.gatewaySessionManager.getUserSocket(userId);
-      userSocket.emit('message.send', message);
+      if (userSocket) {
+        userSocket.emit('message.send', message);
+      }
     }
   }
 }

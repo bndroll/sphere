@@ -14,10 +14,6 @@ export class GatewaySessionManager {
   }
 
   removeUserSocket(userId: string) {
-    this.sessions.delete(userId);
-  }
-
-  getSockets() {
-    return this.sessions;
+    return this.sessions.delete(userId);
   }
 }
