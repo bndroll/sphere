@@ -68,3 +68,17 @@ func (s *Storage) CreateReaction(ctx context.Context, entity entity.Reaction) er
 func (s *Storage) DeleteRecommendationByProfileID(ctx context.Context, profileID uuid.UUID) error {
 	return s.db.WithContext(ctx).Where("profile_id = ?", profileID.String()).Delete(&entity.Recommendation{}).Error
 }
+
+func (s *Storage) ExistsReaction(ctx context.Context, recommendationID uuid.UUID, profileID uuid.UUID) (bool, error) {
+	var reaction entity.Reaction
+	err := s.db.WithContext(ctx).Model(&entity.Reaction{}).Where("recommendation_id = ? AND profile_id = ?", recommendationID, profileID).Take(&reaction).Error
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return false, nil
+		}
+		return false, err
+	}
+
+	return true, nil
+}

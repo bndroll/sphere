@@ -27,6 +27,7 @@ type Storage interface {
 	CreateRecommendation(ctx context.Context, vector entity.Recommendation) error
 	CreateReaction(ctx context.Context, reaction entity.Reaction) error
 	DeleteRecommendationByProfileID(ctx context.Context, profileID uuid.UUID) error
+	ExistsReaction(ctx context.Context, recommendationID uuid.UUID, profileID uuid.UUID) (bool, error)
 }
 
 func NewRecommendations(storage Storage, accountUrl *url.URL, logger *slog.Logger) *Recommendations {
@@ -169,6 +170,15 @@ func (r *Recommendations) CreateReaction(ctx context.Context, req CreateReaction
 		return err
 	}
 	if rec == nil {
+		return nil
+	}
+
+	exists, err := r.storage.ExistsReaction(ctx, rec.ID, req.ProfileID)
+	if err != nil {
+		log.Error("Error checking existence of reaction", err)
+		return err
+	}
+	if exists {
 		return nil
 	}
 
