@@ -21,7 +21,11 @@ type Handler struct {
 
 func New(producer *kafkalib.Producer, log *slog.Logger) *Handler {
 	return &Handler{
-		client:   &http.Client{},
+		client: &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
+		},
 		logger:   log,
 		producer: producer,
 	}
