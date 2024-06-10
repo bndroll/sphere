@@ -1,7 +1,5 @@
 import {
   WebSocketGateway,
-  SubscribeMessage,
-  MessageBody,
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -39,6 +37,12 @@ export class GatewayGateway
       this.clients.set(socket, userId);
       this.gatewaySessionManager.setUserSocket(userId, socket);
       this.logger.verbose(`Connect websocket, userId: ${userId}`);
+
+      socket.on('message', (message: string) => {
+        this.handleMessage(
+          JSON.parse(message) as CreateMessageContract.CreateMessageDto,
+        );
+      });
     }
   }
 
@@ -53,8 +57,7 @@ export class GatewayGateway
     }
   }
 
-  @SubscribeMessage(CreateMessageContract.topic)
-  async create(@MessageBody() dto: CreateMessageContract.CreateMessageDto) {
+  async handleMessage(dto: CreateMessageContract.CreateMessageDto) {
     const chat = await this.chatService.findById(dto.chatId);
 
     const profilesFromChat = await this.profileService.findByChatId(dto.chatId);
@@ -68,9 +71,8 @@ export class GatewayGateway
 
     for (const userId of profilesUsers) {
       const userSocket = this.gatewaySessionManager.getUserSocket(userId);
-      if (userSocket) {
-        this.logger.verbose(`Message sended, userId ${userId}`);
-        userSocket.emit('message.send', message);
+      if (userSocket && userSocket.readyState === WebSocket.OPEN) {
+        userSocket.send(JSON.stringify(message));
       }
     }
   }
