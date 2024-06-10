@@ -8,6 +8,7 @@ import {
 import { ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import * as fs from 'node:fs';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const httpsOptions = {
@@ -33,6 +34,7 @@ async function bootstrap() {
       },
     },
   });
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   await app.startAllMicroservices();
   await app.listen(process.env.PORT, '0.0.0.0');
