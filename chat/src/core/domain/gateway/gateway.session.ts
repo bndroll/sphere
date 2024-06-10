@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import { WebSocket } from 'ws';
 
 @Injectable()
 export class GatewaySessionManager {
-  private readonly sessions: Map<string, Socket> = new Map();
+  private readonly sessions: Map<string, WebSocket> = new Map();
 
   getUserSocket(id: string) {
     return this.sessions.get(id);
   }
 
-  setUserSocket(userId: string, socket: Socket) {
+  setUserSocket(userId: string, socket: WebSocket) {
     this.sessions.set(userId, socket);
   }
 
