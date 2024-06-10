@@ -83,6 +83,7 @@ export class GatewayGateway
         'Error while handle message create',
         err?.message ?? '',
       );
+      return;
     }
   }
 }
