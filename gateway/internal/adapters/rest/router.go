@@ -57,7 +57,7 @@ func (h Handler) Router() *gin.Engine {
 
 	//CHAT
 	chat := service.Group("/chat")
-	chat.Any("/*path", h.Redirect("chat", env.ChatURL))
+	chat.Any("/*path", h.Redirect("/chat", env.ChatURL))
 
 	//WSS
 	service.GET("/wss", h.WSS)
