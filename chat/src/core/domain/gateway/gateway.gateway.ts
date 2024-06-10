@@ -65,6 +65,7 @@ export class GatewayGateway
     for (const userId of profilesUsers) {
       const userSocket = this.gatewaySessionManager.getUserSocket(userId);
       if (userSocket) {
+        this.logger.verbose(`Message sended, userId ${userId}`);
         userSocket.emit('message.send', message);
       }
     }
