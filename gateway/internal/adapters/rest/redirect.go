@@ -31,7 +31,7 @@ func (h Handler) Redirect(prefixPath string, url *url.URL) func(*gin.Context) {
 
 		resp, err := h.client.Do(req)
 		if err != nil {
-			h.logger.Error("Error do request", "error", err, "req", req)
+			h.logger.Error("Error do request", "error", err, "req", req, "resp", resp)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to forward request"})
 			return
 		}
