@@ -5,6 +5,7 @@ import { AxiosResponse } from 'axios';
 import { ProfileRepository } from 'src/core/domain/chat/repositories/profile.repository';
 import { CreateProfileDto } from 'src/core/domain/chat/dto/create-profile.dtp';
 import { Profile } from 'src/core/domain/chat/entities/profile.entity';
+import { ChatRepository } from 'src/core/domain/chat/repositories/chat.repository';
 
 @Injectable()
 export class ProfileService {
@@ -13,6 +14,7 @@ export class ProfileService {
   constructor(
     private readonly httpService: HttpService,
     private readonly profileRepository: ProfileRepository,
+    private readonly chatRepository: ChatRepository,
   ) {}
 
   async create(dto: CreateProfileDto) {
@@ -51,7 +53,7 @@ export class ProfileService {
   }
 
   async findChats(userId: string) {
-    return await this.profileRepository.findChats(userId);
+    return await this.chatRepository.findByUserId(userId);
   }
 
   async checkUserExist(userId: string) {
