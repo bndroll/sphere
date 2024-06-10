@@ -58,22 +58,32 @@ export class GatewayGateway
   }
 
   async handleMessage(dto: CreateMessageContract.CreateMessageDto) {
-    const chat = await this.chatService.findById(dto.chatId);
+    try {
+      const chat = await this.chatService.findById(dto.chatId);
 
-    const profilesFromChat = await this.profileService.findByChatId(dto.chatId);
-    const profilesUsers = profilesFromChat.map((profile) => profile.userId);
+      const profilesFromChat = await this.profileService.findByChatId(
+        dto.chatId,
+      );
+      const profilesUsers = profilesFromChat.map((profile) => profile.userId);
 
-    const message = await this.messageService.create({
-      profileId: dto.profileId,
-      chatId: chat.id,
-      text: dto.text,
-    });
+      const message = await this.messageService.create({
+        profileId: dto.profileId,
+        chatId: chat.id,
+        text: dto.text,
+      });
 
-    for (const userId of profilesUsers) {
-      const userSocket = this.gatewaySessionManager.getUserSocket(userId);
-      if (userSocket && userSocket.readyState === WebSocket.OPEN) {
-        userSocket.send(JSON.stringify(message));
+      for (const userId of profilesUsers) {
+        const userSocket = this.gatewaySessionManager.getUserSocket(userId);
+        if (userSocket && userSocket.readyState === WebSocket.OPEN) {
+          userSocket.send(JSON.stringify(message));
+        }
       }
+    } catch (err) {
+      this.logger.error(
+        'Error while handle message create',
+        err?.message ?? '',
+      );
+      return;
     }
   }
 }
