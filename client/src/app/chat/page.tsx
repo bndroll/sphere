@@ -1,16 +1,32 @@
 "use client";
-import business from "@/assets/images/elena.png";
-import yandex from "@/assets/images/yandex.png";
-import girl from "@/assets/images/girl.png";
 import styles from "./page.module.scss";
 import TabBar from "@/app/feed/components/TabBar/TabBar";
 import { useRouter } from "next/navigation";
 import Transition from "@/components/Transition/Transition";
-import cn from 'classnames';
-import Image from 'next/image';
+import cn from "classnames";
+import Image from "next/image";
+import { useCallback, useEffect, useState } from "react";
+import { ChatsResponse, findChats } from "@/api/services/chat/find-chats.api";
+import { findMe } from "@/api/services/user/find_me/find_me.api";
+import dayjs from "dayjs";
 
 export default function Chat() {
   const router = useRouter();
+  const [chats, setChats] = useState<ChatsResponse[]>([]);
+  const onMessage = (data: any) => {};
+
+  const getTime = useCallback((date: Date) => {
+    return dayjs(date).format("hh:mm");
+  }, []);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const user = await findMe();
+      const chats = await findChats(user.id);
+      setChats(chats);
+    };
+    void fetch();
+  }, []);
 
   return (
     <Transition>
@@ -22,79 +38,37 @@ export default function Chat() {
           <span className={styles.chip}>Эвенты</span>
         </div>
         <div className={styles.items}>
-          <div className={styles.item} onClick={() => router.push(`/chat/1`)}>
-            <Image src={business} alt={'Image'} className={styles.img}/>
-            <div className={styles.info}>
-
-              <div className={styles.user}>
-                <span className={styles.name}>Елена</span>
-                <span className={styles.text}>Текст сообщения</span>
+          {chats.map((chat) => (
+            <div
+              className={styles.item}
+              onClick={() => router.push(`/chat/${chat.id}`)}
+              key={chat.id}
+            >
+              {chat.profiles?.[0].info.avatar && (
+                <Image
+                  src={`https://sphereapp.ru/api/account${chat.profiles?.[0].info.avatar}`}
+                  alt={"Image"}
+                  width={100}
+                  height={100}
+                  className={styles.img}
+                />
+              )}
+              <div className={styles.info}>
+                <div className={styles.user}>
+                  <span className={styles.name}>
+                    {chat.profiles?.[0].info.name}
+                  </span>
+                  <span className={styles.text}>{chat.lastMessage?.text}</span>
+                </div>
+                <span className={styles.time}>
+                  {getTime(chat.lastMessage?.created_date ?? new Date())}
+                </span>
               </div>
-              <span className={styles.time}>20:31</span>
             </div>
-          </div>
-          <div className={styles.item} onClick={() => router.push(`/chat/1`)}>
-            <Image src={girl} alt={'Image'} className={styles.img}/>
-            <div className={styles.info}>
-
-              <div className={styles.user}>
-                <span className={styles.name}>Ангелина</span>
-                <span className={styles.text}>Текст сообщения</span>
-              </div>
-              <span className={styles.time}>20:31</span>
-            </div>
-          </div>
-          <div className={styles.item} onClick={() => router.push(`/chat/1`)}>
-            <Image src={yandex} alt={'Image'} className={styles.img}/>
-            <div className={styles.info}>
-
-              <div className={styles.user}>
-                <span className={styles.name}>Яндекс</span>
-                <span className={styles.text}>Текст сообщения</span>
-              </div>
-              <span className={styles.time}>20:31</span>
-            </div>
-          </div>
+          ))}
         </div>
         <TabBar className={styles.tabBar} tabs={[]} />
       </div>
-      {/*<div className={styles.container}>*/}
-      {/*  <Header*/}
-      {/*    iconCompany={<YaSvg />}*/}
-      {/*    iconUserSrc={business}*/}
-      {/*    userNickname={"@valentinaa"}*/}
-      {/*    userName={"Валентина"}*/}
-      {/*  />*/}
-      {/*  <Button*/}
-      {/*    text={"Редактировать профиль"}*/}
-      {/*    onClick={() => router.push("/profile/edit")}*/}
-      {/*    variant={"secondary"}*/}
-      {/*    IconLeft={UserSvg}*/}
-      {/*    justify={"start"}*/}
-      {/*    className={styles.btn}*/}
-      {/*  />*/}
-      {/*  <List items={formsItems} />*/}
-      {/*  <Button*/}
-      {/*    text={"Управление эвентами"}*/}
-      {/*    onClick={() => router.push("/profile/events")}*/}
-      {/*    variant={"secondary"}*/}
-      {/*    IconLeft={EventSvg}*/}
-      {/*    justify={"start"}*/}
-      {/*    className={styles.btn}*/}
-      {/*  />*/}
-      {/*  <Button*/}
-      {/*    text={"Буст анкеты"}*/}
-      {/*    onClick={() => console.log("")}*/}
-      {/*    variant={"secondary"}*/}
-      {/*    IconLeft={BustSvg}*/}
-      {/*    justify={"space-between"}*/}
-      {/*    disabled={true}*/}
-      {/*    className={styles.btnDisabled}*/}
-      {/*    IconRight={() => <span className={styles.btnText}>Скоро</span>}*/}
-      {/*  />*/}
-      {/*  <List items={settingsItems} />*/}
-      {/*  <TabBar className={styles.tabBar} tabs={[]} />*/}
-      {/*</div>*/}
     </Transition>
   );
 }

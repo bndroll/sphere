@@ -181,6 +181,7 @@ export const NewProfile = () => {
     userAlcohol,
     userHeight,
     userGender,
+    username,
   ]);
 
   const handleCancel = useCallback(() => {
@@ -275,6 +276,7 @@ export const NewProfile = () => {
           placeholder="www.example.com"
         />
       </div>
+
       <div className={styles.form_block}>
         <InputTextRow
           label="Должность"

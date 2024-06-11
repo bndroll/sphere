@@ -38,14 +38,15 @@ export const Info: FC<Props> = ({
         <Image
           src={`https://sphereapp.ru/api/account${data.info.picture}`}
           alt="Photo"
-          width={2560}
-          height={1440}
+          width={720}
+          height={480}
           quality={100}
+          loading="lazy"
           className={styles.img}
           draggable={false}
         />
       )}
-      <div className={styles.info} style={stylesCustom}>
+      <div className={styles.info}>
         {isFromEvents && <span className={styles.liked}>Вас лайкнули</span>}
         <div className={styles.titleContainer}>
           {data.info.avatarPicture && (
@@ -101,6 +102,7 @@ export const Info: FC<Props> = ({
           />
         </div>
       </div>
+      <div className={styles.detail}></div>
     </div>
   );
 };
