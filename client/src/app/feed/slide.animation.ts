@@ -52,6 +52,6 @@ export const slideTransition = {
 };
 
 export const cardTransition = {
-  y: { type: "spring", stiffness: 1000, damping: 100 },
-  opacity: { duration: 0.1 },
+  // y: { type: "spring", stiffness: 1000, damping: 100 },
+  // opacity: { duration: 0.1 },
 };

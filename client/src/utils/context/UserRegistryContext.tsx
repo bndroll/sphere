@@ -59,6 +59,14 @@ export type ProfileInfo = {
   open?: boolean;
   startDate?: Date;
   endDate?: Date;
+  avatar?: string;
+};
+
+export type Chats = {
+  createDate: Date;
+  id: string;
+  name: string;
+  type: "Single" | "Group";
 };
 
 export type UserProfile = {
@@ -67,6 +75,7 @@ export type UserProfile = {
   tagsId: string[];
   type: "User" | "Event";
   visible?: "Open" | "Close";
+  chats?: Chats[];
   info: ProfileInfo;
 };
 

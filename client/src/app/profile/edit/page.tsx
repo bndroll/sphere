@@ -15,11 +15,19 @@ export default function EditProfile() {
   useEffect(() => {
     vibrate();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      vibrate();
+    };
+  }, []);
+
   return (
     <div className={styles.container}>
       <HeaderLoadPhoto
         title="Загрузить фото"
         text="По умолчанию будет использоваться фото самой первой созданной анкеты"
+        onUpload={() => {}}
       />
       <div className={styles.content}>
         <div className={styles.form}>

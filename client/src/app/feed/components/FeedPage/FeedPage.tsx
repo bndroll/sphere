@@ -23,8 +23,9 @@ import { getCategories } from "@/api/services/category/category.api";
 import { findProfiles } from "@/api/services/profile/find-by-user.api";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
 import { NothingInCategory } from "@/app/feed/components/NothingPage/NothingInCategory";
-import { SwipeType, swipeProfile } from "@/api/services/swipe/swipe.api";
+import { swipeProfile, SwipeType } from "@/api/services/swipe/swipe.api";
 import { vibrate } from "@/utils/hooks/vibration.helper";
+import { useRouter } from "next/navigation";
 
 export const FeedPage = () => {
   const [tabs, setTabs] = useState<string[]>([
@@ -40,7 +41,7 @@ export const FeedPage = () => {
     useContext(UserStoreContext);
   const [profil, setProfil] = useState<UserMappingProfile[]>([]);
   const imageIndex = wrap(0, tabs.length, page);
-
+  const router = useRouter();
   const [fFeeds, setFFeeds] = useState<ProfileCardType[]>([]);
 
   useEffect(() => {
@@ -122,7 +123,7 @@ export const FeedPage = () => {
         ]);
       }
     },
-    [profil, handleEndCertSwipe],
+    [profil, handleEndCertSwipe, router],
   );
 
   const isHasSomeProfilies = useCallback(
@@ -163,7 +164,6 @@ export const FeedPage = () => {
                         key={item.id}
                         data={item}
                         handleLikeClick={handleGiveReaction(item.category.id)}
-                        stylesCustom={customStyles}
                       />
                     </div>
                   )}
