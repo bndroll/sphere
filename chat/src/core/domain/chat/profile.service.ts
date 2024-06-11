@@ -6,6 +6,7 @@ import { ProfileRepository } from 'src/core/domain/chat/repositories/profile.rep
 import { CreateProfileDto } from 'src/core/domain/chat/dto/create-profile.dtp';
 import { Profile } from 'src/core/domain/chat/entities/profile.entity';
 import { ChatRepository } from 'src/core/domain/chat/repositories/chat.repository';
+import { MessageRepository } from 'src/core/domain/message/repositories/message.repository';
 
 @Injectable()
 export class ProfileService {
@@ -15,6 +16,7 @@ export class ProfileService {
     private readonly httpService: HttpService,
     private readonly profileRepository: ProfileRepository,
     private readonly chatRepository: ChatRepository,
+    private readonly messageRepository: MessageRepository,
   ) {}
 
   async create(dto: CreateProfileDto) {
@@ -53,7 +55,14 @@ export class ProfileService {
   }
 
   async findChats(userId: string) {
-    return await this.chatRepository.findByUserId(userId);
+    const chats = await this.chatRepository.findByUserId(userId);
+    const messages = await this.messageRepository.findByChatsIds(
+      chats.map((item) => item.id),
+    );
+    return chats.map((chat) => ({
+      ...chat,
+      lastMessage: messages.find((message) => message.chatId === chat.id),
+    }));
   }
 
   async checkUserExist(userId: string) {
