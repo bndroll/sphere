@@ -29,7 +29,6 @@ export default function TabBar({ tabs, className, onMenuClick }: TabBarProps) {
       icon: <LovelySvg />,
       title: "События",
       href: "/events",
-      counter: 2,
     },
     {
       icon: <FormSvg />,

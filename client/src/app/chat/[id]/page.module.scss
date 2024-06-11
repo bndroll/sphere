@@ -2,6 +2,7 @@
   display: flex;
   padding: 0 8px;
   flex-direction: column;
+  position: relative;
   min-height: 100vh;
 
   .head {
@@ -9,6 +10,8 @@
     border-bottom: 1px solid #181818;
     gap: 20px;
     padding: 14px 0;
+    position: sticky;
+    top: 0;
 
     .btn {
       background: transparent;
@@ -19,15 +22,22 @@
 
     .headInfo {
       display: flex;
-      gap: 6px;
+      gap: 16px;
       align-items: center;
+
+      img {
+        width: 70px;
+        height: 70px;
+        border-radius: 70px;
+        object-fit: cover;
+      }
 
       .info {
         display: flex;
         flex-direction: column;
 
         .title {
-          font-size: 13px;
+          font-size: 22px;
           font-weight: 400;
           line-height: 18px;
           letter-spacing: -0.5px;
@@ -47,11 +57,52 @@
     }
   }
 
+  .chat_area {
+    height: calc(100vh - 150px);
+    position: relative;
+  }
+
+  .input {
+    position: fixed;
+    width: 90%;
+    bottom: 80px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .send_btn {
+    background: var(--primary);
+    width: 45px;
+    height: 35px;
+    border-radius: 35px;
+    overflow: hidden;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover, &:active {
+      transform: scale(0.98);
+    }
+  }
+
   .chat {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     margin-top: 16px;
     gap: 20px;
+    height: 80%;
+    overflow: auto;
+
+    &::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
 
     .item {
       display: flex;
@@ -100,6 +151,7 @@
 
     .myMsg {
       align-self: flex-end;
+      flex-direction: row-reverse;
     }
   }
 
