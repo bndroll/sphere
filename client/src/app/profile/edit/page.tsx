@@ -15,6 +15,13 @@ export default function EditProfile() {
   useEffect(() => {
     vibrate();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      vibrate();
+    };
+  }, []);
+
   return (
     <div className={styles.container}>
       <HeaderLoadPhoto

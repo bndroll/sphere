@@ -16,6 +16,7 @@ import {
 } from "@/utils/context/UserStoreContext";
 import { Info } from "@/app/feed/components/Info/Info";
 import { ProfileCardType } from "@/api/services/reccomendation/recomendation.types";
+import { useRouter } from "next/navigation";
 
 export const EventsFeed = () => {
   const [[card, directionCard], setCard] = useState([0, 0]);
@@ -23,12 +24,11 @@ export const EventsFeed = () => {
   const [fFeeds, setFfeeds] = useState<ProfileCardType[]>([]);
   const [customStyles, setCustomStyles] = useState({});
   const [profil, setProfil] = useState<UserMappingProfile[]>([]);
-
+  const router = useRouter();
   const paginateVertical = (newDirection: number) => {
     vibrate();
     setCard([card + newDirection - 1, newDirection]);
   };
-  const isHasSomeProfilies = true;
   const handleEndCertSwipe = () => {
     paginateVertical(1);
     setCustomStyles(cardTransition);
@@ -38,6 +38,7 @@ export const EventsFeed = () => {
       handleEndCertSwipe();
       const profile = profil.find((pr) => pr.categoryId == profileId);
       await swipeProfile(profile!.id, type, recProfileId);
+      router.push("/chat");
       setFfeeds((prevState) => [
         ...prevState.filter((p) => p.id !== recProfileId),
       ]);
@@ -73,7 +74,6 @@ export const EventsFeed = () => {
       );
       const feeds = await Promise.all(feedsRequests);
       setFfeeds(feeds.flat());
-      console.log(feeds.flat());
     };
     void a();
   }, []);
