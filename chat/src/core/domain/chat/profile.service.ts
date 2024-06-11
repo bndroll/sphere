@@ -7,6 +7,7 @@ import { CreateProfileDto } from 'src/core/domain/chat/dto/create-profile.dtp';
 import { Profile } from 'src/core/domain/chat/entities/profile.entity';
 import { ChatRepository } from 'src/core/domain/chat/repositories/chat.repository';
 import { MessageRepository } from 'src/core/domain/message/repositories/message.repository';
+import { FindMessagesDto } from 'src/core/domain/message/dto/find-messages.dto';
 
 @Injectable()
 export class ProfileService {
@@ -77,6 +78,10 @@ export class ProfileService {
 
   async findByChatId(chatId: string): Promise<Profile[]> {
     return await this.profileRepository.findByChatId(chatId);
+  }
+
+  async findByChatIdAndUserId(dto: FindMessagesDto) {
+    return await this.profileRepository.findByChatIdAndUserId(dto);
   }
 
   async findProfiles(ids: string[]) {

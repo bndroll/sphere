@@ -4,6 +4,7 @@ import { Message } from 'src/core/domain/message/entities/message.entity';
 import { MessageRepository } from 'src/core/domain/message/repositories/message.repository';
 import { ChatService } from 'src/core/domain/chat/chat.service';
 import { ProfileService } from 'src/core/domain/chat/profile.service';
+import { FindMessagesDto } from 'src/core/domain/message/dto/find-messages.dto';
 
 @Injectable()
 export class MessageService {
@@ -32,7 +33,12 @@ export class MessageService {
     return await this.messageRepository.save(message);
   }
 
-  async findByChat(chatId: string) {
-    return await this.messageRepository.findByChatId(chatId);
+  async findByChat(dto: FindMessagesDto) {
+    const messages = await this.messageRepository.findByChatId(dto.chatId);
+    const profile = await this.profileService.findByChatIdAndUserId(dto);
+    return {
+      profileId: profile.id,
+      messages: messages,
+    };
   }
 }

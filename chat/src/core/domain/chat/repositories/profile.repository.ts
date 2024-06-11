@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { BaseRepository } from 'src/core/common/base.repository';
 import { Profile } from 'src/core/domain/chat/entities/profile.entity';
+import { FindMessagesDto } from 'src/core/domain/message/dto/find-messages.dto';
 
 @Injectable()
 export class ProfileRepository extends BaseRepository<Profile> {
@@ -33,5 +34,13 @@ export class ProfileRepository extends BaseRepository<Profile> {
       .leftJoinAndSelect('p.chats', 'c')
       .where('c.id = :chatId', { chatId: chatId })
       .getMany();
+  }
+
+  async findByChatIdAndUserId(dto: FindMessagesDto) {
+    return await this.createQueryBuilder('p')
+      .leftJoin('p.chats', 'c')
+      .where('c.id = :chatId', { chatId: dto.chatId })
+      .andWhere('p.userId = :userId', { userId: dto.userId })
+      .getOne();
   }
 }
